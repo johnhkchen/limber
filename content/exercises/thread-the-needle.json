@@ -1,0 +1,480 @@
+{
+  "id": "thread-the-needle",
+  "title": "Thread the needle",
+  "side": "right",
+  "highlight": [
+    "Rhomboid major muscle.r",
+    "Rhomboid minor muscle.r",
+    "External intercostal muscles.r"
+  ],
+  "setup": {
+    "start": "allFours",
+    "root": {
+      "orientation": {
+        "pitch": 82
+      }
+    }
+  },
+  "props": [
+    {
+      "kind": "mat"
+    }
+  ],
+  "keyframes": [
+    {
+      "t": 0,
+      "pose": {
+        "hip.l": {
+          "flexion": 82
+        },
+        "hip.r": {
+          "flexion": 82
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "shoulder.l": {
+          "flexion": 90
+        },
+        "shoulder.r": {
+          "flexion": 90
+        },
+        "elbow.l": {
+          "pronation": 170
+        },
+        "elbow.r": {
+          "pronation": 170
+        },
+        "wrist.l": {
+          "flexion": -75
+        },
+        "wrist.r": {
+          "flexion": -75
+        }
+      }
+    },
+    {
+      "t": 0.5,
+      "pose": {
+        "hip.l": {
+          "flexion": 82
+        },
+        "hip.r": {
+          "flexion": 82
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "shoulder.l": {
+          "flexion": 90
+        },
+        "shoulder.r": {
+          "flexion": 75,
+          "horizontalAdduction": 10
+        },
+        "elbow.l": {
+          "pronation": 170
+        },
+        "elbow.r": {
+          "pronation": 150,
+          "flexion": 70
+        },
+        "wrist.l": {
+          "flexion": -75
+        },
+        "wrist.r": {
+          "flexion": -30
+        }
+      }
+    },
+    {
+      "t": 1.4,
+      "root": {
+        "orientation": {
+          "pitch": 94
+        }
+      },
+      "pose": {
+        "hip.l": {
+          "flexion": 94
+        },
+        "hip.r": {
+          "flexion": 94
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "lowBack": {
+          "rotation": -5,
+          "flexion": 3
+        },
+        "upperBack": {
+          "rotation": -15,
+          "flexion": 2
+        },
+        "neck": {
+          "rotation": -12,
+          "flexion": 6
+        },
+        "shoulder.l": {
+          "flexion": 88.3,
+          "horizontalAdduction": 7.5,
+          "abduction": -12.6
+        },
+        "elbow.l": {
+          "pronation": 170,
+          "flexion": 41.8
+        },
+        "wrist.l": {
+          "flexion": -54.1
+        },
+        "shoulderGirdle.r": {
+          "protraction": 10
+        },
+        "shoulder.r": {
+          "flexion": 80,
+          "horizontalAdduction": 30
+        },
+        "elbow.r": {
+          "pronation": 110,
+          "flexion": 80
+        },
+        "wrist.r": {
+          "flexion": -20
+        }
+      }
+    },
+    {
+      "t": 2.6,
+      "root": {
+        "orientation": {
+          "pitch": 119.7
+        }
+      },
+      "pose": {
+        "hip.l": {
+          "flexion": 117.6
+        },
+        "hip.r": {
+          "flexion": 117.6
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "lowBack": {
+          "rotation": -13.6,
+          "flexion": 6.7
+        },
+        "upperBack": {
+          "rotation": -39.7,
+          "flexion": -3.5,
+          "sideBend": -4.5
+        },
+        "neck": {
+          "rotation": -38.6,
+          "sideBend": -0.9,
+          "flexion": 15.9
+        },
+        "head": {
+          "rotation": -3.4,
+          "sideBend": 18.4
+        },
+        "shoulder.l": {
+          "flexion": 100.9,
+          "abduction": -9.7,
+          "horizontalAdduction": 26.4
+        },
+        "elbow.l": {
+          "pronation": 170,
+          "flexion": 84.6
+        },
+        "wrist.l": {
+          "flexion": -30.6
+        },
+        "shoulderGirdle.r": {
+          "protraction": 20.9
+        },
+        "shoulder.r": {
+          "flexion": 115.6,
+          "horizontalAdduction": 38.3,
+          "rotation": -22.7
+        },
+        "elbow.r": {
+          "pronation": 68.8,
+          "flexion": 5.1
+        },
+        "wrist.r": {
+          "flexion": 0
+        }
+      }
+    },
+    {
+      "t": 3.8,
+      "root": {
+        "orientation": {
+          "pitch": 94
+        }
+      },
+      "pose": {
+        "hip.l": {
+          "flexion": 94
+        },
+        "hip.r": {
+          "flexion": 94
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "lowBack": {
+          "rotation": -5,
+          "flexion": 3
+        },
+        "upperBack": {
+          "rotation": -15,
+          "flexion": 2
+        },
+        "neck": {
+          "rotation": -12,
+          "flexion": 6
+        },
+        "shoulder.l": {
+          "flexion": 88.3,
+          "horizontalAdduction": 7.5,
+          "abduction": -12.6
+        },
+        "elbow.l": {
+          "pronation": 170,
+          "flexion": 41.8
+        },
+        "wrist.l": {
+          "flexion": -54.1
+        },
+        "shoulderGirdle.r": {
+          "protraction": 10
+        },
+        "shoulder.r": {
+          "flexion": 80,
+          "horizontalAdduction": 30
+        },
+        "elbow.r": {
+          "pronation": 110,
+          "flexion": 80
+        },
+        "wrist.r": {
+          "flexion": -20
+        }
+      }
+    },
+    {
+      "t": 4.6,
+      "pose": {
+        "hip.l": {
+          "flexion": 82
+        },
+        "hip.r": {
+          "flexion": 82
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "shoulder.l": {
+          "flexion": 90
+        },
+        "shoulder.r": {
+          "flexion": 75,
+          "horizontalAdduction": 10
+        },
+        "elbow.l": {
+          "pronation": 170
+        },
+        "elbow.r": {
+          "pronation": 150,
+          "flexion": 70
+        },
+        "wrist.l": {
+          "flexion": -75
+        },
+        "wrist.r": {
+          "flexion": -30
+        }
+      }
+    },
+    {
+      "t": 5.4,
+      "pose": {
+        "hip.l": {
+          "flexion": 82
+        },
+        "hip.r": {
+          "flexion": 82
+        },
+        "knee.l": {
+          "flexion": 90
+        },
+        "knee.r": {
+          "flexion": 90
+        },
+        "ankle.l": {
+          "dorsiflexion": -55
+        },
+        "ankle.r": {
+          "dorsiflexion": -55
+        },
+        "shoulder.l": {
+          "flexion": 90
+        },
+        "shoulder.r": {
+          "flexion": 90
+        },
+        "elbow.l": {
+          "pronation": 170
+        },
+        "elbow.r": {
+          "pronation": 170
+        },
+        "wrist.l": {
+          "flexion": -75
+        },
+        "wrist.r": {
+          "flexion": -75
+        }
+      }
+    }
+  ],
+  "hold": {
+    "from": 2.6,
+    "breaths": 5,
+    "breathSeconds": 6
+  },
+  "breath": {
+    "track": "hold",
+    "min": 0,
+    "max": 1
+  },
+  "reps": {
+    "count": [
+      5,
+      6
+    ]
+  },
+  "contacts": [
+    {
+      "part": "knee.l",
+      "surface": "floor"
+    },
+    {
+      "part": "knee.r",
+      "surface": "floor"
+    },
+    {
+      "part": "shin.l",
+      "surface": "floor"
+    },
+    {
+      "part": "shin.r",
+      "surface": "floor"
+    },
+    {
+      "part": "palm.l",
+      "surface": "floor"
+    },
+    {
+      "part": "palm.r",
+      "surface": "floor",
+      "to": 0
+    },
+    {
+      "part": "palm.r",
+      "surface": "floor",
+      "from": 5.4
+    },
+    {
+      "part": "shoulder.r",
+      "surface": "floor",
+      "from": 2.6,
+      "to": 2.6
+    },
+    {
+      "part": "head.r",
+      "surface": "floor",
+      "from": 2.6,
+      "to": 2.6
+    }
+  ],
+  "cues": [
+    {
+      "t": 0,
+      "text": "Start on your hands and knees."
+    },
+    {
+      "t": 0.4,
+      "text": "Slide your right arm under your body toward the left, palm up."
+    },
+    {
+      "t": 1.6,
+      "text": "Lower your right shoulder and the side of your head toward the floor. Keep your left hand where it is."
+    },
+    {
+      "t": 2.6,
+      "text": "Hold for 5 breaths. Breathe into the spot behind your right shoulder blade."
+    },
+    {
+      "t": 2.7,
+      "text": "Come back up to your hands and knees. Repeat 5\u20136 times, holding briefly each time."
+    }
+  ]
+}

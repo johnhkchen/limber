@@ -1,0 +1,60 @@
+{
+  "id": "ball-release",
+  "title": "Ball release with breathing",
+  "side": "right",
+  "highlight": [
+    "Rhomboid major muscle.r",
+    "Transverse part of trapezius muscle.r",
+    "External intercostal muscles.r"
+  ],
+  "setup": { "start": "againstWall", "root": { "orientation": { "pitch": -6 } } },
+  "props": [
+    { "kind": "wall", "side": "behind" },
+    { "kind": "ball", "at": "back.r", "diameter": 0.065 }
+  ],
+  "keyframes": [
+    { "t": 0, "pose": {
+        "ankle.l": { "dorsiflexion": -6 }, "ankle.r": { "dorsiflexion": -6 }
+    } },
+    { "t": 2.4, "ease": "inOut", "pose": {
+        "ankle.l": { "dorsiflexion": -6 }, "ankle.r": { "dorsiflexion": -6 },
+        "upperBack": { "flexion": 8 },
+        "head": { "flexion": 6 },
+        "shoulderGirdle.r": { "protraction": 22 },
+        "shoulderGirdle.l": { "protraction": 22 },
+        "shoulder.r": { "flexion": 76, "horizontalAdduction": 42, "rotation": -95 },
+        "shoulder.l": { "flexion": 68, "horizontalAdduction": 42, "rotation": -95 },
+        "elbow.r": { "flexion": 82 },
+        "elbow.l": { "flexion": 82 },
+        "grip.l": { "amount": 0.4 }, "grip.r": { "amount": 0.4 }
+    } },
+    { "t": 3.4, "ease": "inOut", "pose": {
+        "ankle.l": { "dorsiflexion": -6 }, "ankle.r": { "dorsiflexion": -6 },
+        "upperBack": { "flexion": 8 },
+        "head": { "flexion": 6 },
+        "shoulderGirdle.r": { "protraction": 22 },
+        "shoulderGirdle.l": { "protraction": 22 },
+        "shoulder.r": { "flexion": 76, "horizontalAdduction": 42, "rotation": -95 },
+        "shoulder.l": { "flexion": 68, "horizontalAdduction": 42, "rotation": -95 },
+        "elbow.r": { "flexion": 82 },
+        "elbow.l": { "flexion": 82 },
+        "grip.l": { "amount": 0.4 }, "grip.r": { "amount": 0.4 }
+    } },
+    { "t": 6, "ease": "inOut", "pose": {
+        "ankle.l": { "dorsiflexion": -6 }, "ankle.r": { "dorsiflexion": -6 }
+    } }
+  ],
+  "hold": { "from": 3.4, "breaths": 3, "breathSeconds": 6 },
+  "breath": { "track": "hold", "min": 0, "max": 1 },
+  "contacts": [
+    { "part": "heel.l", "surface": "floor" }, { "part": "heel.r", "surface": "floor" },
+    { "part": "toes.l", "surface": "floor" }, { "part": "toes.r", "surface": "floor" },
+    { "part": "back.r", "surface": "wall" }
+  ],
+  "cues": [
+    { "t": 0, "text": "Put a tennis or lacrosse ball between the wall and the sore spot, just right of your spine." },
+    { "t": 1, "text": "Hug your arms across your chest. Your shoulder blade slides out and uncovers the spot." },
+    { "t": 3.4, "text": "Lean in gently and keep steady pressure. Take 3 or 4 deep breaths into the ball. Small movements are fine; don't grind." },
+    { "t": 3.5, "text": "Let your arms down and step off the ball." }
+  ]
+}

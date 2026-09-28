@@ -1,0 +1,83 @@
+{
+  "id": "open-book",
+  "title": "Open book",
+  "side": "right",
+  "highlight": [
+    "External intercostal muscles.r",
+    "Internal intercostal muscles.r",
+    "Rhomboid major muscle.r"
+  ],
+  "setup": { "start": "sideLyingLeft" },
+  "props": [{ "kind": "mat" }],
+  "keyframes": [
+    { "t": 0, "pose": {
+        "hip.l": { "flexion": 80, "abduction": 8, "rotation": 6 },
+        "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
+        "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+        "lowBack": { "sideBend": 4 },
+        "neck": { "sideBend": -25 },
+        "shoulder.l": { "flexion": 90, "abduction": -8 },
+        "shoulder.r": { "flexion": 90, "horizontalAdduction": 18 },
+        "shoulderGirdle.r": { "protraction": 25 },
+        "elbow.l": { "pronation": 90 }, "elbow.r": { "pronation": 90 },
+        "wrist.r": { "flexion": -45 }
+    } },
+    { "t": 3, "ease": "inOut", "pose": {
+        "hip.l": { "flexion": 80, "abduction": 8, "rotation": 6 },
+        "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
+        "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+        "lowBack": { "sideBend": -6, "rotation": 5 },
+        "upperBack": { "rotation": 40, "sideBend": -5 },
+        "neck": { "sideBend": -5, "rotation": 35 },
+        "head": { "rotation": 15 },
+        "shoulder.l": { "flexion": 90, "abduction": -7, "horizontalAdduction": -45 },
+        "shoulder.r": { "flexion": 90, "horizontalAdduction": -110 },
+        "shoulderGirdle.r": { "protraction": -10 },
+        "elbow.l": { "pronation": 90 }, "elbow.r": { "pronation": 90, "flexion": 5 },
+        "wrist.r": { "flexion": 0 }
+    } },
+    { "t": 4.5, "ease": "inOut", "pose": {
+        "hip.l": { "flexion": 80, "abduction": 8, "rotation": 6 },
+        "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
+        "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+        "lowBack": { "sideBend": -6, "rotation": 5 },
+        "upperBack": { "rotation": 40, "sideBend": -5 },
+        "neck": { "sideBend": -5, "rotation": 35 },
+        "head": { "rotation": 15 },
+        "shoulder.l": { "flexion": 90, "abduction": -7, "horizontalAdduction": -45 },
+        "shoulder.r": { "flexion": 90, "horizontalAdduction": -110 },
+        "shoulderGirdle.r": { "protraction": -10 },
+        "elbow.l": { "pronation": 90 }, "elbow.r": { "pronation": 90, "flexion": 5 },
+        "wrist.r": { "flexion": 0 }
+    } },
+    { "t": 7.5, "ease": "inOut", "pose": {
+        "hip.l": { "flexion": 80, "abduction": 8, "rotation": 6 },
+        "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
+        "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+        "lowBack": { "sideBend": 4 },
+        "neck": { "sideBend": -25 },
+        "shoulder.l": { "flexion": 90, "abduction": -8 },
+        "shoulder.r": { "flexion": 90, "horizontalAdduction": 18 },
+        "shoulderGirdle.r": { "protraction": 25 },
+        "elbow.l": { "pronation": 90 }, "elbow.r": { "pronation": 90 },
+        "wrist.r": { "flexion": -45 }
+    } }
+  ],
+  "breath": { "track": "always", "min": 0, "max": 0.8, "seconds": 7.5 },
+  "reps": { "count": [8, 10] },
+  "contacts": [
+    { "part": "hip.l", "surface": "floor" },
+    { "part": "shoulder.l", "surface": "floor" },
+    { "part": "knee.l", "surface": "floor" },
+    { "part": "forearm.l", "surface": "floor" },
+    { "part": "head.l", "surface": "floor", "gap": 0.085, "to": 0 },
+    { "part": "occiput", "surface": "floor", "gap": 0.04, "from": 3, "to": 4.5 },
+    { "part": "head.l", "surface": "floor", "gap": 0.085, "from": 7.5 }
+  ],
+  "cues": [
+    { "t": 0,   "text": "Lie on your left side, knees bent and stacked, both arms straight out in front. Rest your head on a pillow." },
+    { "t": 0.6, "text": "Open your right arm up and over toward the floor behind you. Follow your hand with your eyes." },
+    { "t": 3,   "text": "Go only as far as is comfortable. Keep your knees together on the floor." },
+    { "t": 4.5, "text": "Bring the arm back slowly, palm to palm." }
+  ]
+}
