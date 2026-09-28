@@ -6,3 +6,7 @@ dist/
 .DS_Store
 pipeline/source/
 pipeline/out/
+shots/
+__pycache__/
+*.pyc
+pipeline/node_modules/

@@ -1,0 +1,14 @@
+The body files in this folder (skeleton.glb, muscles.glb, joint-map.json) are
+licensed CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+
+  BodyParts3D, (c) The Database Center for Life Science, CC BY-SA 2.1 Japan.
+  Mixed and modified by Z-Anatomy (z-anatomy.com), CC BY-SA 4.0.
+  Processed for Limber, CC BY-SA 4.0.
+
+What "processed" means: a subset of structures was picked, decimated, rigged to
+the Z-Biomechanics armature (flattened into a plain bone chain), skin-weighted,
+and packed with gltfpack. The scripts that do it are in pipeline/ of this repo
+(`just anatomy`). No non-commercial parts of the Z-Anatomy source (inner ear,
+kidney) are included; the pipeline's deny list refuses them.
+
+The rest of the Limber code is MIT; see the README.

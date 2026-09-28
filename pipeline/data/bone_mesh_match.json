@@ -1,0 +1,2124 @@
+[
+ {
+  "bio": "Arytenoid cartilage.l",
+  "full": "Arytenoid cartilage.l",
+  "centroid_dist": 0.00044323582887654026,
+  "bbox_maxdiff": 9.99999999999699e-07,
+  "nv_bio": 269,
+  "nv_full": 322
+ },
+ {
+  "bio": "Arytenoid cartilage.r",
+  "full": "Arytenoid cartilage.r",
+  "centroid_dist": 0.00044323582887654026,
+  "bbox_maxdiff": 9.99999999999699e-07,
+  "nv_bio": 269,
+  "nv_full": 322
+ },
+ {
+  "bio": "Atlas (C1)",
+  "full": "Atlas (C1)",
+  "centroid_dist": 2.0223748416163288e-05,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 1105,
+  "nv_full": 1106
+ },
+ {
+  "bio": "Coccyx",
+  "full": "Coccyx",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 589,
+  "nv_full": 589
+ },
+ {
+  "bio": "Costal cartilage of 10th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 10th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 1st rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 1st rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 2nd rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 2nd rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 3rd rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 3rd rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 4th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 4th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 5th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 5th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 6th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 6th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 7th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 7th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 8th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 8th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 9th rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Costal cartilage of 9th rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Inferior nasal concha bone.l",
+  "full": "Inferior nasal concha bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 238,
+  "nv_full": 238
+ },
+ {
+  "bio": "Inferior nasal concha bone.r",
+  "full": "Inferior nasal concha bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 238,
+  "nv_full": 238
+ },
+ {
+  "bio": "Intermediate cuneiform bone.l",
+  "full": "Intermediate cuneiform bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 224,
+  "nv_full": 224
+ },
+ {
+  "bio": "Intermediate cuneiform bone.r",
+  "full": "Intermediate cuneiform bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 224,
+  "nv_full": 224
+ },
+ {
+  "bio": "Lateral cuneiform bone.l",
+  "full": "Lateral cuneiform bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 321,
+  "nv_full": 321
+ },
+ {
+  "bio": "Lateral cuneiform bone.r",
+  "full": "Lateral cuneiform bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 321,
+  "nv_full": 321
+ },
+ {
+  "bio": "Lower canine.l",
+  "full": "Lower canine.l",
+  "centroid_dist": 0.00025836021365521685,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 591,
+  "nv_full": 640
+ },
+ {
+  "bio": "Lower canine.r",
+  "full": "Lower canine.r",
+  "centroid_dist": 0.00025836021365521685,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 591,
+  "nv_full": 640
+ },
+ {
+  "bio": "Lower first molar tooth.l",
+  "full": "Lower first molar tooth.l",
+  "centroid_dist": 0.0005213089295227277,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 883,
+  "nv_full": 2260
+ },
+ {
+  "bio": "Lower first molar tooth.r",
+  "full": "Lower first molar tooth.r",
+  "centroid_dist": 0.0005213089295227277,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 883,
+  "nv_full": 2260
+ },
+ {
+  "bio": "Lower first premolar.l",
+  "full": "Lower first premolar.l",
+  "centroid_dist": 4.339354790758563e-05,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 592,
+  "nv_full": 613
+ },
+ {
+  "bio": "Lower first premolar.r",
+  "full": "Lower first premolar.r",
+  "centroid_dist": 4.339354790758563e-05,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 592,
+  "nv_full": 613
+ },
+ {
+  "bio": "Lower lateral incisor.l",
+  "full": "Lower lateral incisor.l",
+  "centroid_dist": 0.00012116517651526577,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 481,
+  "nv_full": 522
+ },
+ {
+  "bio": "Lower lateral incisor.r",
+  "full": "Lower lateral incisor.r",
+  "centroid_dist": 0.00012116517651526577,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 481,
+  "nv_full": 522
+ },
+ {
+  "bio": "Lower medial incisor.l",
+  "full": "Lower medial incisor.l",
+  "centroid_dist": 0.00021454370184190847,
+  "bbox_maxdiff": 9.999999999871223e-07,
+  "nv_bio": 462,
+  "nv_full": 494
+ },
+ {
+  "bio": "Lower medial incisor.r",
+  "full": "Lower medial incisor.r",
+  "centroid_dist": 0.00021454370184190847,
+  "bbox_maxdiff": 9.999999999871223e-07,
+  "nv_bio": 462,
+  "nv_full": 494
+ },
+ {
+  "bio": "Lower second molar tooth.l",
+  "full": "Lower second molar tooth.l",
+  "centroid_dist": 2.5729360660530043e-05,
+  "bbox_maxdiff": 9.999999999940612e-07,
+  "nv_bio": 812,
+  "nv_full": 840
+ },
+ {
+  "bio": "Lower second molar tooth.r",
+  "full": "Lower second molar tooth.r",
+  "centroid_dist": 2.5729360660530043e-05,
+  "bbox_maxdiff": 9.999999999940612e-07,
+  "nv_bio": 812,
+  "nv_full": 840
+ },
+ {
+  "bio": "Lower second premolar.l",
+  "full": "Lower second premolar.l",
+  "centroid_dist": 4.148493702536954e-05,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 564,
+  "nv_full": 592
+ },
+ {
+  "bio": "Lower second premolar.r",
+  "full": "Lower second premolar.r",
+  "centroid_dist": 4.148493702536954e-05,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 564,
+  "nv_full": 592
+ },
+ {
+  "bio": "Lunate bone.l",
+  "full": "Lunate bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 3.2000000000032e-05,
+  "nv_bio": 176,
+  "nv_full": 176
+ },
+ {
+  "bio": "Lunate bone.r",
+  "full": "Lunate bone.r",
+  "centroid_dist": 0.0029081862044924287,
+  "bbox_maxdiff": 0.00279,
+  "nv_bio": 176,
+  "nv_full": 176
+ },
+ {
+  "bio": "Major alar cartilage.l",
+  "full": "Major alar cartilage.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 174,
+  "nv_full": 174
+ },
+ {
+  "bio": "Major alar cartilage.r",
+  "full": "Major alar cartilage.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 174,
+  "nv_full": 174
+ },
+ {
+  "bio": "Mandible",
+  "full": "Mandible",
+  "centroid_dist": 0.0010244383827248491,
+  "bbox_maxdiff": 5.000000000032756e-06,
+  "nv_bio": 8669,
+  "nv_full": 9388
+ },
+ {
+  "bio": "Maxilla.l",
+  "full": "Maxilla.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 2399,
+  "nv_full": 2399
+ },
+ {
+  "bio": "Maxilla.r",
+  "full": "Maxilla.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 2399,
+  "nv_full": 2399
+ },
+ {
+  "bio": "Medial cuneiform bone.l",
+  "full": "Medial cuneiform bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 498,
+  "nv_full": 498
+ },
+ {
+  "bio": "Medial cuneiform bone.r",
+  "full": "Medial cuneiform bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 498,
+  "nv_full": 498
+ },
+ {
+  "bio": "Radius.l",
+  "full": "Radius.l",
+  "centroid_dist": 0.0006881293483059506,
+  "bbox_maxdiff": 0.0007269999999999985,
+  "nv_bio": 416,
+  "nv_full": 394
+ },
+ {
+  "bio": "Radius.r",
+  "full": "Radius.r",
+  "centroid_dist": 0.0006881293483059506,
+  "bbox_maxdiff": 0.0007269999999999985,
+  "nv_bio": 416,
+  "nv_full": 394
+ },
+ {
+  "bio": "Triquetrum bone.l",
+  "full": "Triquetrum bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 2.6999999999999247e-05,
+  "nv_bio": 90,
+  "nv_full": 90
+ },
+ {
+  "bio": "Triquetrum bone.r",
+  "full": "Triquetrum bone.r",
+  "centroid_dist": 0.002856907768899788,
+  "bbox_maxdiff": 0.0026569999999999996,
+  "nv_bio": 90,
+  "nv_full": 90
+ },
+ {
+  "bio": "Upper canine.l",
+  "full": "Upper canine.l",
+  "centroid_dist": 4.5265881191015035e-05,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 698,
+  "nv_full": 737
+ },
+ {
+  "bio": "Upper canine.r",
+  "full": "Upper canine.r",
+  "centroid_dist": 4.5265881191015035e-05,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 698,
+  "nv_full": 737
+ },
+ {
+  "bio": "Upper first molar tooth.l",
+  "full": "Upper first molar tooth.l",
+  "centroid_dist": 3.263433774416601e-05,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 1080,
+  "nv_full": 1090
+ },
+ {
+  "bio": "Upper first molar tooth.r",
+  "full": "Upper first molar tooth.r",
+  "centroid_dist": 3.263433774416601e-05,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 1080,
+  "nv_full": 1090
+ },
+ {
+  "bio": "Upper first premolar.l",
+  "full": "Upper first premolar.l",
+  "centroid_dist": 8.907300376649461e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 807,
+  "nv_full": 844
+ },
+ {
+  "bio": "Upper first premolar.r",
+  "full": "Upper first premolar.r",
+  "centroid_dist": 8.907300376649461e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 807,
+  "nv_full": 844
+ },
+ {
+  "bio": "Upper lateral incisor.l",
+  "full": "Upper lateral incisor.l",
+  "centroid_dist": 3.13687742826546e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 686,
+  "nv_full": 729
+ },
+ {
+  "bio": "Upper lateral incisor.r",
+  "full": "Upper lateral incisor.r",
+  "centroid_dist": 3.13687742826546e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 686,
+  "nv_full": 729
+ },
+ {
+  "bio": "Upper medial incisor.l",
+  "full": "Upper medial incisor.l",
+  "centroid_dist": 0.0001339029499300966,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 646,
+  "nv_full": 686
+ },
+ {
+  "bio": "Upper medial incisor.r",
+  "full": "Upper medial incisor.r",
+  "centroid_dist": 0.0001339029499300966,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 646,
+  "nv_full": 686
+ },
+ {
+  "bio": "Upper second molar tooth.l",
+  "full": "Upper second molar tooth.l",
+  "centroid_dist": 1.5652475842583783e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 921,
+  "nv_full": 924
+ },
+ {
+  "bio": "Upper second molar tooth.r",
+  "full": "Upper second molar tooth.r",
+  "centroid_dist": 1.5652475842583783e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 921,
+  "nv_full": 924
+ },
+ {
+  "bio": "Upper second premolar.l",
+  "full": "Upper second premolar.l",
+  "centroid_dist": 0.00014744829602290798,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 735,
+  "nv_full": 779
+ },
+ {
+  "bio": "Upper second premolar.r",
+  "full": "Upper second premolar.r",
+  "centroid_dist": 0.00014744829602290798,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 735,
+  "nv_full": 779
+ },
+ {
+  "bio": "Xiphoid process",
+  "full": "Xiphoid process",
+  "centroid_dist": 7.071067811865616e-06,
+  "bbox_maxdiff": 5.0000000000050004e-06,
+  "nv_bio": 459,
+  "nv_full": 459
+ },
+ {
+  "bio": "Trapezium bone.l",
+  "full": "Trapezium bone.l",
+  "centroid_dist": 1.0000000000287557e-06,
+  "bbox_maxdiff": 4.699999999999843e-05,
+  "nv_bio": 252,
+  "nv_full": 252
+ },
+ {
+  "bio": "Trapezium bone.r",
+  "full": "Trapezium bone.r",
+  "centroid_dist": 0.0032376909982269773,
+  "bbox_maxdiff": 0.0031129999999999977,
+  "nv_bio": 252,
+  "nv_full": 252
+ },
+ {
+  "bio": "Ulna.l",
+  "full": "Ulna.l",
+  "centroid_dist": 0.001140458679654811,
+  "bbox_maxdiff": 0.0009039999999999951,
+  "nv_bio": 472,
+  "nv_full": 454
+ },
+ {
+  "bio": "Ulna.r",
+  "full": "Ulna.r",
+  "centroid_dist": 0.001140458679654811,
+  "bbox_maxdiff": 0.0009029999999999941,
+  "nv_bio": 472,
+  "nv_full": 454
+ },
+ {
+  "bio": "Distal phalanx of first finger of hand.l",
+  "full": "Distal phalanx of first finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 6.60000000000105e-05,
+  "nv_bio": 113,
+  "nv_full": 113
+ },
+ {
+  "bio": "Distal phalanx of first finger of hand.r",
+  "full": "Distal phalanx of first finger of hand.r",
+  "centroid_dist": 0.003879949226471903,
+  "bbox_maxdiff": 0.0036600000000000105,
+  "nv_bio": 113,
+  "nv_full": 113
+ },
+ {
+  "bio": "Occipital bone",
+  "full": "Occipital bone",
+  "centroid_dist": 0.0002498339448512806,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 3730,
+  "nv_full": 3757
+ },
+ {
+  "bio": "Cricoid cartilage",
+  "full": "Cricoid cartilage",
+  "centroid_dist": 1.303840481045426e-05,
+  "bbox_maxdiff": 1.0000000000001327e-06,
+  "nv_bio": 939,
+  "nv_full": 941
+ },
+ {
+  "bio": "Incus.l",
+  "full": "Incus.l",
+  "centroid_dist": 0.003967645271442505,
+  "bbox_maxdiff": 0.005587,
+  "nv_bio": 1248,
+  "nv_full": 1268
+ },
+ {
+  "bio": "Incus.r",
+  "full": "Incus.r",
+  "centroid_dist": 0.003967645271442505,
+  "bbox_maxdiff": 0.005587,
+  "nv_bio": 1248,
+  "nv_full": 1268
+ },
+ {
+  "bio": "Vertebra C3",
+  "full": "Vertebra C3",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1216,
+  "nv_full": 1216
+ },
+ {
+  "bio": "Vertebra C4",
+  "full": "Vertebra C4",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 972,
+  "nv_full": 972
+ },
+ {
+  "bio": "Vertebra C5",
+  "full": "Vertebra C5",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1164,
+  "nv_full": 1164
+ },
+ {
+  "bio": "Vertebra C6",
+  "full": "Vertebra C6",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999871223e-07,
+  "nv_bio": 1148,
+  "nv_full": 1148
+ },
+ {
+  "bio": "Vertebra C7",
+  "full": "Vertebra C7",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1078,
+  "nv_full": 1078
+ },
+ {
+  "bio": "Vertebra L1",
+  "full": "Vertebra L1",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1581,
+  "nv_full": 1581
+ },
+ {
+  "bio": "Vertebra L2",
+  "full": "Vertebra L2",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1344,
+  "nv_full": 1344
+ },
+ {
+  "bio": "Vertebra L3",
+  "full": "Vertebra L3",
+  "centroid_dist": 1.643167672509741e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1599,
+  "nv_full": 1600
+ },
+ {
+  "bio": "Vertebra L4",
+  "full": "Vertebra L4",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1902,
+  "nv_full": 1902
+ },
+ {
+  "bio": "Vertebra L5",
+  "full": "Vertebra L5",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 2016,
+  "nv_full": 2016
+ },
+ {
+  "bio": "Vertebra T1",
+  "full": "Vertebra T1",
+  "centroid_dist": 7.34370478709462e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 975,
+  "nv_full": 973
+ },
+ {
+  "bio": "Vertebra T10",
+  "full": "Vertebra T10",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1529,
+  "nv_full": 1529
+ },
+ {
+  "bio": "Vertebra T11",
+  "full": "Vertebra T11",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 899,
+  "nv_full": 899
+ },
+ {
+  "bio": "Vertebra T12",
+  "full": "Vertebra T12",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 1293,
+  "nv_full": 1293
+ },
+ {
+  "bio": "Vertebra T2",
+  "full": "Vertebra T2",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 1071,
+  "nv_full": 1071
+ },
+ {
+  "bio": "Vertebra T3",
+  "full": "Vertebra T3",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1172,
+  "nv_full": 1172
+ },
+ {
+  "bio": "Vertebra T4",
+  "full": "Vertebra T4",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1108,
+  "nv_full": 1108
+ },
+ {
+  "bio": "Vertebra T5",
+  "full": "Vertebra T5",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 1076,
+  "nv_full": 1076
+ },
+ {
+  "bio": "Vertebra T6",
+  "full": "Vertebra T6",
+  "centroid_dist": 4.5011109739700196e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 886,
+  "nv_full": 890
+ },
+ {
+  "bio": "Vertebra T7",
+  "full": "Vertebra T7",
+  "centroid_dist": 6.216912416947834e-05,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1393,
+  "nv_full": 1397
+ },
+ {
+  "bio": "Vertebra T8",
+  "full": "Vertebra T8",
+  "centroid_dist": 0.00025292489003665296,
+  "bbox_maxdiff": 8.69999999999968e-05,
+  "nv_bio": 854,
+  "nv_full": 868
+ },
+ {
+  "bio": "Vertebra T9",
+  "full": "Vertebra T9",
+  "centroid_dist": 2.8635642126542574e-05,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 1490,
+  "nv_full": 1489
+ },
+ {
+  "bio": "Distal phalanx of third finger of hand",
+  "full": "Distal phalanx of third finger of hand.r",
+  "centroid_dist": 0.0036154073076210764,
+  "bbox_maxdiff": 0.0031180000000000097,
+  "nv_bio": 98,
+  "nv_full": 98
+ },
+ {
+  "bio": "Distal phalanx of third finger of hand.001",
+  "full": "Distal phalanx of third finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 4.500000000007276e-05,
+  "nv_bio": 98,
+  "nv_full": 98
+ },
+ {
+  "bio": "Proximal phalanx of third finger of hand",
+  "full": "Proximal phalanx of third finger of hand.r",
+  "centroid_dist": 0.003455262073996692,
+  "bbox_maxdiff": 0.0030850000000000044,
+  "nv_bio": 220,
+  "nv_full": 222
+ },
+ {
+  "bio": "Proximal phalanx of third finger of hand.001",
+  "full": "Proximal phalanx of third finger of hand.l",
+  "centroid_dist": 0.0001903890753168703,
+  "bbox_maxdiff": 0.00010400000000000686,
+  "nv_bio": 220,
+  "nv_full": 222
+ },
+ {
+  "bio": "Proximal phalanx of fourth finger of hand",
+  "full": "Proximal phalanx of fourth finger of hand.r",
+  "centroid_dist": 0.0031184427203333463,
+  "bbox_maxdiff": 0.002813999999999997,
+  "nv_bio": 186,
+  "nv_full": 186
+ },
+ {
+  "bio": "Proximal phalanx of fourth finger of hand.001",
+  "full": "Proximal phalanx of fourth finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.399999999999686e-05,
+  "nv_bio": 186,
+  "nv_full": 186
+ },
+ {
+  "bio": "Middle phalanx of third finger of hand",
+  "full": "Middle phalanx of third finger of hand.r",
+  "centroid_dist": 0.003479404115649675,
+  "bbox_maxdiff": 0.0031100000000000017,
+  "nv_bio": 182,
+  "nv_full": 182
+ },
+ {
+  "bio": "Middle phalanx of third finger of hand.001",
+  "full": "Middle phalanx of third finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 7.800000000000862e-05,
+  "nv_bio": 182,
+  "nv_full": 182
+ },
+ {
+  "bio": "Middle phalanx of fourth finger of hand",
+  "full": "Middle phalanx of fourth finger of hand.r",
+  "centroid_dist": 0.0032409117544296047,
+  "bbox_maxdiff": 0.002795999999999993,
+  "nv_bio": 225,
+  "nv_full": 225
+ },
+ {
+  "bio": "Middle phalanx of fourth finger of hand.001",
+  "full": "Middle phalanx of fourth finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 5.2999999999997494e-05,
+  "nv_bio": 225,
+  "nv_full": 225
+ },
+ {
+  "bio": "Distal phalanx of fourth finger of hand",
+  "full": "Distal phalanx of fourth finger of hand.r",
+  "centroid_dist": 0.0033624714125178755,
+  "bbox_maxdiff": 0.002793000000000004,
+  "nv_bio": 69,
+  "nv_full": 69
+ },
+ {
+  "bio": "Distal phalanx of fourth finger of hand.001",
+  "full": "Distal phalanx of fourth finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 4.099999999995774e-05,
+  "nv_bio": 69,
+  "nv_full": 69
+ },
+ {
+  "bio": "Proximal phalanx of second finger of hand",
+  "full": "Proximal phalanx of second finger of hand.r",
+  "centroid_dist": 0.003554803229434801,
+  "bbox_maxdiff": 0.003368999999999997,
+  "nv_bio": 209,
+  "nv_full": 209
+ },
+ {
+  "bio": "Proximal phalanx of second finger of hand.001",
+  "full": "Proximal phalanx of second finger of hand.l",
+  "centroid_dist": 1.0000000000287557e-06,
+  "bbox_maxdiff": 0.00010399999999999993,
+  "nv_bio": 209,
+  "nv_full": 209
+ },
+ {
+  "bio": "Middle phalanx of second finger of hand",
+  "full": "Middle phalanx of second finger of hand.r",
+  "centroid_dist": 0.0037372629021785475,
+  "bbox_maxdiff": 0.003471000000000002,
+  "nv_bio": 159,
+  "nv_full": 159
+ },
+ {
+  "bio": "Middle phalanx of second finger of hand.001",
+  "full": "Middle phalanx of second finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 5.6000000000056005e-05,
+  "nv_bio": 159,
+  "nv_full": 159
+ },
+ {
+  "bio": "Proximal phalanx of first finger of hand",
+  "full": "Proximal phalanx of first finger of hand.r",
+  "centroid_dist": 0.0037328126124947488,
+  "bbox_maxdiff": 0.0035559999999999967,
+  "nv_bio": 166,
+  "nv_full": 166
+ },
+ {
+  "bio": "Proximal phalanx of first finger of hand.001",
+  "full": "Proximal phalanx of first finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 5.3999999999998494e-05,
+  "nv_bio": 166,
+  "nv_full": 166
+ },
+ {
+  "bio": "Distal phalanx of second finger of hand",
+  "full": "Distal phalanx of second finger of hand.r",
+  "centroid_dist": 0.003852630919255041,
+  "bbox_maxdiff": 0.0034529999999999977,
+  "nv_bio": 127,
+  "nv_full": 127
+ },
+ {
+  "bio": "Distal phalanx of second finger of hand.001",
+  "full": "Distal phalanx of second finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 4.200000000000037e-05,
+  "nv_bio": 127,
+  "nv_full": 127
+ },
+ {
+  "bio": "Middle phalanx of fifth finger of hand",
+  "full": "Middle phalanx of fifth finger of hand.r",
+  "centroid_dist": 0.002971419357815376,
+  "bbox_maxdiff": 0.002491000000000007,
+  "nv_bio": 148,
+  "nv_full": 148
+ },
+ {
+  "bio": "Middle phalanx of fifth finger of hand.001",
+  "full": "Middle phalanx of fifth finger of hand.l",
+  "centroid_dist": 1.0000000000287557e-06,
+  "bbox_maxdiff": 4.700000000000537e-05,
+  "nv_bio": 148,
+  "nv_full": 148
+ },
+ {
+  "bio": "Proximal phalanx of fifth finger of hand",
+  "full": "Proximal phalanx of fifth finger of hand.r",
+  "centroid_dist": 0.002893687785508304,
+  "bbox_maxdiff": 0.0026669999999999958,
+  "nv_bio": 282,
+  "nv_full": 282
+ },
+ {
+  "bio": "Proximal phalanx of fifth finger of hand.001",
+  "full": "Proximal phalanx of fifth finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00011399999999999605,
+  "nv_bio": 282,
+  "nv_full": 282
+ },
+ {
+  "bio": "Distal phalanx of fifth finger of hand",
+  "full": "Distal phalanx of fifth finger of hand.r",
+  "centroid_dist": 0.0030442388211176885,
+  "bbox_maxdiff": 0.0025020000000000042,
+  "nv_bio": 98,
+  "nv_full": 98
+ },
+ {
+  "bio": "Distal phalanx of fifth finger of hand.001",
+  "full": "Distal phalanx of fifth finger of hand.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 3.100000000000325e-05,
+  "nv_bio": 98,
+  "nv_full": 98
+ },
+ {
+  "bio": "Clavicle.l",
+  "full": "Clavicle.l",
+  "centroid_dist": 0.00010413932974625987,
+  "bbox_maxdiff": 9.999999999992654e-07,
+  "nv_bio": 787,
+  "nv_full": 789
+ },
+ {
+  "bio": "Corniculate cartilage.l",
+  "full": "Corniculate cartilage.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 70,
+  "nv_full": 70
+ },
+ {
+  "bio": "Corniculate cartilage.r",
+  "full": "Corniculate cartilage.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 70,
+  "nv_full": 70
+ },
+ {
+  "bio": "Eleventh rib.l",
+  "full": "Eleventh rib.l",
+  "centroid_dist": 1.414213562315631e-06,
+  "bbox_maxdiff": 1.9999999998354667e-06,
+  "nv_bio": 2519,
+  "nv_full": 2519
+ },
+ {
+  "bio": "Eleventh rib.r",
+  "full": "Eleventh rib.r",
+  "centroid_dist": 1.414213562315631e-06,
+  "bbox_maxdiff": 1.9999999998354667e-06,
+  "nv_bio": 2519,
+  "nv_full": 2519
+ },
+ {
+  "bio": "Ethmoid bone",
+  "full": "Ethmoid bone",
+  "centroid_dist": 0.0002330750951946236,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 2151,
+  "nv_full": 2108
+ },
+ {
+  "bio": "Femur.l",
+  "full": "Femur.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1899,
+  "nv_full": 1899
+ },
+ {
+  "bio": "Femur.r",
+  "full": "Femur.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1899,
+  "nv_full": 1899
+ },
+ {
+  "bio": "Fifth metacarpal bone.l",
+  "full": "Fifth metacarpal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00013300000000000117,
+  "nv_bio": 258,
+  "nv_full": 258
+ },
+ {
+  "bio": "Fifth metacarpal bone.r",
+  "full": "Fifth metacarpal bone.r",
+  "centroid_dist": 0.0028913125047285992,
+  "bbox_maxdiff": 0.002674999999999997,
+  "nv_bio": 258,
+  "nv_full": 258
+ },
+ {
+  "bio": "Fifth metatarsal bone.l",
+  "full": "Fifth metatarsal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 449,
+  "nv_full": 449
+ },
+ {
+  "bio": "Fifth metatarsal bone.r",
+  "full": "Fifth metatarsal bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 449,
+  "nv_full": 449
+ },
+ {
+  "bio": "Fifth rib.l",
+  "full": "Fifth rib.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 4690,
+  "nv_full": 4690
+ },
+ {
+  "bio": "Fifth rib.r",
+  "full": "Fifth rib.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 4690,
+  "nv_full": 4690
+ },
+ {
+  "bio": "First metatarsal bone.l",
+  "full": "First metatarsal bone.l",
+  "centroid_dist": 9.168424073961756e-05,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 544,
+  "nv_full": 546
+ },
+ {
+  "bio": "First metatarsal bone.r",
+  "full": "First metatarsal bone.r",
+  "centroid_dist": 9.168424073961756e-05,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 544,
+  "nv_full": 546
+ },
+ {
+  "bio": "First rib.l",
+  "full": "First rib.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 1607,
+  "nv_full": 1607
+ },
+ {
+  "bio": "First rib.r",
+  "full": "First rib.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 1607,
+  "nv_full": 1607
+ },
+ {
+  "bio": "Fourth metatarsal bone.l",
+  "full": "Fourth metatarsal bone.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 419,
+  "nv_full": 419
+ },
+ {
+  "bio": "Fourth metatarsal bone.r",
+  "full": "Fourth metatarsal bone.r",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 419,
+  "nv_full": 419
+ },
+ {
+  "bio": "Fourth rib.l",
+  "full": "Fourth rib.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 4325,
+  "nv_full": 4325
+ },
+ {
+  "bio": "Fourth rib.r",
+  "full": "Fourth rib.r",
+  "centroid_dist": 1.000000000139778e-06,
+  "bbox_maxdiff": 1.9999999998354667e-06,
+  "nv_bio": 4325,
+  "nv_full": 4325
+ },
+ {
+  "bio": "Hip bone.l",
+  "full": "Hip bone.l",
+  "centroid_dist": 0.0006435573012560678,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1892,
+  "nv_full": 1894
+ },
+ {
+  "bio": "Hip bone.r",
+  "full": "Hip bone.r",
+  "centroid_dist": 0.0006435573012560678,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1892,
+  "nv_full": 1894
+ },
+ {
+  "bio": "Humerus.l",
+  "full": "Humerus.l",
+  "centroid_dist": 0.000785556490648515,
+  "bbox_maxdiff": 0.0007089999999999999,
+  "nv_bio": 2173,
+  "nv_full": 2143
+ },
+ {
+  "bio": "Humerus.r",
+  "full": "Humerus.r",
+  "centroid_dist": 0.0007845540134369391,
+  "bbox_maxdiff": 0.0007089999999999999,
+  "nv_bio": 2173,
+  "nv_full": 2143
+ },
+ {
+  "bio": "Hyoid bone",
+  "full": "Hyoid bone",
+  "centroid_dist": 5.000000000032756e-06,
+  "bbox_maxdiff": 5.000000000032756e-06,
+  "nv_bio": 664,
+  "nv_full": 664
+ },
+ {
+  "bio": "Lacrimal bone.l",
+  "full": "Lacrimal bone.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 296,
+  "nv_full": 296
+ },
+ {
+  "bio": "Lacrimal bone.r",
+  "full": "Lacrimal bone.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 296,
+  "nv_full": 296
+ },
+ {
+  "bio": "Ninth rib.l",
+  "full": "Ninth rib.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 3891,
+  "nv_full": 3891
+ },
+ {
+  "bio": "Ninth rib.r",
+  "full": "Ninth rib.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 3891,
+  "nv_full": 3891
+ },
+ {
+  "bio": "Palatine bone.l",
+  "full": "Palatine bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 732,
+  "nv_full": 732
+ },
+ {
+  "bio": "Palatine bone.r",
+  "full": "Palatine bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 732,
+  "nv_full": 732
+ },
+ {
+  "bio": "Scapula.l",
+  "full": "Scapula.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 12690,
+  "nv_full": 12690
+ },
+ {
+  "bio": "Scapula.r",
+  "full": "Scapula.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 12690,
+  "nv_full": 12690
+ },
+ {
+  "bio": "Second metacarpal bone.l",
+  "full": "Second metacarpal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00017199999999999854,
+  "nv_bio": 384,
+  "nv_full": 384
+ },
+ {
+  "bio": "Second metacarpal bone.r",
+  "full": "Second metacarpal bone.r",
+  "centroid_dist": 0.0033107425149050875,
+  "bbox_maxdiff": 0.0033320000000000016,
+  "nv_bio": 384,
+  "nv_full": 384
+ },
+ {
+  "bio": "Second metatarsal bone.l",
+  "full": "Second metatarsal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 347,
+  "nv_full": 347
+ },
+ {
+  "bio": "Second metatarsal bone.r",
+  "full": "Second metatarsal bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 347,
+  "nv_full": 347
+ },
+ {
+  "bio": "Second rib.l",
+  "full": "Second rib.l",
+  "centroid_dist": 1.0000000000001327e-06,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 2684,
+  "nv_full": 2684
+ },
+ {
+  "bio": "Second rib.r",
+  "full": "Second rib.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 2684,
+  "nv_full": 2684
+ },
+ {
+  "bio": "Seventh rib.l",
+  "full": "Seventh rib.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 4890,
+  "nv_full": 4890
+ },
+ {
+  "bio": "Seventh rib.r",
+  "full": "Seventh rib.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 4890,
+  "nv_full": 4890
+ },
+ {
+  "bio": "Sixth rib.l",
+  "full": "Sixth rib.l",
+  "centroid_dist": 1.000000000139778e-06,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 5078,
+  "nv_full": 5078
+ },
+ {
+  "bio": "Sixth rib.r",
+  "full": "Sixth rib.r",
+  "centroid_dist": 1.000000000139778e-06,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 5078,
+  "nv_full": 5078
+ },
+ {
+  "bio": "Tenth rib.l",
+  "full": "Tenth rib.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 3515,
+  "nv_full": 3515
+ },
+ {
+  "bio": "Tenth rib.r",
+  "full": "Tenth rib.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 3515,
+  "nv_full": 3515
+ },
+ {
+  "bio": "Third metacarpal bone",
+  "full": "Third metacarpal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00018800000000000067,
+  "nv_bio": 356,
+  "nv_full": 356
+ },
+ {
+  "bio": "Third metacarpal bone.l",
+  "full": "Third metacarpal bone.r",
+  "centroid_dist": 0.0031288787128938107,
+  "bbox_maxdiff": 0.003134999999999999,
+  "nv_bio": 356,
+  "nv_full": 356
+ },
+ {
+  "bio": "Third metatarsal bone.l",
+  "full": "Third metatarsal bone.l",
+  "centroid_dist": 0.0005471316112234839,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 363,
+  "nv_full": 409
+ },
+ {
+  "bio": "Third metatarsal bone.r",
+  "full": "Third metatarsal bone.r",
+  "centroid_dist": 0.0005471316112234839,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 363,
+  "nv_full": 409
+ },
+ {
+  "bio": "Third rib.l",
+  "full": "Third rib.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 3492,
+  "nv_full": 3492
+ },
+ {
+  "bio": "Third rib.r",
+  "full": "Third rib.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 3492,
+  "nv_full": 3492
+ },
+ {
+  "bio": "Thyroid cartilage",
+  "full": "Thyroid cartilage",
+  "centroid_dist": 0.0005899728807327321,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 2318,
+  "nv_full": 2247
+ },
+ {
+  "bio": "Twelfth rib.l",
+  "full": "Twelfth rib.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 1503,
+  "nv_full": 1503
+ },
+ {
+  "bio": "Twelfth rib.r",
+  "full": "Twelfth rib.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 1503,
+  "nv_full": 1503
+ },
+ {
+  "bio": "Clavicle.r",
+  "full": "Clavicle.r",
+  "centroid_dist": 0.00104638616198802,
+  "bbox_maxdiff": 0.001464,
+  "nv_bio": 787,
+  "nv_full": 789
+ },
+ {
+  "bio": "Manubrium of sternum",
+  "full": "Manubrium of sternum",
+  "centroid_dist": 3.801315561749645e-05,
+  "bbox_maxdiff": 3.799999999999984e-05,
+  "nv_bio": 1336,
+  "nv_full": 1336
+ },
+ {
+  "bio": "Sternum",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Tibia.l",
+  "full": "Tibia.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 837,
+  "nv_full": 837
+ },
+ {
+  "bio": "Tibia.r",
+  "full": "Tibia.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 837,
+  "nv_full": 837
+ },
+ {
+  "bio": "Trapezoid bone",
+  "full": "Trapezoid bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 3.399999999997849e-05,
+  "nv_bio": 184,
+  "nv_full": 184
+ },
+ {
+  "bio": "Trapezoid bone.001",
+  "full": "Trapezoid bone.r",
+  "centroid_dist": 0.003150471234593325,
+  "bbox_maxdiff": 0.0029879999999999993,
+  "nv_bio": 184,
+  "nv_full": 184
+ },
+ {
+  "bio": "Fibula.l",
+  "full": "Fibula.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 653,
+  "nv_full": 653
+ },
+ {
+  "bio": "Fibula.r",
+  "full": "Fibula.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.0000000000287557e-06,
+  "nv_bio": 653,
+  "nv_full": 653
+ },
+ {
+  "bio": "Vomer",
+  "full": "Vomer",
+  "centroid_dist": 0.0025945683648730465,
+  "bbox_maxdiff": 0.002138,
+  "nv_bio": 402,
+  "nv_full": 514
+ },
+ {
+  "bio": "Navicular bone.l",
+  "full": "Navicular bone.l",
+  "centroid_dist": 0.00036880075921830397,
+  "bbox_maxdiff": 0.0016269999999999965,
+  "nv_bio": 361,
+  "nv_full": 368
+ },
+ {
+  "bio": "Navicular bone.r",
+  "full": "Navicular bone.r",
+  "centroid_dist": 0.00036880075921830397,
+  "bbox_maxdiff": 0.0016269999999999965,
+  "nv_bio": 361,
+  "nv_full": 368
+ },
+ {
+  "bio": "Pisiform bone.l",
+  "full": "Pisiform bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 2.3999999999999716e-05,
+  "nv_bio": 141,
+  "nv_full": 141
+ },
+ {
+  "bio": "Pisiform bone.r",
+  "full": "Pisiform bone.r",
+  "centroid_dist": 0.002887407314529763,
+  "bbox_maxdiff": 0.0026270000000000043,
+  "nv_bio": 141,
+  "nv_full": 141
+ },
+ {
+  "bio": "Sinus of sphenoid bone",
+  "full": "Sinus of sphenoid bone",
+  "centroid_dist": 0.010870323500245829,
+  "bbox_maxdiff": 0.010558000000000067,
+  "nv_bio": 210,
+  "nv_full": 210
+ },
+ {
+  "bio": "Sphenoid bone",
+  "full": "Sphenoid bone",
+  "centroid_dist": 0.00017824140933020088,
+  "bbox_maxdiff": 0.0005929999999999963,
+  "nv_bio": 3609,
+  "nv_full": 3650
+ },
+ {
+  "bio": "First metacarpal bone",
+  "full": "First metacarpal bone.r",
+  "centroid_dist": 0.004019069295247344,
+  "bbox_maxdiff": 0.004139999999999998,
+  "nv_bio": 343,
+  "nv_full": 343
+ },
+ {
+  "bio": "First metacarpal bone.001",
+  "full": "First metacarpal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00010399999999999993,
+  "nv_bio": 343,
+  "nv_full": 343
+ },
+ {
+  "bio": "Fourth metacarpal bone",
+  "full": "Fourth metacarpal bone.r",
+  "centroid_dist": 0.0029995027921307167,
+  "bbox_maxdiff": 0.0028810000000000016,
+  "nv_bio": 323,
+  "nv_full": 323
+ },
+ {
+  "bio": "Fourth metacarpal bone.001",
+  "full": "Fourth metacarpal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.00014899999999999636,
+  "nv_bio": 323,
+  "nv_full": 323
+ },
+ {
+  "bio": "Middle phalanx of third finger of foot",
+  "full": "Middle phalanx of third finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999992654e-07,
+  "nv_bio": 202,
+  "nv_full": 202
+ },
+ {
+  "bio": "Middle phalanx of third finger of foot.001",
+  "full": "Middle phalanx of third finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999992654e-07,
+  "nv_bio": 202,
+  "nv_full": 202
+ },
+ {
+  "bio": "Middle phalanx of fourth finger of foot",
+  "full": "Middle phalanx of fourth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999975306e-07,
+  "nv_bio": 226,
+  "nv_full": 226
+ },
+ {
+  "bio": "Middle phalanx of fourth finger of foot.001",
+  "full": "Middle phalanx of fourth finger of foot.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 226,
+  "nv_full": 226
+ },
+ {
+  "bio": "Middle phalanx of second finger of foot",
+  "full": "Middle phalanx of second finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 193,
+  "nv_full": 193
+ },
+ {
+  "bio": "Middle phalanx of second finger of foot.001",
+  "full": "Middle phalanx of second finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 193,
+  "nv_full": 193
+ },
+ {
+  "bio": "Middle phalanx of fifth finger of foot",
+  "full": "Middle phalanx of fifth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 110,
+  "nv_full": 110
+ },
+ {
+  "bio": "Middle phalanx of fifth finger of foot.001",
+  "full": "Middle phalanx of fifth finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 110,
+  "nv_full": 110
+ },
+ {
+  "bio": "Lateral process of nasal septal cartilage.001",
+  "full": "Lateral process of nasal septal cartilage.l",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 174,
+  "nv_full": 174
+ },
+ {
+  "bio": "Sacrum",
+  "full": "Sacrum",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.0000000000001327e-06,
+  "nv_bio": 5832,
+  "nv_full": 5832
+ },
+ {
+  "bio": "Axis (C2)",
+  "full": "Axis (C2)",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 1168,
+  "nv_full": 1168
+ },
+ {
+  "bio": "Capitate bone.l",
+  "full": "Capitate bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 4.000000000000184e-05,
+  "nv_bio": 238,
+  "nv_full": 238
+ },
+ {
+  "bio": "Capitate bone.r",
+  "full": "Capitate bone.r",
+  "centroid_dist": 0.0030419903024171595,
+  "bbox_maxdiff": 0.0029330000000000016,
+  "nv_bio": 238,
+  "nv_full": 238
+ },
+ {
+  "bio": "Cuboid bone.l",
+  "full": "Cuboid bone.l",
+  "centroid_dist": 0.0003005644689579904,
+  "bbox_maxdiff": 0.0004580000000000001,
+  "nv_bio": 489,
+  "nv_full": 501
+ },
+ {
+  "bio": "Cuboid bone.r",
+  "full": "Cuboid bone.r",
+  "centroid_dist": 0.0003005644689579904,
+  "bbox_maxdiff": 0.0004580000000000001,
+  "nv_bio": 489,
+  "nv_full": 501
+ },
+ {
+  "bio": "Frontal bone",
+  "full": "Frontal bone",
+  "centroid_dist": 0.00015487091398968156,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 3887,
+  "nv_full": 3902
+ },
+ {
+  "bio": "Hamate bone.l",
+  "full": "Hamate bone.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 3.100000000000325e-05,
+  "nv_bio": 270,
+  "nv_full": 270
+ },
+ {
+  "bio": "Hamate bone.r",
+  "full": "Hamate bone.r",
+  "centroid_dist": 0.002933432971792606,
+  "bbox_maxdiff": 0.0027589999999999993,
+  "nv_bio": 270,
+  "nv_full": 270
+ },
+ {
+  "bio": "Malleus.l",
+  "full": "Malleus.l",
+  "centroid_dist": 7.87400787409272e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1986,
+  "nv_full": 1993
+ },
+ {
+  "bio": "Malleus.r",
+  "full": "Malleus.r",
+  "centroid_dist": 7.87400787409272e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 1986,
+  "nv_full": 1993
+ },
+ {
+  "bio": "Nasal bone.l",
+  "full": "Nasal bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 148,
+  "nv_full": 148
+ },
+ {
+  "bio": "Nasal bone.r",
+  "full": "Nasal bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000139778e-06,
+  "nv_bio": 148,
+  "nv_full": 148
+ },
+ {
+  "bio": "Nasal septal cartilage",
+  "full": "Nasal septal cartilage",
+  "centroid_dist": 1.000000000139778e-06,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 182,
+  "nv_full": 182
+ },
+ {
+  "bio": "Sesamoid bones of foot.l",
+  "full": "Sesamoid bones of foot.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 149,
+  "nv_full": 149
+ },
+ {
+  "bio": "Sesamoid bones of foot.r",
+  "full": "Sesamoid bones of foot.r",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 149,
+  "nv_full": 149
+ },
+ {
+  "bio": "Calcaneus.l",
+  "full": "Calcaneus.l",
+  "centroid_dist": 0.000622294142668882,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 716,
+  "nv_full": 726
+ },
+ {
+  "bio": "Calcaneus.r",
+  "full": "Calcaneus.r",
+  "centroid_dist": 0.0006221213707951197,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 716,
+  "nv_full": 726
+ },
+ {
+  "bio": "Heighth rib.l",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Heighth rib.r",
+  "full": null,
+  "centroid_dist": null,
+  "bbox_maxdiff": null
+ },
+ {
+  "bio": "Parietal bone.l",
+  "full": "Parietal bone.l",
+  "centroid_dist": 0.0003050475372790881,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 3357,
+  "nv_full": 3443
+ },
+ {
+  "bio": "Parietal bone.r",
+  "full": "Parietal bone.r",
+  "centroid_dist": 0.0002795800422061066,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 3310,
+  "nv_full": 3386
+ },
+ {
+  "bio": "Patella.l",
+  "full": "Patella.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 140,
+  "nv_full": 140
+ },
+ {
+  "bio": "Patella.r",
+  "full": "Patella.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 140,
+  "nv_full": 140
+ },
+ {
+  "bio": "Scaphoid bone",
+  "full": "Scaphoid bone.l",
+  "centroid_dist": 3.9230090491854883e-05,
+  "bbox_maxdiff": 9.000000000036756e-06,
+  "nv_bio": 196,
+  "nv_full": 197
+ },
+ {
+  "bio": "Scaphoid bone.001",
+  "full": "Scaphoid bone.r",
+  "centroid_dist": 0.00313002523951486,
+  "bbox_maxdiff": 0.0029949999999999977,
+  "nv_bio": 196,
+  "nv_full": 197
+ },
+ {
+  "bio": "Sinus of frontal bone",
+  "full": "Sinus of frontal bone",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 9.999999999177334e-07,
+  "nv_bio": 770,
+  "nv_full": 770
+ },
+ {
+  "bio": "Stapes.l",
+  "full": "Stapes.l",
+  "centroid_dist": 3.1622776602154272e-06,
+  "bbox_maxdiff": 1.0000000000001327e-06,
+  "nv_bio": 2168,
+  "nv_full": 2171
+ },
+ {
+  "bio": "Stapes.r",
+  "full": "Stapes.r",
+  "centroid_dist": 3.1622776602154272e-06,
+  "bbox_maxdiff": 1.0000000000001327e-06,
+  "nv_bio": 2168,
+  "nv_full": 2171
+ },
+ {
+  "bio": "Talus.l",
+  "full": "Talus.l",
+  "centroid_dist": 0.0010066608167600454,
+  "bbox_maxdiff": 0.0001820000000000016,
+  "nv_bio": 646,
+  "nv_full": 677
+ },
+ {
+  "bio": "Talus.r",
+  "full": "Talus.r",
+  "centroid_dist": 0.0010066608167600454,
+  "bbox_maxdiff": 0.0001820000000000016,
+  "nv_bio": 646,
+  "nv_full": 677
+ },
+ {
+  "bio": "Temporal bone.l",
+  "full": "Temporal bone.l",
+  "centroid_dist": 0.006097116531607391,
+  "bbox_maxdiff": 0.002048000000000001,
+  "nv_bio": 2127,
+  "nv_full": 7051
+ },
+ {
+  "bio": "Temporal bone.r",
+  "full": "Temporal bone.r",
+  "centroid_dist": 0.006097116531607391,
+  "bbox_maxdiff": 0.002048000000000001,
+  "nv_bio": 2127,
+  "nv_full": 7051
+ },
+ {
+  "bio": "Zygomatic bone.l",
+  "full": "Zygomatic bone.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 666,
+  "nv_full": 666
+ },
+ {
+  "bio": "Zygomatic bone.r",
+  "full": "Zygomatic bone.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 666,
+  "nv_full": 666
+ },
+ {
+  "bio": "Proximal phalanx of fourth finger of foot",
+  "full": "Proximal phalanx of fourth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 232,
+  "nv_full": 232
+ },
+ {
+  "bio": "Proximal phalanx of fourth finger of foot.001",
+  "full": "Proximal phalanx of fourth finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 232,
+  "nv_full": 232
+ },
+ {
+  "bio": "Proximal phalanx of third finger of foot",
+  "full": "Proximal phalanx of third finger of foot.r",
+  "centroid_dist": 0.00019352260849832988,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 229,
+  "nv_full": 232
+ },
+ {
+  "bio": "Proximal phalanx of third finger of foot.001",
+  "full": "Proximal phalanx of third finger of foot.l",
+  "centroid_dist": 0.00019352260849832988,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 229,
+  "nv_full": 232
+ },
+ {
+  "bio": "Distal phalanx of fourth finger of foot",
+  "full": "Distal phalanx of fourth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 141,
+  "nv_full": 141
+ },
+ {
+  "bio": "Distal phalanx of fourth finger of foot.001",
+  "full": "Distal phalanx of fourth finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 141,
+  "nv_full": 141
+ },
+ {
+  "bio": "Distal phalanx of third finger of foot",
+  "full": "Distal phalanx of third finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 161,
+  "nv_full": 161
+ },
+ {
+  "bio": "Distal phalanx of third finger of foot.001",
+  "full": "Distal phalanx of third finger of foot.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 161,
+  "nv_full": 161
+ },
+ {
+  "bio": "Proximal phalanx of first finger of foot",
+  "full": "Proximal phalanx of first finger of foot.r",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 268,
+  "nv_full": 268
+ },
+ {
+  "bio": "Proximal phalanx of first finger of foot.001",
+  "full": "Proximal phalanx of first finger of foot.l",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 268,
+  "nv_full": 268
+ },
+ {
+  "bio": "Distal phalanx of first finger of foot",
+  "full": "Distal phalanx of first finger of foot.r",
+  "centroid_dist": 7.14142842853639e-06,
+  "bbox_maxdiff": 0.00011799999999999311,
+  "nv_bio": 235,
+  "nv_full": 235
+ },
+ {
+  "bio": "Distal phalanx of first finger of foot.001",
+  "full": "Distal phalanx of first finger of foot.l",
+  "centroid_dist": 7.14142842853639e-06,
+  "bbox_maxdiff": 0.00011799999999999311,
+  "nv_bio": 235,
+  "nv_full": 235
+ },
+ {
+  "bio": "Proximal phalanx of second finger of foot",
+  "full": "Proximal phalanx of second finger of foot.r",
+  "centroid_dist": 1.000000000001e-06,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 215,
+  "nv_full": 215
+ },
+ {
+  "bio": "Proximal phalanx of second finger of foot.001",
+  "full": "Proximal phalanx of second finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 215,
+  "nv_full": 215
+ },
+ {
+  "bio": "Distal phalanx of second finger of foot",
+  "full": "Distal phalanx of second finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 120,
+  "nv_full": 120
+ },
+ {
+  "bio": "Distal phalanx of second finger of foot.001",
+  "full": "Distal phalanx of second finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 0.0,
+  "nv_bio": 120,
+  "nv_full": 120
+ },
+ {
+  "bio": "Proximal phalanx of fifth finger of foot",
+  "full": "Proximal phalanx of fifth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 260,
+  "nv_full": 260
+ },
+ {
+  "bio": "Proximal phalanx of fifth finger of foot.001",
+  "full": "Proximal phalanx of fifth finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 260,
+  "nv_full": 260
+ },
+ {
+  "bio": "Distal phalanx of fifth finger of foot",
+  "full": "Distal phalanx of fifth finger of foot.r",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 120,
+  "nv_full": 120
+ },
+ {
+  "bio": "Distal phalanx of fifth finger of foot.001",
+  "full": "Distal phalanx of fifth finger of foot.l",
+  "centroid_dist": 0.0,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 120,
+  "nv_full": 120
+ },
+ {
+  "bio": "Lateral process of nasal septal cartilage",
+  "full": "Lateral process of nasal septal cartilage.r",
+  "centroid_dist": 9.999999999177334e-07,
+  "bbox_maxdiff": 1.000000000001e-06,
+  "nv_bio": 174,
+  "nv_full": 174
+ }
+]

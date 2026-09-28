@@ -1,0 +1,7 @@
+{
+  "_about": "Z-Anatomy structures whose label does not match their geometry (checked by render, pipeline/out/render_*). za_name stays the source name; export.py adds extras.ta_name with the corrected Terminologia Anatomica name. Verified 2026-09-28: the object labelled 'Descending part' spans T1-T12 to the scapular spine (lower fibres); the one labelled 'Ascending part' runs from the skull/neck to the clavicle (upper fibres).",
+  "Descending part of trapezius muscle.r": "Ascending part of trapezius muscle.r",
+  "Ascending part of trapezius muscle.r": "Descending part of trapezius muscle.r",
+  "Descending part of trapezius muscle.l": "Ascending part of trapezius muscle.l",
+  "Ascending part of trapezius muscle.l": "Descending part of trapezius muscle.l"
+}

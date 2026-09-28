@@ -1,0 +1,10 @@
+{
+  "_about": "Licence deny list (docs/knowledge/anatomy-pipeline.md 'License and credit'). Case-insensitive regexes on the Z-Anatomy object name. select.py refuses to bake a match; check.mjs fails if a match reaches a GLB. Inner ear = Univ. of Dundee CC BY-NC-SA; kidney = CC BY-NC; brain / white matter = no licence stated.",
+  "patterns": [
+    "\\bear\\b", "inner ear", "\\bauricle", "incus", "malleus", "stapes", "ossicle", "cochlea",
+    "semicircular", "vestibule of", "tympan", "auditory", "labyrinth",
+    "kidney", "\\brenal\\b", "\\bnephr",
+    "brain", "white matter", "cerebr", "cerebell", "\\bgyrus", "\\bsulcus of"
+  ],
+  "object_types_denied": ["FONT", "CURVE", "TEXT"]
+}

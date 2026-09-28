@@ -1,0 +1,14 @@
+{
+  "name": "limber-anatomy-pipeline",
+  "private": true,
+  "type": "module",
+  "description": "Node side of the anatomy pipeline: gltfpack + the three.js round-trip check. Separate from the app's package.json on purpose.",
+  "scripts": {
+    "check": "node scripts/check.mjs out"
+  },
+  "devDependencies": {
+    "gltfpack": "1.3.0",
+    "meshoptimizer": "1.3.0",
+    "three": "0.186.1"
+  }
+}

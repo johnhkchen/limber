@@ -23,6 +23,30 @@ seen first.
 
 Lives at **limber.b28.dev**.
 
+## Start here
+
+You need Node 24 and [just](https://just.systems). To rebuild the body you also
+need Blender 5.2 at `/Applications/Blender.app` and the Z-Anatomy files in
+`pipeline/source/` (the built body files are already in `public/anatomy/`).
+
+```sh
+just install          # JS packages
+just dev              # the page at http://localhost:5173
+just check            # typecheck + tests (includes posing the real body in Node)
+just build            # dist/
+just shots            # phone and laptop screenshots of the built page (SHOTS_DIR=… to choose where)
+
+just anatomy          # rebuild the body from Z-Anatomy (~25 s) and copy it into public/anatomy/
+```
+
+Handy page options for looking at one moment: `?t=6.6` (seconds into the
+move), `?muscles=40` and `?bones=100` (how see-through, in %), `?cam=x,y,z`
+(where the camera starts; the body faces +Z, its right side is -X).
+
+Right now the page plays one move, the across-body reach from the first golden
+case, on the head, spine, ribs and right arm (down to the fingers) with the right
+side's back muscles.
+
 ## How it is put together
 
 | | |
@@ -56,5 +80,7 @@ See `docs/knowledge/plan.md` for the decisions behind this, and
 
 The body comes from [Z-Anatomy](https://github.com/Z-Anatomy) (CC BY-SA 4.0),
 which is built on BodyParts3D, © The Database Center for Life Science (CC BY-SA
-2.1 Japan). The processed body files in this repo carry the same license. The
-code is MIT.
+2.1 Japan). The processed body files in this repo (`public/anatomy/`) carry the
+same license, CC BY-SA 4.0; see `public/anatomy/LICENSE-anatomy.txt`. Each GLB
+also carries the credit line in its `asset.copyright`. None of Z-Anatomy's
+non-commercial parts (inner ear, kidney) are included. The code is MIT.

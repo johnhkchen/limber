@@ -1,0 +1,34 @@
+{
+  "id": "across-body-reach",
+  "title": "Across-body reach",
+  "side": "right",
+  "highlight": [
+    "Rhomboid major muscle.r",
+    "Rhomboid minor muscle.r",
+    "Transverse part of trapezius muscle.r"
+  ],
+  "keyframes": [
+    { "t": 0, "pose": {} },
+    { "t": 1.8, "ease": "inOut", "pose": {
+        "shoulder.r": { "flexion": 85, "horizontalAdduction": 30 },
+        "elbow.r":    { "flexion": 15 }
+    } },
+    { "t": 3.6, "ease": "inOut", "pose": {
+        "upperBack":        { "flexion": 12, "rotation": 8 },
+        "head":             { "flexion": 8 },
+        "shoulderGirdle.r": { "protraction": 16, "elevation": -4 },
+        "scapula.r":        { "upwardRotation": 4 },
+        "shoulder.r":       { "flexion": 90, "horizontalAdduction": 45 },
+        "elbow.r":          { "flexion": 8 }
+    } },
+    { "t": 6.4, "ease": "inOut", "pose": {} }
+  ],
+  "hold": { "from": 3.6, "breaths": 5, "breathSeconds": 6 },
+  "breath": { "track": "hold", "min": 0, "max": 1 },
+  "cues": [
+    { "t": 0,   "text": "Reach your right hand across to a doorframe on your left, at chest height." },
+    { "t": 1.8, "text": "Hold on, and let your body weight pull back. Round your upper back a little." },
+    { "t": 3.6, "text": "Let the shoulder blade slide outward, away from your spine. Breathe slowly into the sore spot." },
+    { "t": 3.7, "text": "Let go and come back slowly." }
+  ]
+}

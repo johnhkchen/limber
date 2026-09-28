@@ -551,3 +551,44 @@ Build steps 3, 4, 6, 7 and 9 for the golden subset only, right side:
 
 That is build-order step 1 in `plan.md`, and it answers open questions 1, 2, 6,
 7 and 8 at once.
+
+---
+
+## Found while wiring the slice together (2026-09-28)
+
+Measured during the integration run; the pipeline and app already follow these.
+
+- **Bone-local frames are the same in Blender and three.js.** The glTF exporter
+  converts world space only (a bone's world rotation in three.js is C·R_blender),
+  so a bone-local axis needs no conversion: `axis_three == axis_local`. The first
+  build wrote `(a.x, a.z, -a.y)`, which looked right for shoulder flexion (near
+  local X either way) and was wrong for horizontal adduction, the trunk and the
+  scapula. `check.mjs` now repeats a compound probe pose from `joints.py` in
+  three.js and fails if bone tails disagree by more than 0.5 mm (they agree to
+  0.001 mm).
+- **Inheritance.** The source rig switches rotation inheritance off on T12,
+  T3–T1, C6, C2, C1 and the thyroid, and local location off on the metatarsals.
+  glTF can't express that, so Blender renders and the browser disagreed.
+  `rig.py` now turns full inheritance on for every bone (REST unchanged).
+- **Rhomboids use "bands"** (`pipeline/scripts/bands.py`, from the rhomboid
+  spike): rhomboid major, rhomboid minor and levator scapulae get 4 stretch
+  helper bones each. The app re-creates Blender's STRETCH_TO per frame
+  (`src/core/jointmap.ts` `helperPose`, tested against Blender to < 1e-4).
+- **Outputs** go to `pipeline/out/`, and `just anatomy-publish` copies the two
+  GLBs and `joint-map.json` to `public/anatomy/` (Vite's folder, not
+  `static/anatomy/`), restoring `asset.copyright`, which gltfpack 1.3.0 drops.
+- **Floating scapula, in numbers** (`src/app/body.test.ts`): at REST the blade
+  sits 4.6 mm off the nearest right rib. The golden exercise's pose keeps it at
+  7.4 mm (8.1 at the top of a breath) with zero rhomboid points inside a rib,
+  and moves the blade 30 mm further from the spine. Stronger protraction (22°)
+  or pressing the blade in (scapula internalRotation −6°) makes ribs poke
+  through the rhomboid (14–33 points), so the pose was tuned to avoid that. A
+  real glide constraint is still open.
+- **The skeleton needs the whole chain the muscles hang from.** The first slice
+  stopped at C7 and the humerus, so the upper trapezius and levator scapulae
+  (weighted to C1–C4 and `Head`) stood in empty air, and every hand cue had no
+  hand. `structures.json` now carries the right radius, ulna and all 27 hand
+  bones (0.25), C1–C6 (0.25) and a toothless skull (occipital, parietals,
+  frontal, temporals, sphenoid, zygomatics, maxillae, nasals, mandible; 0.05).
+  The rig already had every bone they bind to; no code changed. Skeleton went
+  from 72 to 121 structures and 552 KB to 684 KB packed (whole publish 1.23 MB).
