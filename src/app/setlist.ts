@@ -87,6 +87,22 @@ export function setupWords(ex: Exercise): string | null {
   return s && s !== 'standing' ? SETUP_WORDS[s] : null;
 }
 
+const words = (s: string) => s.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter((w) => w.length > 2);
+const SAME = new Set(['start', 'get', 'begin']);
+
+/**
+ * True when a cue only says what the "Start:" line already says ("Start on your hands and knees."
+ * under "Start: Get on your hands and knees."), so the player can leave it out. A cue that adds
+ * anything (knees bent, a pillow) is kept.
+ */
+export function repeatsSetup(cue: string, setup: string | null): boolean {
+  if (!setup) return false;
+  const have = new Set(words(setup).filter((w) => !SAME.has(w)));
+  const says = words(cue).filter((w) => !SAME.has(w));
+  if (!says.length) return false;
+  return says.filter((w) => have.has(w)).length / says.length >= 0.8;
+}
+
 /** Dev preview of props on any move: `?props=floor,mat,doorframe-left,wall-behind`. */
 export function propsFromParam(param: string | null): Prop[] {
   if (!param) return [];

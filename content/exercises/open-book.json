@@ -8,7 +8,7 @@
     "Rhomboid major muscle.r"
   ],
   "setup": { "start": "sideLyingLeft" },
-  "props": [{ "kind": "mat" }],
+  "props": [{ "kind": "mat" }, { "kind": "pillow", "under": "head.l" }],
   "keyframes": [
     { "t": 0, "pose": {
         "hip.l": { "flexion": 80, "abduction": 8, "rotation": 6 },
@@ -27,9 +27,9 @@
         "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
         "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
         "lowBack": { "sideBend": -6, "rotation": 5 },
-        "upperBack": { "rotation": 40, "sideBend": -5 },
-        "neck": { "sideBend": -5, "rotation": 35 },
-        "head": { "rotation": 15 },
+        "upperBack": { "rotation": 40, "sideBend": 0 },
+        "neck": { "sideBend": 20, "rotation": 35 },
+        "head": { "rotation": 15, "sideBend": 15 },
         "shoulder.l": { "flexion": 90, "abduction": -7, "horizontalAdduction": -45 },
         "shoulder.r": { "flexion": 90, "horizontalAdduction": -110 },
         "shoulderGirdle.r": { "protraction": -10 },
@@ -41,9 +41,9 @@
         "hip.r": { "flexion": 80, "abduction": -15, "rotation": 6 },
         "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
         "lowBack": { "sideBend": -6, "rotation": 5 },
-        "upperBack": { "rotation": 40, "sideBend": -5 },
-        "neck": { "sideBend": -5, "rotation": 35 },
-        "head": { "rotation": 15 },
+        "upperBack": { "rotation": 40, "sideBend": 0 },
+        "neck": { "sideBend": 20, "rotation": 35 },
+        "head": { "rotation": 15, "sideBend": 15 },
         "shoulder.l": { "flexion": 90, "abduction": -7, "horizontalAdduction": -45 },
         "shoulder.r": { "flexion": 90, "horizontalAdduction": -110 },
         "shoulderGirdle.r": { "protraction": -10 },
@@ -70,9 +70,9 @@
     { "part": "shoulder.l", "surface": "floor" },
     { "part": "knee.l", "surface": "floor" },
     { "part": "forearm.l", "surface": "floor" },
-    { "part": "head.l", "surface": "floor", "gap": 0.085, "to": 0 },
-    { "part": "occiput", "surface": "floor", "gap": 0.04, "from": 3, "to": 4.5 },
-    { "part": "head.l", "surface": "floor", "gap": 0.085, "from": 7.5 }
+    { "part": "head.l", "surface": "pillow", "to": 0 },
+    { "part": "occiput", "surface": "pillow", "from": 3, "to": 4.5 },
+    { "part": "head.l", "surface": "pillow", "from": 7.5 }
   ],
   "cues": [
     { "t": 0,   "text": "Lie on your left side, knees bent and stacked, both arms straight out in front. Rest your head on a pillow." },

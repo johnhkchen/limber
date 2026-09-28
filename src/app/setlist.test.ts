@@ -8,6 +8,7 @@ import {
   previewItem,
   propsFromParam,
   readNotes,
+  repeatsSetup,
   setFeel,
   setlist,
   setupWords,
@@ -112,3 +113,12 @@ describe('notes', () => {
     expect(() => writeNotes(n, throwing)).not.toThrow();
   });
 });
+
+describe('repeatsSetup', () => {
+  it('drops a first cue that only repeats the Start: line, keeps one that adds something', () => {
+    expect(repeatsSetup('Start on your hands and knees.', 'Get on your hands and knees.')).toBe(true);
+    expect(repeatsSetup('Lie on your left side, knees bent and stacked, both arms straight out in front.', 'Lie on your left side.')).toBe(false);
+    expect(repeatsSetup('Start on your hands and knees.', null)).toBe(false);
+  });
+});
+

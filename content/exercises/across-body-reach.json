@@ -7,19 +7,23 @@
     "Rhomboid minor muscle.r",
     "Transverse part of trapezius muscle.r"
   ],
+  "props": [{ "kind": "doorframe", "side": "left" }],
+  "contacts": [{ "part": "palm.r", "surface": "doorframe", "from": 1.8, "to": 3.6 }],
   "keyframes": [
     { "t": 0, "pose": {} },
     { "t": 1.8, "ease": "inOut", "pose": {
-        "shoulder.r": { "flexion": 85, "horizontalAdduction": 30 },
-        "elbow.r":    { "flexion": 15 }
+        "shoulder.r": { "flexion": 72, "horizontalAdduction": 45 },
+        "elbow.r":    { "flexion": 8 },
+        "grip.r":     { "amount": 0.8 }
     } },
-    { "t": 3.6, "ease": "inOut", "pose": {
+    { "t": 3.6, "ease": "inOut", "root": { "position": [0, 0.94, -0.024] }, "pose": {
         "upperBack":        { "flexion": 12, "rotation": 8 },
         "head":             { "flexion": 8 },
         "shoulderGirdle.r": { "protraction": 16, "elevation": -4 },
         "scapula.r":        { "upwardRotation": 4 },
-        "shoulder.r":       { "flexion": 90, "horizontalAdduction": 45 },
-        "elbow.r":          { "flexion": 8 }
+        "shoulder.r":       { "flexion": 84, "horizontalAdduction": 40 },
+        "elbow.r":          { "flexion": 8 },
+        "grip.r":           { "amount": 0.8 }
     } },
     { "t": 6.4, "ease": "inOut", "pose": {} }
   ],

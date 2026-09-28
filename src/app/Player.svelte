@@ -8,7 +8,7 @@
   import type { JointMap } from '../core/jointmap';
   import { plainName } from '../core/names';
   import { HIGHLIGHT_HEX, highlightColors, type MeasureSample } from './body';
-  import { FEEL_LABEL, cameraFromParam, cameraHint, propsFromParam, setupWords, showsFloor, type Feel, type SetlistEntry } from './setlist';
+  import { FEEL_LABEL, cameraFromParam, cameraHint, propsFromParam, repeatsSetup, setupWords, showsFloor, type Feel, type SetlistEntry } from './setlist';
 
   interface Props {
     entry: SetlistEntry;
@@ -56,7 +56,8 @@
   const frame = $derived(grounded?.frame ?? (exercise ? sample(exercise, t) : null));
   const reps = $derived(exercise ? repCount(exercise) : 1);
   const sets = $derived(exercise ? setCount(exercise) : 1);
-  const hold = $derived(exercise ? holdOf(exercise) : undefined);
+  // The hold for the rep playing now: the first can be longer than the rest (reps.laterHoldBreaths).
+  const hold = $derived(exercise ? holdOf(exercise, frame?.rep ?? 1) : undefined);
   const setup = $derived(exercise ? setupWords(exercise) : null);
   // Core always has a floor; draw it only when the move is on it (standing moves read better without).
   const room = $derived(grounded && exercise ? grounded.props.filter((p) => p.kind !== 'floor' || showsFloor(exercise)) : []);
@@ -187,7 +188,7 @@
 
       {#if exercise && frame}
         {#if setup}<p class="setup">Start: {setup}</p>{/if}
-        <p class="cue" aria-live="polite">{frame.cue ?? ' '}</p>
+        <p class="cue" aria-live="polite">{frame.cue && !repeatsSetup(frame.cue, setup) ? frame.cue : ' '}</p>
 
         <div class="counters">
           {#if sets > 1}

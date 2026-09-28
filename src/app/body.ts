@@ -170,7 +170,11 @@ export function applyPose(rig: Rig, poses: BonePoses): void {
     }
   }
   if (!rig.helpers.length) return;
-  for (const r of rig.roots) r.updateMatrixWorld(true);
+  // Parents too: the holder may have just been placed (place()) and not rendered yet. With a stale
+  // holder matrix, the helper's parent (read from matrixWorld) and its target (getWorldPosition,
+  // which refreshes the parents) land in different frames, and the bands shoot off as spikes
+  // whenever the body is turned (lying, all fours).
+  for (const r of rig.roots) r.updateWorldMatrix(true, true);
   for (const h of rig.helpers) {
     h.parent.matrixWorld.decompose(pPos, pQuat, pScale);
     h.target.getWorldPosition(tPos);

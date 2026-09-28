@@ -37,7 +37,6 @@
   let cam: PerspectiveCamera | undefined = $state.raw();
   let controls: OrbitControlsImpl | undefined = $state.raw();
   let bounds = $state.raw<Box3 | null>(null);
-  const box = $derived(bounds ? { min: bounds.min.toArray(), max: bounds.max.toArray() } : null);
 
   const fitOnly = $derived(hint.fit === 'highlight' ? new Set(body.highlight.keys()) : undefined);
 
@@ -98,7 +97,7 @@
 <T.DirectionalLight position={[-2, 4, 2]} intensity={1.6} color="#fff4e6" />
 <T.DirectionalLight position={[2, 2, -3]} intensity={0.7} color="#e9eef7" />
 
-<PropsView items={room} {box} />
+<PropsView items={room} />
 <Body
   {...body}
   {samples}

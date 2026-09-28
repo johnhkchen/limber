@@ -12,7 +12,9 @@
  *   is interpolated like the joints; `props` puts a wall/doorframe/ball/mat in the room; `contacts`
  *   say which landmark (landmarks.ts) touches which surface over which stretch. ground.ts turns that
  *   into a grounded root and checks it.
- * - `reps` is a number (play N times) or `{ count, holdBreaths?, restSeconds? }`; `sets` repeats all reps.
+ * - `reps` is a number (play N times) or `{ count, holdBreaths?, laterHoldBreaths?, restSeconds? }`; `sets`
+ *   repeats all reps. `laterHoldBreaths` makes reps after the first hold shorter ("hold 5 breaths, then
+ *   repeat 5–6 times holding briefly"), so reps can differ in length.
  *
  * Pure TypeScript. No Svelte, Threlte or three.js here.
  */
@@ -123,18 +125,23 @@ export const SETUPS: Readonly<Record<SetupName, SetupInfo>> = {
  *   (`za_name`, which only the app can place). `diameter` default 0.065 m. A wall contact on the
  *   landmark the ball is `at` keeps a gap of one ball diameter.
  * - `mat`: a yoga mat, looks only. Its top is the floor.
+ * - `pillow`: a pillow on the floor `under` a landmark (default `head.l`), `height` metres tall
+ *   (default 0.085: the head's height above the floor when lying on the side, for this rig). It's
+ *   placed where that landmark is at the first keyframe and stays there. Contacts on `pillow` touch
+ *   its top (y = height).
  */
 export type Prop =
   | { kind: 'floor' }
   | { kind: 'mat'; thickness?: number }
   | { kind: 'wall'; side: WallSide; distance?: number }
   | { kind: 'doorframe'; side: 'left' | 'right'; height?: number | 'chest' | 'shoulder' | 'waist' }
-  | { kind: 'ball'; at: LandmarkName | Vec3 | string; diameter?: number };
+  | { kind: 'ball'; at: LandmarkName | Vec3 | string; diameter?: number }
+  | { kind: 'pillow'; under?: LandmarkName; height?: number };
 export type WallSide = 'behind' | 'front' | 'left' | 'right';
-export const PROP_KINDS = ['floor', 'mat', 'wall', 'doorframe', 'ball'] as const;
+export const PROP_KINDS = ['floor', 'mat', 'wall', 'doorframe', 'ball', 'pillow'] as const;
 
-export type Surface = 'floor' | 'wall' | 'doorframe';
-export const SURFACES: readonly Surface[] = ['floor', 'wall', 'doorframe'];
+export type Surface = 'floor' | 'wall' | 'doorframe' | 'pillow';
+export const SURFACES: readonly Surface[] = ['floor', 'wall', 'doorframe', 'pillow'];
 
 /** A body part touching a surface over a stretch of the authored timeline. */
 export interface Contact {
@@ -150,11 +157,14 @@ export interface Contact {
 
 /**
  * Repeats. `count` may be a range, `[5, 6]` for "5–6 times": the player plays the lower number.
- * `holdBreaths` replaces `hold.breaths` for each rep. `restSeconds` pauses between reps.
+ * `holdBreaths` replaces `hold.breaths` for each rep (the first rep, when `laterHoldBreaths` is set).
+ * `laterHoldBreaths` is the hold for every rep after the first ("then hold briefly each time").
+ * `restSeconds` pauses between reps.
  */
 export interface Reps {
   count: number | readonly [number, number];
   holdBreaths?: number;
+  laterHoldBreaths?: number;
   restSeconds?: number;
 }
 
@@ -189,6 +199,8 @@ export interface Cue {
   text: string;
   /** Authored time the cue goes away. Default: when the next cue appears, or the end. */
   until?: number;
+  /** Only on the first rep, or only on the later ones (e.g. "hold 5 breaths" vs "hold briefly"). Default every rep. */
+  rep?: 'first' | 'later';
 }
 
 export type Side = 'left' | 'right' | 'both';
@@ -340,8 +352,9 @@ export function parseExercise(json: unknown): Exercise {
     else
       e.cues.forEach((c: unknown, i: number) => {
         if (!isObj(c) || !isNum(c.t) || typeof c.text !== 'string' ||
-            (c.until !== undefined && !isNum(c.until)))
-          bad(`cues[${i}]: { t, text, until? }`);
+            (c.until !== undefined && !isNum(c.until)) ||
+            (c.rep !== undefined && c.rep !== 'first' && c.rep !== 'later'))
+          bad(`cues[${i}]: { t, text, until?, rep?: first | later }`);
       });
   }
   const isCount = (v: unknown) => isNum(v) && v >= 1 && Number.isInteger(v);
@@ -350,7 +363,7 @@ export function parseExercise(json: unknown): Exercise {
     if (isNum(rp)) {
       if (!isCount(rp)) bad('reps: integer >= 1');
     } else if (!isObj(rp)) {
-      bad('reps: integer >= 1, or { count, holdBreaths?, restSeconds? }');
+      bad('reps: integer >= 1, or { count, holdBreaths?, laterHoldBreaths?, restSeconds? }');
     } else {
       const c = rp.count;
       const okCount = isCount(c) ||
@@ -359,6 +372,10 @@ export function parseExercise(json: unknown): Exercise {
       if (rp.holdBreaths !== undefined) {
         if (!isNum(rp.holdBreaths) || rp.holdBreaths < 0) bad('reps.holdBreaths: number >= 0');
         else if (e.hold === undefined) bad('reps.holdBreaths: needs a hold to know when to hold');
+      }
+      if (rp.laterHoldBreaths !== undefined) {
+        if (!isNum(rp.laterHoldBreaths) || rp.laterHoldBreaths < 0) bad('reps.laterHoldBreaths: number >= 0');
+        else if (e.hold === undefined) bad('reps.laterHoldBreaths: needs a hold to know when to hold');
       }
       if (rp.restSeconds !== undefined && (!isNum(rp.restSeconds) || rp.restSeconds < 0))
         bad('reps.restSeconds: number >= 0');
@@ -404,9 +421,13 @@ export function parseExercise(json: unknown): Exercise {
             if (!(typeof pr.at === 'string' && pr.at) && !isVec3(pr.at)) bad(`${at}.at: landmark, structure name, or [x, y, z]`);
             if (pr.diameter !== undefined && (!isNum(pr.diameter) || pr.diameter <= 0)) bad(`${at}.diameter: number > 0`);
             break;
+          case 'pillow':
+            if (pr.under !== undefined && !(typeof pr.under === 'string' && pr.under in LANDMARKS)) bad(`${at}.under: unknown body part "${String(pr.under)}"`);
+            if (pr.height !== undefined && (!isNum(pr.height) || pr.height <= 0 || pr.height > 0.4)) bad(`${at}.height: metres, > 0 and <= 0.4`);
+            break;
         }
       });
-    for (const k of ['wall', 'doorframe'])
+    for (const k of ['wall', 'doorframe', 'pillow'])
       if (kinds.filter((x) => x === k).length > 1) bad(`props: at most one ${k}`);
   }
 
@@ -433,15 +454,19 @@ export function parseExercise(json: unknown): Exercise {
 
 // ---------------------------------------------------------------- timeline
 
-/** The hold as played: `reps.holdBreaths` replaces `hold.breaths`. */
-export function holdOf(ex: Exercise): Hold | undefined {
+/**
+ * The hold as played on rep `rep` (1-based, default the first): `reps.holdBreaths` replaces
+ * `hold.breaths`, and `reps.laterHoldBreaths` replaces it again from rep 2 on.
+ */
+export function holdOf(ex: Exercise, rep = 1): Hold | undefined {
   if (!ex.hold) return undefined;
-  const hb = typeof ex.reps === 'object' ? ex.reps.holdBreaths : undefined;
+  const rp = typeof ex.reps === 'object' ? ex.reps : undefined;
+  const hb = rep > 1 && rp?.laterHoldBreaths !== undefined ? rp.laterHoldBreaths : rp?.holdBreaths;
   return hb !== undefined ? { ...ex.hold, breaths: hb } : ex.hold;
 }
 
-const holdLength = (ex: Exercise) => {
-  const h = holdOf(ex);
+const holdLength = (ex: Exercise, rep = 1) => {
+  const h = holdOf(ex, rep);
   return h ? h.breaths * h.breathSeconds : 0;
 };
 
@@ -456,22 +481,27 @@ const repRest = (ex: Exercise) => (typeof ex.reps === 'object' ? ex.reps.restSec
 export const setCount = (ex: Exercise): number => ex.sets?.count ?? 1;
 const setRest = (ex: Exercise) => ex.sets?.restSeconds ?? 0;
 
-/** Authored time → played time (a hold pushes later moments back). */
-export function playedTime(ex: Exercise, authored: number): number {
+/** Authored time → played time within rep `rep` (a hold pushes later moments back). */
+export function playedTime(ex: Exercise, authored: number, rep = 1): number {
   if (!ex.hold || authored <= ex.hold.from) return authored;
-  return authored + holdLength(ex);
+  return authored + holdLength(ex, rep);
 }
 
-/** Seconds for one pass of the timeline. */
-export function cycleLength(ex: Exercise): number {
+/** Seconds for one pass of the timeline on rep `rep` (default the first). */
+export function cycleLength(ex: Exercise, rep = 1): number {
   const lastKey = ex.keyframes[ex.keyframes.length - 1]!.t;
   const lastCue = Math.max(0, ...(ex.cues ?? []).map((c) => c.until ?? c.t));
   const end = Math.max(lastKey, lastCue, ex.hold?.from ?? 0);
-  return playedTime(ex, end) + (ex.hold && end <= ex.hold.from ? holdLength(ex) : 0);
+  return playedTime(ex, end, rep) + (ex.hold && end <= ex.hold.from ? holdLength(ex, rep) : 0);
 }
 
 /** Seconds for one set: every rep, with rests between them. */
-const setLength = (ex: Exercise) => repCount(ex) * cycleLength(ex) + (repCount(ex) - 1) * repRest(ex);
+function setLength(ex: Exercise): number {
+  const n = repCount(ex);
+  let s = (n - 1) * repRest(ex);
+  for (let r = 1; r <= n; r++) s += cycleLength(ex, r);
+  return s;
+}
 
 /** Seconds for the whole exercise: all sets, all reps, all rests. */
 export function duration(ex: Exercise): number {
@@ -479,13 +509,18 @@ export function duration(ex: Exercise): number {
 }
 
 /**
- * Plain words for how much to do, e.g. "5 breaths, 5–6 times" or "8–10 slow reps" style
- * ("8–10 times"). Empty when it's a single pass with no hold.
+ * Plain words for how much to do, e.g. "5 breaths, 5–6 times" or "8–10 times", or with shorter
+ * later holds "5 breaths, then 2 each time, 5–6 times". Empty when it's a single pass with no hold.
  */
 export function repsLabel(ex: Exercise): string {
   const parts: string[] = [];
   const h = holdOf(ex);
-  if (h && h.breaths > 0) parts.push(`${h.breaths} breath${h.breaths === 1 ? '' : 's'}`);
+  const later = repCount(ex) > 1 ? holdOf(ex, 2) : undefined;
+  if (h && h.breaths > 0) {
+    let w = `${h.breaths} breath${h.breaths === 1 ? '' : 's'}`;
+    if (later && later.breaths !== h.breaths) w += later.breaths > 0 ? `, then ${later.breaths} each time` : ', then briefly';
+    parts.push(w);
+  }
   const rp = ex.reps;
   const n = rp === undefined ? 1 : typeof rp === 'number' ? rp : rp.count;
   if (typeof n !== 'number') parts.push(`${n[0]}–${n[1]} times`);
@@ -609,7 +644,6 @@ const breathWave = (phase01: number) => (1 - Math.cos(2 * Math.PI * phase01)) / 
  * the cue and the breath. `t` is clamped to [0, duration].
  */
 export function sample(ex: Exercise, t: number): Frame {
-  const cyc = cycleLength(ex);
   const reps = repCount(ex);
   const sets = setCount(ex);
   const sLen = setLength(ex);
@@ -625,9 +659,14 @@ export function sample(ex: Exercise, t: number): Frame {
     inSet = sLen;
     resting = true;
   }
-  const repSpan = cyc + repRest(ex);
-  const rep = repSpan > 0 ? Math.min(Math.floor(inSet / repSpan), reps - 1) : 0;
-  let local = inSet - rep * repSpan;
+  // Reps can differ in length (a shorter hold after the first), so walk them.
+  let rep = 0;
+  let local = inSet;
+  while (rep < reps - 1 && local >= cycleLength(ex, rep + 1) + repRest(ex)) {
+    local -= cycleLength(ex, rep + 1) + repRest(ex);
+    rep++;
+  }
+  const cyc = cycleLength(ex, rep + 1);
   if (local > cyc) { // resting after this rep
     local = cyc;
     resting = true;
@@ -637,9 +676,9 @@ export function sample(ex: Exercise, t: number): Frame {
   // Played → authored time, and whether we're inside the hold.
   let authored = local;
   let holdT: number | null = null;
-  const hold = holdOf(ex);
+  const hold = holdOf(ex, rep + 1);
   if (hold) {
-    const hl = holdLength(ex);
+    const hl = holdLength(ex, rep + 1);
     if (local > hold.from && local < hold.from + hl) {
       authored = hold.from;
       holdT = local - hold.from;
@@ -677,12 +716,14 @@ export function sample(ex: Exercise, t: number): Frame {
   // Cue: the latest cue that has started and not ended.
   const cues = ex.cues ?? [];
   let cue: string | null = null;
-  const sorted = [...cues].sort((a, b) => a.t - b.t);
+  const which = rep === 0 ? 'first' : 'later';
+  const sorted = cues.filter((c) => !c.rep || c.rep === which).sort((a, b) => a.t - b.t);
+  const played = (a: number) => playedTime(ex, a, rep + 1);
   for (let i = 0; i < sorted.length; i++) {
     const c = sorted[i]!;
-    const start = playedTime(ex, c.t);
+    const start = played(c.t);
     const next = sorted[i + 1];
-    const end = c.until !== undefined ? playedTime(ex, c.until) : next ? playedTime(ex, next.t) : Infinity;
+    const end = c.until !== undefined ? played(c.until) : next ? played(next.t) : Infinity;
     if (local >= start && local < end) cue = c.text;
   }
 

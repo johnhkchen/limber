@@ -79,15 +79,15 @@ describe('sample', () => {
   it('interpolates with easing, relative to REST', () => {
     expect(sample(simple, 1).pose['elbow.r']!.flexion).toBeCloseTo(45);
     const mid = sample(reach, 0.9).pose['shoulder.r']!;
-    expect(mid.flexion).toBeCloseTo(42.5); // inOut at the halfway point
-    expect(sample(reach, 0.3).pose['shoulder.r']!.flexion).toBeLessThan(85 * (0.3 / 1.8)); // eases in
+    expect(mid.flexion).toBeCloseTo(36); // inOut at the halfway point (72° at 1.8 s)
+    expect(sample(reach, 0.3).pose['shoulder.r']!.flexion).toBeLessThan(72 * (0.3 / 1.8)); // eases in
   });
   it('freezes the pose during the hold and breathes five times', () => {
     const a = sample(reach, 5);
     const b = sample(reach, 30);
     expect(a.phase).toBe('hold');
     expect(a.pose['shoulder.r']).toEqual(b.pose['shoulder.r']);
-    expect(a.pose['shoulder.r']!.flexion).toBeCloseTo(90);
+    expect(a.pose['shoulder.r']!.flexion).toBeCloseTo(84);
     expect(sample(reach, 3.6 + 3).breath.amount).toBeCloseTo(1); // top of breath 1
     expect(sample(reach, 3.6 + 6).breath.amount).toBeCloseTo(0, 5);
     expect(sample(reach, 3.6 + 1).breath.direction).toBe('in');
@@ -132,7 +132,9 @@ describe('the body in the world (root, setup, props, contacts)', () => {
 
   it('old files still parse and play the same (root defaults to standing)', () => {
     expect(reach.setup).toBeUndefined();
-    expect(sample(reach, 5).root).toEqual(SETUPS.standing.root);
+    // standing, stepped back 2.4 cm during the hold so the hand stays on the doorframe
+    expect(sample(reach, 5).root).toEqual({ ...SETUPS.standing.root, position: [0, 0.94, -0.024] });
+    expect(sample(reach, 0).root).toEqual(SETUPS.standing.root);
     expect(sample(reach, 5).set).toBe(1);
   });
 
@@ -180,6 +182,9 @@ describe('the body in the world (root, setup, props, contacts)', () => {
       expect(m).toMatch(want);
     expect(msg({ ...base, keyframes: [{ t: 0, pose: {} }], contacts: [{ part: 'palm.r', surface: 'doorframe' }] })).toMatch(/needs a doorframe in props/);
     expect(msg({ ...base, keyframes: [{ t: 0, pose: {} }], props: [{ kind: 'wall', side: 'behind' }, { kind: 'wall', side: 'front' }] })).toMatch(/at most one wall/);
+    expect(msg({ ...base, keyframes: [{ t: 0, pose: {} }], props: [{ kind: 'pillow', under: 'ear', height: 0 }] })).toMatch(/props\[0\].under.*props\[0\].height/);
+    expect(msg({ ...base, keyframes: [{ t: 0, pose: {} }], contacts: [{ part: 'head.l', surface: 'pillow' }] })).toMatch(/needs a pillow in props/);
+    expect(msg({ ...base, keyframes: [{ t: 0, pose: {} }], props: [{ kind: 'pillow' }], contacts: [{ part: 'head.l', surface: 'pillow' }] })).toBe('');
     expect(msg(lying)).toBe('');
   });
 });
@@ -199,6 +204,35 @@ describe('reps and sets', () => {
     expect(duration(thread)).toBe(110);
     expect(sample(thread, 22 + 2 + 19).breath).toMatchObject({ index: 5, count: 5 });
     expect(sample(thread, 23).rep).toBe(2);
+  });
+
+  it('laterHoldBreaths: a long first hold, then brief ones (reps differ in length)', () => {
+    const ex: Exercise = {
+      ...thread,
+      reps: { count: 3, holdBreaths: 5, laterHoldBreaths: 1 },
+      cues: [
+        { t: 0, text: 'Go.' },
+        { t: 2, text: 'Hold for 5 breaths.', rep: 'first' },
+        { t: 2, text: 'Hold briefly.', rep: 'later' },
+      ],
+    };
+    expect(holdOf(ex)!.breaths).toBe(5);
+    expect(holdOf(ex, 2)!.breaths).toBe(1);
+    expect(cycleLength(ex, 1)).toBe(22); // 2 s in + 5 × 4 s
+    expect(cycleLength(ex, 2)).toBe(6); // 2 s in + 1 × 4 s
+    expect(duration(ex)).toBe(22 + 6 + 6);
+    expect(sample(ex, 21)).toMatchObject({ rep: 1, phase: 'hold', cue: 'Hold for 5 breaths.' });
+    expect(sample(ex, 21).breath).toMatchObject({ index: 5, count: 5 });
+    expect(sample(ex, 22.5)).toMatchObject({ rep: 2, phase: 'move', cue: 'Go.' });
+    expect(sample(ex, 22 + 3)).toMatchObject({ rep: 2, phase: 'hold', cue: 'Hold briefly.' });
+    expect(sample(ex, 22 + 3).breath).toMatchObject({ index: 1, count: 1 });
+    expect(sample(ex, 28 + 3)).toMatchObject({ rep: 3, phase: 'hold' });
+    expect(sample(ex, 34)).toMatchObject({ rep: 3 });
+    expect(repsLabel(ex)).toBe('5 breaths, then 1 each time, 3 times');
+    const base = { id: 'x', highlight: [], keyframes: [{ t: 0, pose: {} }] };
+    expect(() => parseExercise({ ...base, reps: { count: 5, laterHoldBreaths: 2 } })).toThrow(/laterHoldBreaths: needs a hold/);
+    expect(() => parseExercise({ ...base, hold: { from: 0, breaths: 5, breathSeconds: 6 }, reps: { count: 5, laterHoldBreaths: -1 } })).toThrow(/laterHoldBreaths/);
+    expect(() => parseExercise({ ...base, cues: [{ t: 0, text: 'a', rep: 'second' }] })).toThrow(/cues\[0\]/);
   });
 
   it('rests between reps and between sets', () => {

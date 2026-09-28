@@ -210,4 +210,22 @@ describe('across-body reach on the real body', () => {
     place(holder, null);
     poseAt(0);
   });
+
+  it('no band spikes when the body is placed tipped over (thread the needle, straight to the hold)', () => {
+    // Regression: the helper bands read their parent from a stale holder matrix right after place(),
+    // and levator scapulae / rhomboid minor shot off as 17-33 cm spikes.
+    const thread = parseExercise(JSON.parse(readFileSync('content/exercises/thread-the-needle.json', 'utf8')));
+    const g = groundPose(thread, 10, jm);
+    place(holder, g.transform);
+    applyPose(rig, g.bones);
+    holder.updateMatrixWorld(true);
+    for (const z of ['Levator scapulae.r', 'Levator scapulae.l', 'Rhomboid minor muscle.r']) {
+      const box = new THREE.Box3().setFromPoints(points(z));
+      const size = box.getSize(new THREE.Vector3()).length();
+      console.log('BAND size m', z, size.toFixed(3));
+      expect(size, z).toBeLessThan(0.3);
+    }
+    place(holder, null);
+    poseAt(0);
+  });
 });

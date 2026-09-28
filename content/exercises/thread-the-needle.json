@@ -5,6 +5,7 @@
   "highlight": [
     "Rhomboid major muscle.r",
     "Rhomboid minor muscle.r",
+    "Transverse part of trapezius muscle.r",
     "External intercostal muscles.r"
   ],
   "setup": {
@@ -409,7 +410,9 @@
     "count": [
       5,
       6
-    ]
+    ],
+    "holdBreaths": 5,
+    "laterHoldBreaths": 2
   },
   "contacts": [
     {
@@ -457,10 +460,6 @@
   ],
   "cues": [
     {
-      "t": 0,
-      "text": "Start on your hands and knees."
-    },
-    {
       "t": 0.4,
       "text": "Slide your right arm under your body toward the left, palm up."
     },
@@ -470,11 +469,23 @@
     },
     {
       "t": 2.6,
+      "rep": "first",
       "text": "Hold for 5 breaths. Breathe into the spot behind your right shoulder blade."
     },
     {
+      "t": 2.6,
+      "rep": "later",
+      "text": "Hold briefly, a breath or two, into the spot behind your right shoulder blade."
+    },
+    {
       "t": 2.7,
-      "text": "Come back up to your hands and knees. Repeat 5\u20136 times, holding briefly each time."
+      "rep": "first",
+      "text": "Come back up to your hands and knees. Now repeat it 5–6 times, holding briefly each time."
+    },
+    {
+      "t": 2.7,
+      "rep": "later",
+      "text": "Come back up to your hands and knees."
     }
   ]
 }

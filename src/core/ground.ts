@@ -9,6 +9,10 @@
  *   ball between them keeps one ball's width).
  * - **Doorframe**: nothing moves. The post is placed where the gripping part is at the first
  *   keyframe of its contact; later moments report how far the hand has drifted from it.
+ * - **Pillow**: a floor that is `height` higher. Pillow contacts ground the body like floor ones.
+ *   The pillow sits under its landmark at the first keyframe and stays there.
+ * - **Mat**: runs along the body's long axis (pelvis → head at the first keyframe, or the way the
+ *   body faces when that is nearly vertical), centred on everything the body covers over the move.
  *
  * `checkContacts` / `checkKeyframes` report each contact's distance to its surface (+ off it,
  * − into it) and the lowest point of the body, which is what the tests hold every exercise to.
@@ -21,9 +25,9 @@
 import {
   type Contact, type Exercise, type Frame, type Prop, type Root, type WallSide, activeContacts, playedTime, sample,
 } from './exercise';
-import { type Posed, type RigidTransform, forwardKinematics, resolveLandmarks, restFrames } from './fk';
+import { type Posed, type RigidTransform, forwardKinematics, landmark, orientationQuat, resolveLandmarks, restFrames } from './fk';
 import { type BonePoses, type JointMap, arc, toBonePoses } from './jointmap';
-import { type Quat, type Vec3, add, conj, dot, length, mul, normalize, scale, sub, unit } from './quat';
+import { type Quat, type Vec3, add, conj, dot, length, mul, normalize, rotate, scale, sub, unit } from './quat';
 
 /** Default wall distance from the origin, metres. */
 export const WALL_DISTANCE = 0.3;
@@ -33,12 +37,28 @@ export const BALL_DIAMETER = 0.065;
 export const POST_RADIUS = 0.025;
 /** Where a doorframe stands when nothing grips it: this far to the side and in front. */
 const POST_DEFAULT = { side: 0.35, front: 0.35 };
+/** Default pillow height: the side of the head sits about this high when lying on the side (this rig). */
+export const PILLOW_HEIGHT = 0.085;
+/** Yoga mat and pillow footprints, metres: `length` along the body, `width` across it. */
+export const MAT_SIZE = { length: 1.83, width: 0.61 };
+export const PILLOW_SIZE = { length: 0.32, width: 0.5 };
 
 // ---------------------------------------------------------------- props in the room
 
 export type ResolvedProp =
   | { kind: 'floor'; y: 0 }
-  | { kind: 'mat'; thickness: number }
+  | {
+      kind: 'mat'; thickness: number;
+      /** Centre on the floor, [x, z]. */ centre: [number, number];
+      /** Turn about +Y, radians: 0 = the mat's length runs along Z. */ yaw: number;
+      length: number; width: number;
+    }
+  | {
+      kind: 'pillow'; height: number;
+      /** Centre on the floor, [x, z]. */ centre: [number, number];
+      /** Turn about +Y, radians: the body's long axis, as for the mat. `length` runs along the body, `width` across it. */ yaw: number;
+      length: number; width: number;
+    }
   | { kind: 'wall'; side: WallSide; /** A point on the wall. */ point: Vec3; /** Into the room. */ normal: Vec3 }
   | { kind: 'doorframe'; side: 'left' | 'right'; /** Post axis (vertical line) at x, z. */ x: number; z: number; height: number; radius: number }
   | { kind: 'ball'; diameter: number; /** Null when `at` names a structure only the app can place. */ centre: Vec3 | null; structure?: string };
@@ -131,6 +151,11 @@ function measure(
     let d: number;
     let heightError: number | undefined;
     if (c.surface === 'floor') d = p[1] - lm.radius - g;
+    else if (c.surface === 'pillow') {
+      const h = pillowHeight(ex);
+      if (h === null) continue;
+      d = p[1] - lm.radius - h - g;
+    }
     else if (c.surface === 'wall') {
       if (!wall) continue;
       d = dot(sub(p, wall.point), wall.normal) - lm.radius - g;
@@ -144,6 +169,13 @@ function measure(
   return out;
 }
 
+const pillowProp = (ex: Exercise) => (ex.props ?? []).find((p): p is Extract<Prop, { kind: 'pillow' }> => p.kind === 'pillow');
+const pillowHeight = (ex: Exercise): number | null => {
+  const p = pillowProp(ex);
+  return p ? p.height ?? PILLOW_HEIGHT : null;
+};
+const onFloor = (c: Contact) => c.surface === 'floor' || c.surface === 'pillow';
+
 function solve(ex: Exercise, frame: Frame, map: JointMap, opts: GroundOptions, withPost: boolean): Solved {
   let bones = toBonePoses(frame.pose, map);
   const contacts = activeContacts(ex, frame.authored);
@@ -156,8 +188,8 @@ function solve(ex: Exercise, frame: Frame, map: JointMap, opts: GroundOptions, w
   let posed = place();
 
   const groundRoot = () => {
-    // Floor: lowest floor contact → y = 0; none declared → lowest landmark → y = 0.
-    const floor = measure(ex, contacts.filter((c) => c.surface === 'floor'), posed, map, null, null);
+    // Floor: lowest floor (or pillow) contact → touching; none declared → lowest landmark → y = 0.
+    const floor = measure(ex, contacts.filter(onFloor), posed, map, null, null);
     let dy: number;
     if (floor.length) dy = -Math.min(...floor.map((f) => f.distance));
     else {
@@ -182,7 +214,7 @@ function solve(ex: Exercise, frame: Frame, map: JointMap, opts: GroundOptions, w
     for (const r of measure(ex, contacts, posed, map, wall, null)) {
       const lm = lms.get(r.part);
       if (!lm?.ik || Math.abs(r.distance) < 1e-4 || planted.has(r.part)) continue;
-      const n: Vec3 = r.surface === 'floor' ? [0, 1, 0] : wall!.normal;
+      const n: Vec3 = r.surface === 'floor' || r.surface === 'pillow' ? [0, 1, 0] : wall!.normal;
       try {
         bones = reach(map, bones, root, r.part, sub(r.point, scale(n, r.distance))).bones;
         planted.add(r.part);
@@ -198,7 +230,11 @@ function solve(ex: Exercise, frame: Frame, map: JointMap, opts: GroundOptions, w
   let post: Extract<ResolvedProp, { kind: 'doorframe' }> | null = null;
   for (const p of ex.props ?? []) {
     if (p.kind === 'floor') continue;
-    if (p.kind === 'mat') props.push({ kind: 'mat', thickness: p.thickness ?? 0.005 });
+    if (p.kind === 'mat') {
+      if (withPost) props.push({ kind: 'mat', thickness: p.thickness ?? 0.005, ...placeMat(ex, map, opts) });
+    } else if (p.kind === 'pillow') {
+      if (withPost) props.push(placePillow(ex, p, map, opts));
+    }
     else if (p.kind === 'wall') props.push(wall!);
     else if (p.kind === 'doorframe') {
       if (withPost) post = placePost(ex, p, map, opts);
@@ -223,8 +259,8 @@ function solve(ex: Exercise, frame: Frame, map: JointMap, opts: GroundOptions, w
 }
 
 function markAnchors(report: ContactReport[]) {
-  for (const s of ['floor', 'wall'] as const) {
-    const on = report.filter((r) => r.surface === s);
+  for (const s of [['floor', 'pillow'], ['wall']]) {
+    const on = report.filter((r) => s.includes(r.surface));
     if (!on.length) continue;
     on.reduce((a, b) => (b.distance < a.distance ? b : a)).anchor = true;
   }
@@ -250,6 +286,74 @@ function placePost(
   const out = unit([at[0] - pelvis[0], 0, at[2] - pelvis[2]]);
   const r = POST_RADIUS + lm.radius + (grip.gap ?? 0);
   return { kind: 'doorframe', side: p.side, x: at[0] + out[0] * r, z: at[2] + out[2] * r, height: height ?? at[1], radius: POST_RADIUS };
+}
+
+/** Solve the first keyframe (or the one at/after `from`) without placing props. */
+function solveKeyframe(ex: Exercise, map: JointMap, opts: GroundOptions, from?: number): Solved {
+  const first = from === undefined ? ex.keyframes[0]!.t : ex.keyframes.find((k) => k.t >= from - 1e-9)?.t ?? from;
+  return solve(ex, sample(ex, playedTime(ex, first)), map, opts, false);
+}
+
+/**
+ * The body's long axis on the floor at the first keyframe, as a yaw about +Y (0 = along Z): pelvis →
+ * head, or, when the trunk is nearly upright (kneeling, sitting), the way the body faces.
+ */
+function bodyYaw({ posed, root }: Solved, map: JointMap): number {
+  const pelvis = posed.bones.get(posed.rest.root)!.head;
+  const head = posed.bones.get('Head')?.head ?? landmark(posed, map, 'forehead');
+  if (head) {
+    const d: Vec3 = [head[0] - pelvis[0], 0, head[2] - pelvis[2]];
+    if (length(d) > 0.3 * length(sub(head, pelvis))) return Math.atan2(d[0], d[2]);
+  }
+  const fwd = rotate(orientationQuat(root.orientation), [0, 0, 1]);
+  return Math.atan2(fwd[0], fwd[2]);
+}
+
+const placed = new WeakMap<Exercise, WeakMap<JointMap, Map<string, unknown>>>();
+/** Props that stay put are worked out once per exercise and map. */
+function cached<T>(ex: Exercise, map: JointMap, key: string, make: () => T): T {
+  let byMap = placed.get(ex);
+  if (!byMap) placed.set(ex, (byMap = new WeakMap()));
+  let m = byMap.get(map);
+  if (!m) byMap.set(map, (m = new Map()));
+  if (!m.has(key)) m.set(key, make());
+  return m.get(key) as T;
+}
+
+/** Mat: along the body's long axis, centred on every landmark over all keyframes. */
+function placeMat(ex: Exercise, map: JointMap, opts: GroundOptions): { centre: [number, number]; yaw: number; length: number; width: number } {
+  return cached(ex, map, 'mat', () => {
+    const yaw = bodyYaw(solveKeyframe(ex, map, opts), map);
+    const along: Vec3 = [Math.sin(yaw), 0, Math.cos(yaw)];
+    const across: Vec3 = [Math.cos(yaw), 0, -Math.sin(yaw)];
+    let a0 = Infinity, a1 = -Infinity, c0 = Infinity, c1 = -Infinity;
+    for (const k of ex.keyframes) {
+      const posed = solve(ex, sample(ex, playedTime(ex, k.t)), map, opts, false).posed;
+      for (const lm of resolveLandmarks(map).values()) {
+        const p = posed.pointOn(lm.bone, lm.rest);
+        if (p[1] - lm.radius > 0.25) continue; // only what's near the floor needs mat under it
+        const a = dot(p, along), c = dot(p, across);
+        a0 = Math.min(a0, a); a1 = Math.max(a1, a); c0 = Math.min(c0, c); c1 = Math.max(c1, c);
+      }
+    }
+    if (!Number.isFinite(a0)) return { centre: [0, 0], yaw, ...MAT_SIZE };
+    const am = (a0 + a1) / 2, cm = (c0 + c1) / 2;
+    const centre = add(scale(along, am), scale(across, cm));
+    return { centre: [centre[0], centre[2]], yaw, ...MAT_SIZE };
+  });
+}
+
+/** Pillow: under its landmark at the first keyframe a pillow contact starts (else the first), across the body. */
+function placePillow(ex: Exercise, p: Extract<Prop, { kind: 'pillow' }>, map: JointMap, opts: GroundOptions): Extract<ResolvedProp, { kind: 'pillow' }> {
+  return cached(ex, map, 'pillow', () => {
+    const on = (ex.contacts ?? []).find((c) => c.surface === 'pillow');
+    const s = solveKeyframe(ex, map, opts, on?.from);
+    const posed = s.posed;
+    const yaw = bodyYaw(s, map);
+    const under = p.under ?? on?.part ?? 'head.l';
+    const at = landmark(posed, map, under) ?? posed.bones.get('Head')?.head ?? [0, 0, 0];
+    return { kind: 'pillow', height: p.height ?? PILLOW_HEIGHT, centre: [at[0], at[2]], yaw, ...PILLOW_SIZE };
+  });
 }
 
 function lowestPoint(posed: Posed, map: JointMap): LowestPoint {

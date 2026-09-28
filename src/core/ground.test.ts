@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { parseJointMap, toBonePoses, type JointMap } from './jointmap';
 import { parseExercise, playedTime, type Exercise, type Pose } from './exercise';
 import { forwardKinematics, landmark, landmarks } from './fk';
-import { BALL_DIAMETER, checkContacts, checkKeyframes, groundPose, reach, twoBoneIK } from './ground';
+import { BALL_DIAMETER, PILLOW_HEIGHT, checkContacts, checkKeyframes, groundPose, reach, twoBoneIK } from './ground';
 import { type Vec3, dot, length, sub } from './quat';
 
 const root = join(import.meta.dirname, '..', '..');
@@ -184,6 +184,47 @@ describe('groundPose: wall, ball, doorframe', () => {
     if (post.kind !== 'doorframe') throw new Error('post');
     expect(post.x).toBeGreaterThan(0); // on the subject's left
     expect(post.z).toBeGreaterThan(0.1); // in front
+  });
+});
+
+describe('groundPose: mat and pillow', () => {
+  const lying: Exercise = parseExercise({
+    ...sideLying,
+    props: [{ kind: 'mat' }, { kind: 'pillow' }],
+    contacts: [...sideLying.contacts!, { part: 'head.l', surface: 'pillow' }],
+  });
+
+  it('the mat runs along the body (pelvis to head), not along the widest box side', () => {
+    const g = groundPose(lying, 0, real);
+    const mat = g.props.find((p) => p.kind === 'mat')!;
+    if (mat.kind !== 'mat') throw new Error('mat');
+    const pelvis = g.posed.bones.get(g.posed.rest.root)!.head;
+    const head = g.posed.bones.get('Head')!.head;
+    const axis = Math.atan2(head[0] - pelvis[0], head[2] - pelvis[2]);
+    expect(Math.abs(Math.sin(mat.yaw - axis))).toBeLessThan(0.05); // lying on the side: along X
+    expect(Math.abs(Math.cos(mat.yaw))).toBeLessThan(0.1);
+    // on all fours it runs front to back
+    const m4 = groundPose(allFours, 0, real).props.find((p) => p.kind === 'mat')!;
+    if (m4.kind !== 'mat') throw new Error('mat');
+    expect(Math.abs(Math.cos(m4.yaw))).toBeGreaterThan(0.95);
+  });
+
+  it('a pillow is a raised floor: the head rests on its top, the body stays on the floor', () => {
+    const g = groundPose(lying, 0, real);
+    const pillow = g.props.find((p) => p.kind === 'pillow')!;
+    if (pillow.kind !== 'pillow') throw new Error('pillow');
+    expect(pillow.height).toBeCloseTo(PILLOW_HEIGHT, 9);
+    const head = g.contacts.find((c) => c.part === 'head.l')!;
+    expect(head.surface).toBe('pillow');
+    expect(head.distance).toBeGreaterThan(-CONTACT_TOL);
+    expect(head.point[1]).toBeGreaterThan(pillow.height - 0.01); // measured against the top, not the floor
+    const at = landmark(g.posed, real, 'head.l')!;
+    expect(Math.hypot(at[0] - pillow.centre[0], at[2] - pillow.centre[1])).toBeLessThan(1e-9);
+    // a pillow far too tall holds the head up and the hip lifts off the floor: authors see it
+    const tall = parseExercise({ ...lying, props: [{ kind: 'pillow', height: 0.2 }] });
+    const t = groundPose(tall, 0, real).contacts;
+    expect(t.find((c) => c.part === 'head.l')!.anchor).toBe(true);
+    expect(t.find((c) => c.part === 'hip.l')!.distance).toBeGreaterThan(0.05);
   });
 });
 
