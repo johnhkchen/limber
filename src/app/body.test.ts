@@ -10,8 +10,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { parseExercise, sample } from '../core/exercise';
+import { landmark } from '../core/fk';
+import { groundPose } from '../core/ground';
 import { mappedBones, parseJointMap, toBonePoses } from '../core/jointmap';
-import { applyPose, bindRig, collectStructures, type Rig, type Structure } from './body';
+import { applyPose, bindRigOnce, collectStructures, landmarkWorld, place, type Rig, type Structure } from './body';
 
 const jm = parseJointMap(JSON.parse(readFileSync('public/anatomy/joint-map.json', 'utf8')));
 // LIMBER_EXERCISE lets a tuning run point at a variant file; the committed check uses the real one.
@@ -146,8 +148,12 @@ function measure() {
 beforeAll(async () => {
   roots = [await load('public/anatomy/skeleton.glb'), await load('public/anatomy/muscles.glb')];
   structures = [...collectStructures(roots[0]!, 'skeleton'), ...collectStructures(roots[1]!, 'muscles')];
-  rig = bindRig(roots, mappedBones(jm), jm.helpers ?? []);
+  rig = bindRigOnce(roots, mappedBones(jm), jm.helpers ?? []);
+  holder = new THREE.Group();
+  holder.add(...roots);
 }, 30000);
+
+let holder: THREE.Group;
 
 describe('across-body reach on the real body', () => {
   it('lights up structures that exist', () => {
@@ -181,4 +187,27 @@ describe('across-body reach on the real body', () => {
     expect(rows.full!.rhomboidInsideRib).toBe(0);
     poseAt(0);
   }, 60000);
+
+  it('draws the body where core says it is: landmarks within 2 mm of core FK, grounded and placed', () => {
+    const names = ['palm.r', 'fingertips.r', 'elbow.r', 'shoulder.r', 'back.r', 'back', 'forehead', 'heel.l', 'toes.r', 'knee.l'];
+    const hold = ex.hold!;
+    let worst = 0;
+    for (const t of [0, 1.8, hold.from + 0.01, hold.from + hold.breathSeconds / 2]) {
+      const g = groundPose(ex, t, jm);
+      place(holder, g.transform);
+      applyPose(rig, g.bones);
+      holder.updateMatrixWorld(true);
+      for (const n of names) {
+        const core = landmark(g.posed, jm, n)!;
+        const drawn = landmarkWorld(rig, jm, n)!;
+        expect(core, n).not.toBeNull();
+        expect(drawn, n).not.toBeNull();
+        worst = Math.max(worst, drawn.distanceTo(new THREE.Vector3(...core)));
+      }
+    }
+    console.log('LANDMARK worst mm', (worst * 1000).toFixed(3));
+    expect(worst).toBeLessThan(0.002);
+    place(holder, null);
+    poseAt(0);
+  });
 });

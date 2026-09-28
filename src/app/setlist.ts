@@ -2,7 +2,8 @@
  * The setlist: the case's five moves, which of them have a moving body yet, and what you said about each.
  * View-side glue (no three.js). Pure pieces are exported for tests.
  */
-import { parseExercise, type Exercise, type Prop, type SetupName } from '../core/exercise';
+import { parseExercise, repsLabel, type Exercise, type Prop, type SetupName } from '../core/exercise';
+import { FEEL_WORDS, type Feel } from '../core/routine';
 import setlistJson from './setlist.json';
 
 export type SetlistJson = typeof setlistJson;
@@ -40,6 +41,24 @@ export function shelf(entries: readonly SetlistEntry[], exercises: readonly Exer
   return entries.map((entry) => ({ entry, exercise: exercises.find((e) => e.id === entry.id) ?? null }));
 }
 
+/**
+ * A file that isn't on the setlist (a new exercise, or a preview in src/app/previews/), opened with
+ * `?ex=<id>`: a plain card made from the file itself, so authors can look at it before it's listed.
+ */
+export function previewItem(ex: Exercise): ShelfItem {
+  const entry = {
+    id: ex.id,
+    name: ex.title ?? ex.id,
+    forWhat: '',
+    dose: repsLabel(ex),
+    needs: '',
+    thumb: 'reach',
+    camera: { view: 'back-right', elevation: 18 },
+    steps: [] as string[],
+  } as unknown as SetlistEntry;
+  return { entry, exercise: ex };
+}
+
 // ---------------------------------------------------------------- optional fields
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -54,6 +73,13 @@ const SETUP_WORDS: Record<SetupName, string> = {
   sideLyingRight: 'Lie on your right side.',
   againstWall: 'Stand with your back to a wall.',
 };
+
+const ON_FLOOR: readonly SetupName[] = ['kneeling', 'allFours', 'sideLyingLeft', 'sideLyingRight'];
+
+/** Draw the floor when the file lists it or a mat, or the body starts on it. (Core always has one.) */
+export function showsFloor(ex: Exercise): boolean {
+  return ON_FLOOR.includes(ex.setup?.start as SetupName) || (ex.props ?? []).some((p) => p.kind === 'floor' || p.kind === 'mat');
+}
 
 /** "Get set" words for the starting position, if the file names one (standing needs no words). */
 export function setupWords(ex: Exercise): string | null {
@@ -119,6 +145,21 @@ export function cameraHint(...sources: unknown[]): CameraHint {
   return h;
 }
 
+/** Named views for `?cam=`: `34` is the three-quarter look from behind the right shoulder. */
+const CAM_NAMES: Record<string, View> = { back: 'back', front: 'front', left: 'left', right: 'right', '34': 'back-right' };
+
+/**
+ * `?cam=`: a named side (`back`, `front`, `left`, `right`, `34`, or any view name above), which
+ * frames the whole body from there, or an exact camera spot `x,y,z`. Null if it's neither.
+ */
+export function cameraFromParam(param: string | null): View | [number, number, number] | null {
+  if (!param) return null;
+  if (param in CAM_NAMES) return CAM_NAMES[param]!;
+  if (param in VIEWS) return param as View;
+  const xyz = param.split(',').map(Number);
+  return xyz.length === 3 && xyz.every(Number.isFinite) ? (xyz as [number, number, number]) : null;
+}
+
 /** Unit vector from the target toward the camera. */
 export function viewDirection(h: CameraHint): [number, number, number] {
   const [x, z] = VIEWS[h.view];
@@ -129,7 +170,7 @@ export function viewDirection(h: CameraHint): [number, number, number] {
 
 // ---------------------------------------------------------------- what you said (localStorage)
 
-export type Feel = 'helped' | 'fine' | 'catch';
+export type { Feel } from '../core/routine';
 export type BreathResult = 'better' | 'same' | 'worse';
 
 export interface Notes {
@@ -178,8 +219,4 @@ export function setFeel(n: Notes, id: string, feel: Feel | null, at = Date.now()
 
 export const isSkipped = (n: Notes, id: string) => n.feel[id]?.feel === 'catch';
 
-export const FEEL_LABEL: Record<Feel, string> = {
-  helped: 'Helped',
-  fine: 'Fine',
-  catch: 'Brought the catch back',
-};
+export const FEEL_LABEL: Readonly<Record<Feel, string>> = FEEL_WORDS;

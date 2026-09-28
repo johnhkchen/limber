@@ -1,11 +1,14 @@
-// Screenshots of the built page at phone and laptop size. Usage: node scripts/shots.mjs [outDir]
+// Screenshots of the built page at phone and laptop size.
+// Usage: node scripts/shots.mjs [outDir] [only]   (`only` keeps shots whose name contains it, e.g. `full-34`)
 // Serves dist/ with `vite preview`, opens headless Chromium (WebGL via SwiftShader), and saves PNGs.
+// Each shot waits for what it shows: the posed body (`window.__limber`) or a piece of the page.
 import { chromium } from 'playwright';
 import { preview } from 'vite';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const out = process.argv[2] ?? process.env.SHOTS_DIR ?? 'shots';
+const only = process.argv[3] ?? process.env.SHOTS_ONLY ?? '';
 mkdirSync(out, { recursive: true });
 
 const server = await preview({ preview: { port: 4179, strictPort: true } });
@@ -35,7 +38,18 @@ const shots = [
   { name: 'full-34-deep', q: `?t=6.6&muscles=100&bones=100&${THREE_Q}`, ...P },
   { name: 'full-page', q: `?t=6.6&muscles=40`, ...P, full: true },
   { name: 'laptop-full', q: `?t=6.6&muscles=40`, w: 1280, h: 800, mobile: false },
-];
+  // Named cameras (?cam=back|front|left|right|34 frame the whole body from that side).
+  { name: 'full-named-34', q: `?ex=across-body-reach&t=6.6&cam=34`, ...P },
+  // The page around the body: the shelf, one move, the round, the breath check.
+  { name: 'setlist', q: ``, ...P, full: true, wait: '.shelf' },
+  { name: 'player', q: `?ex=across-body-reach&t=6.6`, ...P, full: true },
+  { name: 'round-1', q: `?round=1&t=6.6`, ...P },
+  { name: 'breath-check', q: `?round=check`, ...P, full: true, wait: '#check-title' },
+  { name: 'laptop-setlist', q: ``, w: 1280, h: 800, mobile: false, wait: '.shelf' },
+  // Preview any exercise file (src/app/previews/ or content/exercises/) at a moment, from a side.
+  { name: 'allfours-right', q: `?ex=all-fours-test&t=0&cam=right&muscles=40`, ...P },
+  { name: 'allfours-34', q: `?ex=all-fours-test&t=0&cam=34&muscles=40`, ...P },
+].filter((s) => s.name.includes(only));
 
 let failed = false;
 for (const s of shots) {
@@ -46,8 +60,9 @@ for (const s of shots) {
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
   const t0 = Date.now();
   await page.goto(base + s.q);
-  await page.waitForFunction(() => window.__limber, null, { timeout: 30000 }).catch(() => errors.push('never ready'));
-  const info = await page.evaluate(() => window.__limber);
+  if (s.wait) await page.waitForSelector(s.wait, { timeout: 30000 }).catch(() => errors.push(`never saw ${s.wait}`));
+  else await page.waitForFunction(() => window.__limber, null, { timeout: 30000 }).catch(() => errors.push('never ready'));
+  const info = await page.evaluate(() => window.__limber ?? null);
   await page.waitForTimeout(800);
   const file = join(out, `${s.name}-${s.w}x${s.h}.png`);
   await page.screenshot({ path: file, fullPage: !!s.full });

@@ -43,9 +43,18 @@ Handy page options for looking at one moment: `?t=6.6` (seconds into the
 move), `?muscles=40` and `?bones=100` (how see-through, in %), `?cam=x,y,z`
 (where the camera starts; the body faces +Z, its right side is -X).
 
-Right now the page plays one move, the across-body reach from the first golden
-case, on the head, spine, ribs and right arm (down to the fingers) with the right
-side's back muscles.
+**Preview any exercise file.** `?ex=<id>&t=<sec>&cam=<back|front|left|right|34>`
+opens any file in `content/exercises/` (listed on the shelf or not) or
+`src/app/previews/` at that moment, framed from that side (`34` is the
+three-quarter view from behind the right shoulder). For example
+`?ex=all-fours-test&t=0&cam=right`. The body is posed and placed by
+`src/core/ground.ts`, exactly as the tests check it. `?props=wall-behind,ball`
+tries props on a file that lists none. To screenshot: `just build`, then
+`node scripts/shots.mjs <outDir> <name-filter>` (add your own line to the
+`shots` list; `just shots` takes them all).
+
+The page plays the across-body reach from the first golden case on the whole
+skeleton, with the back muscles on both sides.
 
 ## How it is put together
 

@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import { helperPose, type BonePoses, type Helper, type JointMap } from '../core/jointmap';
 import { LANDMARKS } from '../core/landmarks';
-import type { Placement } from './placement';
+import type { RigidTransform } from '../core/fk';
 
 export const COLORS = {
   bone: new THREE.Color('#e9dfcf'),
@@ -224,9 +224,9 @@ export function bindRigOnce(roots: THREE.Object3D[], boneNames: Iterable<string>
 const b2t = (v: readonly number[]) => new THREE.Vector3(v[0], v[2], -v[1]!);
 
 /**
- * World position of a landmark (core/landmarks.ts) on the posed body: its REST spot, carried by its
- * bone. Null when the bone isn't in the loaded files yet (legs, left arm are still coming).
- * TODO(core): if fk.ts grows a landmark function, cross-check against it in body.test.ts.
+ * World position of a landmark (core/landmarks.ts) on the drawn body: its REST spot, carried by its
+ * three.js bone. Props are placed by core (ground.ts), so the page doesn't need this; body.test.ts
+ * uses it to hold the drawn body to core's `landmark()` (they agree to well under 2 mm).
  */
 export function landmarkWorld(rig: Rig, jm: JointMap, name: string): THREE.Vector3 | null {
   const def = LANDMARKS[name];
@@ -244,53 +244,43 @@ export function landmarkWorld(rig: Rig, jm: JointMap, name: string): THREE.Vecto
 
 // ---------------------------------------------------------------- framing
 
-export function place(holder: THREE.Object3D, p: Placement | null): void {
-  if (p) {
-    holder.position.set(...p.position);
-    holder.quaternion.set(...p.quaternion);
+/** Put the holder of the GLBs where core's groundPose says (`g.transform`), or back at the origin. */
+export function place(holder: THREE.Object3D, t: RigidTransform | null): void {
+  if (t) {
+    holder.position.set(t.position[0], t.position[1], t.position[2]);
+    holder.quaternion.set(t.quaternion[0], t.quaternion[1], t.quaternion[2], t.quaternion[3]);
   } else {
     holder.position.set(0, 0, 0);
     holder.quaternion.identity();
   }
 }
 
+/** One moment of the move, as core grounded it. */
 export interface MeasureSample {
   bones: BonePoses;
-  place: Placement | null;
-  /** Landmarks to read at this moment: key → landmark name. */
-  anchors?: { key: string; landmark: string }[];
-  /** false: only read anchors, don't grow the box. */
-  box?: boolean;
+  transform: RigidTransform | null;
 }
 
 const meshBox = new THREE.Box3();
 
 /**
  * World box around the body over a few poses (the move's key moments), so the camera can frame the
- * whole move once instead of chasing it, plus the landmark points the props need.
- * `only` limits the box to some structures (e.g. the highlights).
+ * whole move once instead of chasing it. `only` limits the box to some structures (the highlights).
  * Leaves the rig in the last pose; the caller re-applies the current one.
  */
 export function measurePoses(
   rig: Rig,
-  jm: JointMap,
   holder: THREE.Object3D,
   structures: readonly Structure[],
   samples: readonly MeasureSample[],
   only?: ReadonlySet<string>,
-): { box: THREE.Box3; points: Record<string, [number, number, number]> } {
+): THREE.Box3 {
   const box = new THREE.Box3();
-  const points: Record<string, [number, number, number]> = {};
   const list = only?.size ? structures.filter((s) => only.has(s.zaName)) : structures;
   for (const s of samples) {
-    place(holder, s.place);
+    place(holder, s.transform);
     applyPose(rig, s.bones);
     holder.updateMatrixWorld(true);
-    for (const a of s.anchors ?? []) {
-      const w = landmarkWorld(rig, jm, a.landmark);
-      if (w) points[a.key] = [w.x, w.y, w.z];
-    }
-    if (s.box === false) continue;
     for (const st of list) {
       const m = st.mesh as THREE.SkinnedMesh;
       if (m.isSkinnedMesh) m.computeBoundingBox();
@@ -300,5 +290,5 @@ export function measurePoses(
       box.union(meshBox.copy(b).applyMatrix4(m.matrixWorld));
     }
   }
-  return { box, points };
+  return box;
 }

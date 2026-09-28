@@ -4,11 +4,11 @@
   import Scene from './Scene.svelte';
   import Thumb from './Thumb.svelte';
   import { duration, holdOf, playedTime, repCount, sample, setCount, type Exercise } from '../core/exercise';
+  import { groundPose } from '../core/ground';
   import type { JointMap } from '../core/jointmap';
   import { plainName } from '../core/names';
-  import { HIGHLIGHT_HEX, highlightColors } from './body';
-  import { placementOf, propAnchors, withFloor } from './placement';
-  import { FEEL_LABEL, cameraHint, propsFromParam, setupWords, type Feel, type SetlistEntry } from './setlist';
+  import { HIGHLIGHT_HEX, highlightColors, type MeasureSample } from './body';
+  import { FEEL_LABEL, cameraFromParam, cameraHint, propsFromParam, setupWords, showsFloor, type Feel, type SetlistEntry } from './setlist';
 
   interface Props {
     entry: SetlistEntry;
@@ -18,19 +18,19 @@
     feel: Feel | undefined;
     onfeel: (f: Feel | null) => void;
     onclose: () => void;
-    /** Set while doing the round. */
-    round?: { at: number; count: number; onnext: () => void; onback: () => void } | null;
+    /** Set while doing the round. `label` is core's stageWords ("Move 2 of 5."). */
+    round?: { at: number; count: number; label: string; onnext: () => void; onback: () => void } | null;
     /** Page options: ?t, ?cam, ?muscles, ?bones, ?props. Read once when the player opens. */
     params: URLSearchParams;
     onready?: (info: { structures: number; bones: number; helpers: number; unmapped: string[] }) => void;
   }
-  let { entry, exercise, jointMap, loadNote, feel, onfeel, onclose, round = null, params, onready }: Props = $props();
+  let { entry, exercise: file, jointMap, loadNote, feel, onfeel, onclose, round = null, params, onready }: Props = $props();
 
   // The page options are read once; the player is re-made for each move (App keys it by id).
   // svelte-ignore state_referenced_locally
   const opts = params;
-  const camParam = opts.get('cam')?.split(',').map(Number);
-  const camera = camParam?.length === 3 && camParam.every(Number.isFinite) ? (camParam as [number, number, number]) : undefined;
+  const cam = cameraFromParam(opts.get('cam'));
+  const camera = Array.isArray(cam) ? cam : undefined;
   const hasT = opts.has('t');
 
   let muscleOpacity = $state(Number(opts.get('muscles') ?? 85) / 100);
@@ -38,43 +38,47 @@
   let showHighlight = $state(true);
   let ready = $state(false);
 
+  // `?props=` tries props on a move whose file lists none (core places them like any listed prop).
+  const exercise = $derived.by(() => {
+    if (!file || file.props?.length) return file;
+    const extra = propsFromParam(opts.get('props'));
+    return extra.length ? { ...file, props: extra } : file;
+  });
+
   // A move starts from the top and plays by itself, unless the page asked for one moment with ?t.
   let t = $state(Number(opts.get('t') ?? 0));
   // svelte-ignore state_referenced_locally
-  let playing = $state(!!exercise && !hasT);
+  let playing = $state(!!file && !hasT);
 
   const total = $derived(exercise ? duration(exercise) : 0);
-  const frame = $derived(exercise ? sample(exercise, t) : null);
+  // Core puts the body in the room: posed, grounded, contacts touching, props placed.
+  const grounded = $derived(exercise && jointMap ? groundPose(exercise, t, jointMap) : null);
+  const frame = $derived(grounded?.frame ?? (exercise ? sample(exercise, t) : null));
   const reps = $derived(exercise ? repCount(exercise) : 1);
   const sets = $derived(exercise ? setCount(exercise) : 1);
   const hold = $derived(exercise ? holdOf(exercise) : undefined);
   const setup = $derived(exercise ? setupWords(exercise) : null);
-  const room = $derived.by(() => {
-    if (!exercise) return [];
-    const listed = exercise.props?.length ? exercise.props : propsFromParam(opts.get('props'));
-    return withFloor(exercise, listed);
+  // Core always has a floor; draw it only when the move is on it (standing moves read better without).
+  const room = $derived(grounded && exercise ? grounded.props.filter((p) => p.kind !== 'floor' || showsFloor(exercise)) : []);
+  const hint = $derived.by(() => {
+    const h = cameraHint((exercise as { camera?: unknown } | null)?.camera, entry.camera);
+    // `?cam=back|front|left|right|34` looks from that side and fits the whole body.
+    return cam && !Array.isArray(cam) ? { ...h, view: cam, fit: 'body' as const, zoom: 1 } : h;
   });
-  const hint = $derived(cameraHint((exercise as { camera?: unknown } | null)?.camera, entry.camera));
   const colors = $derived(highlightColors(exercise?.highlight ?? []));
-  const place = $derived(frame ? placementOf(frame.root, jointMap) : null);
 
-  // What to measure once per move: the key moments (start, each keyframe, mid-hold) to frame the
-  // whole move, and the landmarks the props hang on (the gripping hand, the ball's spot).
-  const samples = $derived.by(() => {
-    if (!exercise) return [];
+  // The key moments (start, each keyframe, mid-hold), grounded, so the camera frames the whole move once.
+  const samples: MeasureSample[] = $derived.by(() => {
+    if (!exercise || !jointMap) return [];
     const ex = exercise;
     const jm = jointMap;
-    const at = (s: number) => {
-      const f = sample(ex, s);
-      return { pose: f.pose, place: placementOf(f.root, jm) };
-    };
     const times = new Set<number>([0, ...ex.keyframes.map((k) => playedTime(ex, k.t))]);
     const h = holdOf(ex);
     if (h) times.add(h.from + (h.breaths * h.breathSeconds) / 2);
-    const out: { pose: typeof ex.keyframes[number]['pose']; place: ReturnType<typeof placementOf>; anchors?: { key: string; landmark: string }[]; box?: boolean }[] =
-      [...times].map(at);
-    for (const a of propAnchors(ex, room)) out.push({ ...at(a.t), anchors: [{ key: a.key, landmark: a.landmark }], box: false });
-    return out;
+    return [...times].map((s) => {
+      const g = groundPose(ex, s, jm);
+      return { bones: g.bones, transform: g.transform };
+    });
   });
 
   // Playback: a plain rAF clock. The sampler is pure, so scrubbing and playing share one path.
@@ -136,7 +140,7 @@
       All five
     </button>
     {#if round}
-      <div class="progress" aria-label={`Move ${round.at + 1} of ${round.count}`}>
+      <div class="progress" aria-label={round.label}>
         <span class="progress-text">{round.at + 1} of {round.count}</span>
         {#each { length: round.count } as _, i (i)}<span class="pip" class:on={i <= round.at}></span>{/each}
       </div>
@@ -147,8 +151,8 @@
     <section class="stage clay-well" aria-label="The body, doing the move. Drag to turn it.">
       <Canvas dpr={Math.min(devicePixelRatio, 2)} toneMapping={NeutralToneMapping}>
         <Scene
-          pose={frame.pose}
-          {place}
+          bones={grounded?.bones ?? null}
+          transform={grounded?.transform ?? null}
           {jointMap}
           {muscleOpacity}
           {boneOpacity}

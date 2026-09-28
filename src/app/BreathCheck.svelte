@@ -8,6 +8,8 @@
     skipped: SetlistEntry[];
     notes: Notes;
     result: BreathResult | null;
+    /** What to do next, once the round shows one move helped. */
+    next?: string | null;
     oncheck: (r: BreathResult) => void;
     onfeel: (id: string, f: Feel | null) => void;
     onagain: () => void;
@@ -15,7 +17,7 @@
     onwatch: () => void;
     onback: () => void;
   }
-  let { done, skipped, notes, result, oncheck, onfeel, onagain, onclose, onwatch, onback }: Props = $props();
+  let { done, skipped, notes, result, next = null, oncheck, onfeel, onagain, onclose, onwatch, onback }: Props = $props();
 
   const CHOICES: { r: BreathResult; label: string }[] = [
     { r: 'better', label: 'Better' },
@@ -50,6 +52,7 @@
         {setlist.check[result]}
         {#if result === 'worse'}<button class="linkish" onclick={onwatch}>See "Watch for"</button>{/if}
       </p>
+      {#if next}<p class="answer next">{next}</p>{/if}
     {/if}
   </div>
 

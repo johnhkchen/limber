@@ -1,13 +1,22 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { parseJointMap, type JointMap } from '../core/jointmap';
+  import {
+    RIGHT_SHOULDER_BLADE,
+    currentMove,
+    routineReducer,
+    stageWords,
+    startRoutine,
+    type BreathCheck as Breath,
+    type RoutineEvent,
+    type RoutineState,
+  } from '../core/routine';
   import BreathCheck from './BreathCheck.svelte';
   import Player from './Player.svelte';
   import Setlist from './Setlist.svelte';
-  import { current, startRound, step, type Round, type RoundAction } from './round';
   import {
-    isSkipped,
     loadExercises,
+    previewItem,
     readNotes,
     setFeel,
     setlist,
@@ -20,15 +29,20 @@
 
   const base = import.meta.env.BASE_URL;
 
-  // Exercises are data: every file in content/exercises/ shows up here by itself.
-  const files = import.meta.glob('/content/exercises/*.json', { eager: true, import: 'default' });
+  // Exercises are data: every file in content/exercises/ shows up here by itself. Files in
+  // src/app/previews/ (and content files not on the setlist yet) open only by address: ?ex=<id>.
+  const files = import.meta.glob(['/content/exercises/*.json', '/src/app/previews/*.json'], { eager: true, import: 'default' });
   const { exercises } = loadExercises(files);
   const items = shelf(setlist.exercises, exercises);
-  const allIds = items.map((i) => i.entry.id);
+  const previews = exercises.filter((e) => !items.some((i) => i.entry.id === e.id)).map(previewItem);
+  const findItem = (id: string) => items.find((i) => i.entry.id === id) ?? previews.find((i) => i.entry.id === id);
+
+  // The round is core's routine (src/core/routine.ts); the setlist lists the same five, in the same order.
+  const routine = RIGHT_SHOULDER_BLADE;
 
   // ---------------------------------------------------------------- where we are (kept in the URL)
   //
-  // ?ex=<id>                 one move
+  // ?ex=<id>                 one move (any exercise file, listed or not)
   // ?round=<n>               move n (1-based) of the round
   // ?round=check             the deep-breath check
   // ?t=…  (no ex)            the first move at that moment (older links and scripts/shots.mjs)
@@ -36,20 +50,30 @@
 
   let params = $state(new URLSearchParams(location.search));
   let notes: Notes = $state(readNotes());
-  let round: Round | null = $state(null);
+  let round = $state<RoutineState | null>(null);
+  /** Moves left out when the round started (they'd brought the catch back before). */
+  let leftOut: string[] = $state([]);
   let checkResult: BreathResult | null = $state(null);
+
+  const feels = (n: Notes): Record<string, Feel> => Object.fromEntries(Object.entries(n.feel).map(([id, v]) => [id, v.feel]));
+  const send = (s: RoutineState, e: RoutineEvent) => routineReducer(routine, s, e);
+  function freshRound(): RoutineState {
+    const s = startRoutine(routine, feels(notes));
+    leftOut = routine.steps.map((x) => x.exercise).filter((id) => !s.round.includes(id));
+    return s;
+  }
 
   function whereFrom(p: URLSearchParams): Where {
     const r = p.get('round');
     if (r) {
-      const skip = (id: string) => isSkipped(notes, id);
-      let next = round ?? startRound(allIds, skip);
-      next = r === 'check' ? { ...next, stage: 'check' } : step(next, { type: 'goto', at: Number(r) - 1 });
+      let next = round ?? freshRound();
+      if (r === 'check') next = next.stage === 'moves' ? { ...next, stage: 'check' } : next;
+      else next = send(next, { type: 'goto', at: Number(r) - 1 });
       round = next;
       return { view: 'round' };
     }
-    const id = p.get('ex') ?? (p.has('t') ? exercises[0]?.id : undefined);
-    if (id && items.some((i) => i.entry.id === id)) return { view: 'move', id };
+    const id = p.get('ex') ?? (p.has('t') ? items.find((i) => i.exercise)?.entry.id : undefined);
+    if (id && findItem(id)) return { view: 'move', id };
     return { view: 'shelf' };
   }
   let where: Where = $state(whereFrom(new URLSearchParams(location.search)));
@@ -89,28 +113,43 @@
     }
   }
   const openMove = (id: string) => go({ ex: id });
+  const roundQuery = (s: RoutineState) => ({ round: s.stage === 'moves' ? String(s.at + 1) : 'check' });
   function beginRound() {
-    round = startRound(allIds, (id) => isSkipped(notes, id));
+    round = freshRound();
     checkResult = null;
-    go({ round: round.stage === 'check' ? 'check' : '1' });
+    go(roundQuery(round));
   }
-  function roundStep(a: RoundAction) {
+  function roundStep(e: RoutineEvent) {
     if (!round) return;
-    const r = step(round, a);
-    round = r;
-    go({ round: r.stage === 'check' ? 'check' : String(r.at + 1) }, false);
+    round = send(round, e);
+    go(roundQuery(round), false);
   }
 
   // ---------------------------------------------------------------- what you said
 
+  const BREATH: Record<BreathResult, Breath> = { better: 'easier', same: 'same', worse: 'worse' };
+
   function feelFor(id: string, f: Feel | null) {
     notes = setFeel(notes, id, f);
     writeNotes(notes);
+    if (!round || where.view !== 'round') return;
+    if (f) {
+      // `catch` on the move you're on leaves it and goes on to the next one (core prunes it).
+      const before = round;
+      round = send(round, { type: 'feel', exercise: id, feel: f });
+      if (round.stage !== before.stage || currentMove(routine, round) !== currentMove(routine, before)) go(roundQuery(round), false);
+    } else {
+      const { [id]: _, ...rest } = round.feel;
+      round = { ...round, feel: rest };
+    }
+    // Said how a move felt after the breath check: decide again what to come back to.
+    if (round.breath && round.stage !== 'moves') round = send({ ...round, stage: 'check' }, { type: 'check', breath: round.breath });
   }
   function check(r: BreathResult) {
     checkResult = r;
     notes = { ...notes, checks: [...notes.checks, { result: r, at: Date.now() }] };
     writeNotes(notes);
+    if (round) round = send({ ...round, stage: 'check' }, { type: 'check', breath: BREATH[r] });
   }
 
   // ---------------------------------------------------------------- the body files
@@ -127,10 +166,15 @@
     (window as unknown as { __limber: unknown }).__limber = info;
   }
 
-  const roundId = $derived(round && where.view === 'round' ? current(round) : null);
+  // During the round the player shows core's current move; after the breath check the page stays on
+  // the check (core's "repeat" favourite is named there, not opened).
+  const roundId = $derived(round && where.view === 'round' && round.stage === 'moves' ? currentMove(routine, round)?.exercise ?? null : null);
   const moveId = $derived(where.view === 'move' ? where.id : roundId);
-  const moveItem = $derived(moveId ? items.find((i) => i.entry.id === moveId) : undefined);
-  const byId = (id: string) => items.find((i) => i.entry.id === id)!.entry;
+  const moveItem = $derived(moveId ? findItem(moveId) : undefined);
+  const byId = (id: string) => findItem(id)!.entry;
+  const doneIds = $derived(routine.steps.map((x) => x.exercise).filter((id) => !leftOut.includes(id)));
+  // One helped: name it and say how often (core's stageWords, e.g. "Come back to this one a few times today (5 breaths).").
+  const nextWords = $derived(round?.stage === 'repeat' && round.favourite ? `${byId(round.favourite).name}. ${stageWords(routine, round)}` : null);
 </script>
 
 <div class="b28-clay page" class:page-player={!!moveItem}>
@@ -151,7 +195,13 @@
           onfeel={(f) => feelFor(moveItem.entry.id, f)}
           onclose={toShelf}
           round={round && where.view === 'round'
-            ? { at: round.at, count: round.ids.length, onnext: () => roundStep({ type: 'next' }), onback: () => roundStep({ type: 'back' }) }
+            ? {
+                at: round.at,
+                count: round.round.length,
+                label: stageWords(routine, round),
+                onnext: () => roundStep({ type: 'next' }),
+                onback: () => roundStep({ type: 'back' }),
+              }
             : null}
           {params}
           {onready}
@@ -159,8 +209,9 @@
       {/key}
     {:else if where.view === 'round' && round}
       <BreathCheck
-        done={round.ids.map(byId)}
-        skipped={round.skipped.map(byId)}
+        done={doneIds.map(byId)}
+        skipped={leftOut.map(byId)}
+        next={nextWords}
         {notes}
         result={checkResult}
         oncheck={check}
@@ -178,7 +229,7 @@
   <footer class="foot">
     <p>Limber is not a doctor. {setlist.guideline}</p>
     <p class="credit">
-      So far the body has the head, spine, ribs and right arm down to the fingers, with the right side's back muscles.
+      The body has the whole skeleton, head to toes, with the back muscles on both sides.
       Body from BodyParts3D © DBCLS (CC BY-SA 2.1 JP), mixed and modified by
       <a href="https://www.z-anatomy.com" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), shaped for Limber (CC BY-SA 4.0).
     </p>

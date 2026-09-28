@@ -1,0 +1,33 @@
+{
+  "$comment": "Preview only, never on the shelf: open with ?ex=all-fours-test&t=0&cam=right. Same all-fours as src/core/ground.test.ts (thread-the-needle start), so authors can see what the tested pose looks like.",
+  "id": "all-fours-test",
+  "title": "All fours (preview)",
+  "highlight": [],
+  "setup": { "start": "allFours", "root": { "orientation": { "pitch": 82 } } },
+  "props": [{ "kind": "mat" }],
+  "keyframes": [
+    { "t": 0, "pose": {
+      "hip.l": { "flexion": 82 }, "hip.r": { "flexion": 82 },
+      "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+      "ankle.l": { "dorsiflexion": -55 }, "ankle.r": { "dorsiflexion": -55 },
+      "shoulder.l": { "flexion": 90 }, "shoulder.r": { "flexion": 90 },
+      "elbow.l": { "pronation": 170 }, "elbow.r": { "pronation": 170 },
+      "wrist.l": { "flexion": -75 }, "wrist.r": { "flexion": -75 }
+    } },
+    { "t": 2, "pose": {
+      "hip.l": { "flexion": 82 }, "hip.r": { "flexion": 82 },
+      "knee.l": { "flexion": 90 }, "knee.r": { "flexion": 90 },
+      "ankle.l": { "dorsiflexion": -55 }, "ankle.r": { "dorsiflexion": -55 },
+      "shoulder.l": { "flexion": 90 }, "shoulder.r": { "flexion": 90 },
+      "elbow.l": { "pronation": 170 }, "elbow.r": { "pronation": 170 },
+      "wrist.l": { "flexion": -75 }, "wrist.r": { "flexion": -75 },
+      "head": { "flexion": 10 }
+    } }
+  ],
+  "hold": { "from": 2, "breaths": 5, "breathSeconds": 6 },
+  "contacts": [
+    { "part": "palm.l", "surface": "floor" }, { "part": "palm.r", "surface": "floor" },
+    { "part": "knee.l", "surface": "floor" }, { "part": "knee.r", "surface": "floor" },
+    { "part": "shin.l", "surface": "floor" }, { "part": "shin.r", "surface": "floor" }
+  ]
+}

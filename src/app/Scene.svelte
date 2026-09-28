@@ -5,23 +5,25 @@
   import type { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls.js';
   import Body from './Body.svelte';
   import PropsView from './Props.svelte';
-  import type { Pose, Prop } from '../core/exercise';
-  import type { JointMap } from '../core/jointmap';
-  import { ballOnWall, resolveProps, type Placement, type ResolvedProp } from './placement';
+  import type { RigidTransform } from '../core/fk';
+  import type { ResolvedProp } from '../core/ground';
+  import type { BonePoses, JointMap } from '../core/jointmap';
+  import type { MeasureSample } from './body';
   import { viewDirection, type CameraHint } from './setlist';
 
   interface Props {
-    pose: Pose;
-    place?: Placement | null;
+    /** From core's groundPose: what to pose and where the body goes. */
+    bones: BonePoses | null;
+    transform?: RigidTransform | null;
     jointMap: JointMap | null;
     muscleOpacity: number;
     boneOpacity: number;
     highlight: ReadonlyMap<string, number>;
     showHighlight: boolean;
-    /** What's in the room, as the exercise lists it. Placed here once the body is measured. */
-    room?: Prop[];
-    /** Key moments of the move (the camera frames all of them) and landmark reads for the props. */
-    samples?: { pose: Pose; place: Placement | null; anchors?: { key: string; landmark: string }[]; box?: boolean }[];
+    /** What's in the room, already placed by core (groundPose `props`). */
+    room?: ResolvedProp[];
+    /** Key moments of the move, grounded by core. The camera frames all of them. */
+    samples?: MeasureSample[];
     hint: CameraHint;
     /** Exact camera start, e.g. from `?cam=x,y,z`. Skips the auto-fit. */
     camera?: [number, number, number];
@@ -35,10 +37,7 @@
   let cam: PerspectiveCamera | undefined = $state.raw();
   let controls: OrbitControlsImpl | undefined = $state.raw();
   let bounds = $state.raw<Box3 | null>(null);
-  let points: Record<string, [number, number, number]> = $state.raw({});
-  const placed: ResolvedProp[] = $derived(
-    ballOnWall(resolveProps(room, points, bounds ? { min: bounds.min.toArray(), max: bounds.max.toArray() } : null)),
-  );
+  const box = $derived(bounds ? { min: bounds.min.toArray(), max: bounds.max.toArray() } : null);
 
   const fitOnly = $derived(hint.fit === 'highlight' ? new Set(body.highlight.keys()) : undefined);
 
@@ -99,13 +98,10 @@
 <T.DirectionalLight position={[-2, 4, 2]} intensity={1.6} color="#fff4e6" />
 <T.DirectionalLight position={[2, 2, -3]} intensity={0.7} color="#e9eef7" />
 
-<PropsView items={placed} />
+<PropsView items={room} {box} />
 <Body
   {...body}
   {samples}
   {fitOnly}
-  onmeasure={(m) => {
-    points = m.points;
-    bounds = m.box.clone();
-  }}
+  onmeasure={(b) => (bounds = b.clone())}
 />
