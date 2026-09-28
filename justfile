@@ -42,7 +42,7 @@ full_src := "pipeline/source/zanatomy/Z-Anatomy/Startup.blend"
 #   -vpf  float positions: no dequantization child node, so extras stay on the mesh node itself (~6% more brotli bytes)
 gltfpack_flags := "-cc -kn -ke -vpf"
 
-# Build skeleton.glb + muscles.glb (golden subset, right side) from the Z-Anatomy sources
+# Build skeleton.glb + muscles.glb (full skeleton, back muscles both sides) from the Z-Anatomy sources
 anatomy: anatomy-deps
     mkdir -p {{anat_out}}
     {{blender}} -b {{rig_src}} --python-exit-code 1 --python pipeline/scripts/rig.py -- {{anat_out}} 2>&1 | grep -E '^RIG|Traceback|Error:|assert' | grep -v PyDriver
@@ -63,7 +63,7 @@ anatomy-check: anatomy-deps
 anatomy-publish:
     node pipeline/scripts/publish.mjs {{anat_out}} public/anatomy
 
-# Render REST and a test pose from behind (flattened rig) to pipeline/out/render_*.png
+# Render REST, the golden test pose and a kneeling-ish whole-body pose (flattened rig) to pipeline/out/render_*.png
 anatomy-render:
     {{blender}} -b {{anat_out}}/assembled.blend --python-exit-code 1 --python pipeline/scripts/render.py -- {{anat_out}} 2>&1 | grep -E '^RND|Traceback|Error:'
 

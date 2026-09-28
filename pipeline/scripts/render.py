@@ -7,6 +7,9 @@ Test pose (the across-body reach, exaggerated so it reads in a still):
   shoulderGirdle.r protraction 20, scapula.r upwardRotation 10
   shoulder.r flexion 90 + horizontalAdduction 40, elbow.r flexion 10
 Every angle goes through joint-map.json (bone + REST-local axis), the same way src/core/ will.
+
+Whole body, REST and a kneeling-ish pose (hips 90, knees 90 with the pelvis fixed, so it reads as sitting; plus the
+left shoulder flexed 90 and both hands at grip 1): render_{rest,kneel}_full_{back,front,side}.png.
 Writes render_{rest,pose}_back.png, render_{rest,pose}_back_deep.png (trapezius + latissimus hidden),
 render_pose_front.png and render.json (bone/mesh
 positions that prove things moved, plus how far each muscle's vertices travelled).
@@ -33,7 +36,8 @@ POSE = {
     'elbow.r': {'flexion': 10},
 }
 ORDER = ['horizontalAdduction', 'flexion', 'abduction', 'rotation', 'sideBend', 'protraction', 'elevation',
-         'upwardRotation', 'posteriorTilt', 'internalRotation', 'pronation', 'tilt', 'turn']
+         'upwardRotation', 'posteriorTilt', 'internalRotation', 'pronation', 'ulnarDeviation', 'dorsiflexion',
+         'tilt', 'turn', 'amount']
 
 def apply_pose(pose):
     per_bone = {}
@@ -43,6 +47,10 @@ def apply_pose(pose):
                 for b in TRUNK:
                     m = jm['joints']['vertebra.' + b]['movements'][mv]
                     per_bone.setdefault(m['bone'], []).append((mv, m['axis_local'], deg / len(TRUNK)))
+            elif 'amount_max_deg' in jm['joints'][joint] and mv == 'amount':   # grip: every entry by its share
+                J = jm['joints'][joint]
+                for m in J['movements'].values():
+                    per_bone.setdefault(m['bone'], []).append((mv, m['axis_local'], deg * m['share'] * J['amount_max_deg']))
             else:
                 m = jm['joints'][joint]['movements'][mv]
                 per_bone.setdefault(m['bone'], []).append((mv, m['axis_local'], deg))
@@ -90,10 +98,22 @@ TGT = Vector((-0.05, 0.0, 1.18))
 
 COVER = ('trapezius', 'Latissimus')      # hidden in the 'deep' views so the rhomboids and blade show
 
+FULL_TGT = Vector((0.0, 0.0, 0.88))
+
 def shoot(name, view):
     deep = view.endswith('deep')
     for o in meshes:
         o.hide_render = deep and any(c in o['za_name'] for c in COVER)
+    cam_data.ortho_scale = 0.95
+    if view.startswith('full_'):   # whole body: back (from +Y), front (from -Y), side (from the subject's right, -X)
+        cam_data.ortho_scale = 1.95
+        off = {'full_back': Vector((0, 3.0, 0)), 'full_front': Vector((0, -3.0, 0)), 'full_side': Vector((-3.0, 0, 0))}[view]
+        cam.location = FULL_TGT + off
+        cam.rotation_euler = (FULL_TGT - cam.location).to_track_quat('-Z', 'Y').to_euler()
+        scene.render.filepath = os.path.abspath(os.path.join(OUT, 'render_%s_%s.png' % (name, view)))
+        bpy.ops.render.render(write_still=True)
+        log('wrote', scene.render.filepath)
+        return
     if view.startswith('back'): # behind the subject: anterior is -Y, so the camera sits at +Y looking toward -Y
         cam.location = TGT + Vector((0, 2.0, 0))
     elif view == 'front':       # in front, right, above: shows the arm across the body
@@ -113,6 +133,22 @@ probe = lambda: {b: [round(c, 3) for c in P[b].tail] for b in ('RightArm', 'Radi
 rest_probe = probe()
 shoot('rest', 'back')
 shoot('rest', 'back_deep')
+for v in ('full_back', 'full_front', 'full_side'):
+    shoot('rest', v)
+
+# ---------------------------------------------------------------- kneeling-ish test pose (pelvis fixed, so it reads as sitting)
+KNEEL = {'hip.r': {'flexion': 90}, 'hip.l': {'flexion': 90}, 'knee.r': {'flexion': 90}, 'knee.l': {'flexion': 90},
+         'shoulder.l': {'flexion': 90}, 'elbow.l': {'flexion': 20}, 'grip.l': {'amount': 1.0}, 'grip.r': {'amount': 1.0}}
+apply_pose(KNEEL)
+kneel_probe = {b: [round(c, 3) for c in P[b].tail] for b in ('RightUpLeg', 'RightLeg', 'LeftUpLeg', 'LeftLeg', 'LeftArm',
+                                                            'Distal phalanx of hand-3rd finger.l', 'Distal phalanx of hand-3rd finger.r')}
+kneel_travel = {}
+for o in meshes:
+    d = np.linalg.norm(world_verts(o) - rest[o['za_name']], axis=1) * 1e3
+    kneel_travel[o['za_name']] = round(float(d.mean()), 1)
+for v in ('full_back', 'full_front', 'full_side'):
+    shoot('kneel', v)
+log('kneel tails', kneel_probe)
 
 # ---------------------------------------------------------------- test pose
 apply_pose(POSE)
@@ -144,7 +180,7 @@ for o in meshes:
 shoot('pose', 'back')
 shoot('pose', 'back_deep')
 shoot('pose', 'front')
-json.dump(dict(pose=POSE, helper_runtime_err=helper_err, bone_tails_rest=rest_probe, bone_tails_pose=posed_probe, vertex_travel=moved),
+json.dump(dict(pose=POSE, kneel_pose=KNEEL, kneel_tails=kneel_probe, kneel_travel_mean_mm=kneel_travel, helper_runtime_err=helper_err, bone_tails_rest=rest_probe, bone_tails_pose=posed_probe, vertex_travel=moved),
           open(os.path.join(OUT, 'render.json'), 'w'), indent=1)
 log('RightArm tail rest', rest_probe['RightArm'], 'pose', posed_probe['RightArm'])
 log('travel', {k: v['mean_mm'] for k, v in moved.items() if 'Rhomboid' in k or k in ('Scapula.r', 'Vertebra T1', 'Humerus.r', 'Sacrum')})

@@ -160,6 +160,69 @@ for s, S in (('r', 'Right'), ('l', 'Left')):
     ft = S + 'Foot'
     J['ankle.' + s] = dict(bone=ft, movements={'dorsiflexion': measure(ft, X, H(ft) + ANT * 0.12, UP)})
 
+# grip: curl every finger phalanx toward the palm, proportionally, plus a modest thumb opposition, so a hand
+# can close around a doorframe or post. One entry per bone (like breath), each with its own measured axis and a
+# share of GRIP_MAX_DEG; src/core turns grip.<side>.amount (0 = open, rest; 1 = closed around a post) into
+# amount * share * amount_max_deg about each axis. Degrees at amount 1 are clamped to the rig's own limits.
+GRIP_MAX_DEG = 90.0
+FINGERS = [('index', '2nd'), ('middle', '3rd'), ('ring', '4th'), ('little', '5th')]
+GRIP_DEG = {'mcp': 60.0, 'pip': 80.0, 'dip': 40.0, 'thumb.cmc': 20.0, 'thumb.mcp': 25.0, 'thumb.ip': 30.0}
+AXN = {'X': 0, 'Y': 1, 'Z': 2}
+
+def limit_room(bone, axis_local):
+    """Degrees the rig's own limit allows along +axis (None = no limit on that axis), and a note when the limit
+    looks reversed. The source gives Distal phalanx of hand-2nd finger.r z[-77, 10] (and .l z[-10, 77]): every other
+    DIP allows 77-90 deg of flexion and ~10 of extension, so that one is read as reversed."""
+    L = limits.get(bone)
+    nm, _ = principal(Vector(axis_local))
+    if not L or nm[1].lower() not in L:
+        return None, None
+    lo, hi = L[nm[1].lower()]
+    room, other = (hi, -lo) if nm[0] == '+' else (-lo, hi)
+    if 'phalanx of hand' in bone and room <= 15 and other >= 60:
+        return other, 'rig limit looks reversed (flexion room %.0f, extension room %.0f); used %.0f' % (room, other, other)
+    return room, None
+
+def measure_best(bone, probe_rest, want_dir, cands=('X', 'Z'), deg=10.0):
+    """Pick the bone-local axis (of cands) whose rotation moves the probe furthest along want_dir."""
+    best = None
+    for c in cands:
+        ax = Vector((0, 0, 0)); ax[AXN[c]] = 1.0
+        m = measure(bone, None, probe_rest, want_dir, local_axis=ax, deg=deg)
+        if best is None or m['check']['along_expected_mm'] > best['check']['along_expected_mm']:
+            best = m
+    return best
+
+for s, S in (('r', 'Right'), ('l', 'Left')):
+    med = -lateral(S + 'Hand')
+    gm = {}
+    palm = H('Metacarpal bone-3rd finger.' + s) + (T('Metacarpal bone-3rd finger.' + s) - H('Metacarpal bone-3rd finger.' + s)) * 0.6 + ANT * 0.03
+    for fname, nth in FINGERS:
+        chain = [(S + 'FingerBase') if nth == '3rd' else 'Proximal phalanx of hand-%s finger.%s' % (nth, s),
+                 'Middle phalanx of hand-%s finger.%s' % (nth, s), 'Distal phalanx of hand-%s finger.%s' % (nth, s)]
+        for joint_nm, b in zip(('mcp', 'pip', 'dip'), chain):
+            # fingertip-side end of this phalanx moves toward the palm side (palms face forward at REST)
+            m = measure(b, None, T(b), ANT + UP * 0.3, local_axis=Vector((0, 0, 1)))
+            gm['%s.%s' % (fname, joint_nm)] = m
+    tip = T('Distal phalanx of hand-1st finger.' + s)
+    across = (T('Proximal phalanx of hand-5th finger.' + s) + ANT * 0.03) - tip      # thumb tip toward the little finger
+    gm['thumb.cmc'] = measure_best(S + 'Thumb', tip, across)
+    gm['thumb.mcp'] = measure('Proximal phalanx of hand-1st finger.' + s, None, tip, palm - tip, local_axis=Vector((0, 0, 1)))
+    gm['thumb.ip'] = measure('Distal phalanx of hand-1st finger.' + s, None, tip, palm - tip, local_axis=Vector((0, 0, 1)))
+    for k, m in gm.items():
+        want = GRIP_DEG[k if k.startswith('thumb') else k.split('.')[1]]
+        room, note = limit_room(m['bone'], m['axis_local'])
+        m['deg_at_full'] = round(min(want, room) if room is not None and room > 0 else want, 2)
+        m['limit_room_deg'] = room
+        if note:
+            m['limit_note'] = note
+        m['share'] = round(m['deg_at_full'] / GRIP_MAX_DEG, 5)
+    J['grip.' + s] = dict(bone=S + 'Hand', movements=gm, amount_max_deg=GRIP_MAX_DEG,
+                          note='Shared movement like breath: pose {"grip.%s": {"amount": a}} turns each entry\'s bone by '
+                               'a * share * amount_max_deg (= a * deg_at_full) about its axis. a = 0 open (REST), 1 = closed '
+                               'around a post or doorframe. Entry keys: <finger>.<mcp|pip|dip>, thumb.<cmc|mcp|ip>; '
+                               'thumb.cmc is opposition (tip swings across the palm toward the little finger).' % s)
+
 # breath: each RibN-Start turns about an axis that lifts the front of the rib (measured, per side).
 # The shares are the rig's own (ribs 1-2 100% ... rib 10 20%); src/core scales them by breath.amount.
 BREATH_SHARES = [1.0, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2]
@@ -204,13 +267,25 @@ dupes = sorted({n for n in tn if tn.count(n) > 1})
 # and compares bone tails, so Blender renders and the browser can never silently disagree.
 PROBE_POSE = {'vertebra.T%d' % i: {'flexion': 2.0, 'rotation': -2.0} for i in range(1, 13)}
 PROBE_POSE.update({'shoulderGirdle.r': {'protraction': 20}, 'scapula.r': {'upwardRotation': 10},
-                   'shoulder.r': {'flexion': 90, 'horizontalAdduction': 40}, 'elbow.r': {'flexion': 10}})
+                   'shoulder.r': {'flexion': 90, 'horizontalAdduction': 40}, 'elbow.r': {'flexion': 10},
+                   # legs: hip + knee flexion (the kneeling poses), a little ankle, and the other leg partly bent
+                   'hip.r': {'flexion': 90, 'rotation': 10}, 'knee.r': {'flexion': 90}, 'ankle.r': {'dorsiflexion': 10},
+                   'hip.l': {'flexion': 45, 'abduction': 10}, 'knee.l': {'flexion': 30},
+                   # left arm: girdle, blade, shoulder, elbow, forearm, wrist and a closed hand
+                   'shoulderGirdle.l': {'elevation': 10}, 'scapula.l': {'upwardRotation': 15},
+                   'shoulder.l': {'flexion': 60, 'abduction': 30, 'rotation': 20}, 'elbow.l': {'flexion': 45, 'pronation': 30},
+                   'wrist.l': {'flexion': 20, 'ulnarDeviation': 10}, 'grip.l': {'amount': 1.0}, 'grip.r': {'amount': 0.5}})
 PROBE_ORDER = ['horizontalAdduction', 'flexion', 'abduction', 'rotation', 'sideBend', 'protraction', 'elevation',
-               'upwardRotation', 'posteriorTilt', 'internalRotation', 'pronation']
+               'upwardRotation', 'posteriorTilt', 'internalRotation', 'pronation', 'ulnarDeviation', 'dorsiflexion',
+               'tilt', 'turn', 'amount']
 reset()
 per = {}
 for jn, mvs in PROBE_POSE.items():
     for mv, deg in mvs.items():
+        if 'amount_max_deg' in J[jn] and mv == 'amount':      # shared movement (grip): every entry turns by its share
+            for m in J[jn]['movements'].values():
+                per.setdefault(m['bone'], []).append((PROBE_ORDER.index('amount'), m['axis_local'], deg * m['share'] * J[jn]['amount_max_deg']))
+            continue
         m = J[jn]['movements'][mv]
         per.setdefault(m['bone'], []).append((PROBE_ORDER.index(mv), m['axis_local'], deg))
 for b, lst in per.items():
@@ -219,7 +294,13 @@ for b, lst in per.items():
         q = q @ Quaternion(Vector(ax), math.radians(deg))
     P[b].rotation_quaternion = q
 bpy.context.view_layer.update()
-probe_tails = {b: [round(c, 6) for c in P[b].tail] for b in ('T1', 'Clavicle-X.r', 'Scapula.r', 'RightArm', 'Radius.r')}
+PROBE_BONES = ('T1', 'Clavicle-X.r', 'Scapula.r', 'RightArm', 'Radius.r',
+               'RightUpLeg', 'RightLeg', 'Tibia.r', 'RightFoot', 'Distal phalanx of foot-1st finger.r', 'Patella.l.001',
+               'LeftUpLeg', 'LeftLeg', 'LeftFoot', 'Patella.l',
+               'Clavicle-X.l', 'Scapula.l', 'LeftArm', 'LeftForeArm', 'Radius.l', 'LeftHand',
+               'Distal phalanx of hand-1st finger.l', 'Distal phalanx of hand-2nd finger.l', 'Distal phalanx of hand-3rd finger.l',
+               'Distal phalanx of hand-5th finger.l', 'Distal phalanx of hand-1st finger.r', 'Distal phalanx of hand-3rd finger.r')
+probe_tails = {b: [round(c, 6) for c in P[b].tail] for b in PROBE_BONES}
 reset()
 log('probe tails', probe_tails)
 
@@ -250,7 +331,10 @@ out = dict(
     breath_shares={'Rib%d-Start' % i: s for i, s in zip(range(1, 11), [1.0, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])},
     breath_note='Breath = rotation of each RibN-Start.{l,r} about its bone-local X scaled by the share (from the rig). '
                 'Sign/magnitude not yet measured -> open.',
-    breath_max_deg=2.0,   # small: the sternum stays put, so bigger rib turns open a gap at the costal cartilages
+    breath_max_deg=2.0,
+    shared_movements_note='A joint with amount_max_deg (grip.r, grip.l) is a shared movement, like breath: its movements are '
+                          'one entry per bone, and a pose {"grip.r": {"amount": a}} turns every entry\'s bone by '
+                          'a * share * amount_max_deg about its axis_three (compose name "amount"). check.mjs and render.py do this.',   # small: the sternum stays put, so bigger rib turns open a gap at the costal cartilages
     pose_probe=dict(pose=PROBE_POSE, order=PROBE_ORDER, tails_blender=probe_tails,
                     note='Posed in Blender by joints.py; check.mjs repeats it in three.js and compares tails.'),
     joints=J,
@@ -264,5 +348,6 @@ out = dict(
 )
 json.dump(out, open(os.path.join(OUT, 'joint-map.json'), 'w'), indent=1)
 log('joints', len(J), 'bones', len(bones), 'three-name collisions', dupes)
-for k in ['shoulder.r', 'elbow.r', 'scapula.r', 'shoulderGirdle.r', 'vertebra.T6', 'knee.r', 'wrist.r', 'hip.r']:
+for k in ['shoulder.r', 'elbow.r', 'scapula.r', 'shoulderGirdle.r', 'vertebra.T6', 'knee.r', 'wrist.r', 'hip.r', 'ankle.r',
+          'shoulder.l', 'elbow.l', 'scapula.l', 'shoulderGirdle.l', 'knee.l', 'wrist.l', 'hip.l', 'ankle.l', 'grip.r', 'grip.l']:
     log(k, {m: (v['nearest_local_axis'], v['off_axis_deg']) for m, v in J[k]['movements'].items()})

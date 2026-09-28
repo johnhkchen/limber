@@ -28,7 +28,8 @@
  *
  * What this module adds (the couplings the flattened rig no longer has, see anatomy-pipeline.md):
  * - `upperBack`, `lowBack` and `neck` are spread over T12–T1, L5–L1 and C7–C1 by SPREAD below.
- * - `breath.amount` (0..1) turns each rib by `amount · share · breath_max_deg` about its measured axis.
+ * - `breath.amount` (0..1) turns each rib by `amount · share · breath_max_deg` about its measured axis;
+ *   any joint with `amount_max_deg` (grip.l/r) works the same way with that max.
  * - Stretch helpers ("bands", pipeline/scripts/bands.py) are re-created per frame by `helperPose`.
  */
 
@@ -40,6 +41,8 @@ export interface AxisMove {
   axis_three: Vec3;
   /** Breath entries: the rib's share of the breath. */
   share?: number;
+  /** Shared-movement entries (grip): degrees at amount 1 (= share · amount_max_deg). Informational. */
+  deg_at_full?: number;
 }
 
 export interface Helper {
@@ -52,9 +55,29 @@ export interface Helper {
   volume_axis_three: Vec3;
 }
 
+/**
+ * One rig bone as joints.py writes it. `head`, `tail` and `rest_axes` are **Blender** armature space
+ * (metres, +Z up, anterior -Y); fk.ts converts them to three.js. Optional here so small hand-written
+ * maps in tests stay small; forward kinematics needs them.
+ */
+export interface BoneRest {
+  parent: string | null;
+  head?: Vec3;
+  tail?: Vec3;
+  length?: number;
+  /** The bone's local X, Y (head → tail) and Z axes at REST, in Blender world space. */
+  rest_axes?: { x: Vec3; y: Vec3; z: Vec3 };
+}
+
 export interface JointMap {
-  joints: Record<string, { bone?: string; movements: Record<string, AxisMove> }>;
-  bones: Record<string, { parent: string | null }>;
+  /**
+   * `amount_max_deg` marks a shared movement like grip: `{ "grip.r": { "amount": a } }` turns each
+   * entry's bone by a · share · amount_max_deg.
+   */
+  joints: Record<string, { bone?: string; amount_max_deg?: number; movements: Record<string, AxisMove> }>;
+  bones: Record<string, BoneRest>;
+  /** Hips → … → Head. `trunk_chain[0]` is the root bone the whole body hangs from. */
+  trunk_chain?: string[];
   breath_max_deg?: number;
   helpers?: Helper[];
 }
@@ -143,11 +166,15 @@ export function toBonePoses(pose: Pose, map: JointMap): BonePoses {
         for (const f of found) add(f!.bone, mv, f!.axis_three, v / spread.length);
         continue;
       }
-      if (joint === 'breath' && mv === 'amount') {
-        const ribs = map.joints.breath?.movements;
-        if (!ribs) { unmapped.push('breath.amount'); continue; }
-        const max = map.breath_max_deg ?? 3;
-        for (const r of Object.values(ribs)) add(r.bone, 'amount', r.axis_three, v * (r.share ?? 1) * max);
+      // Shared movements (breath, grip.l/r): amount 0..1 turns every entry's bone by
+      // amount · share · max, max = the joint's `amount_max_deg` (grip) or `breath_max_deg` (ribs).
+      // Same as pipeline/scripts/check.mjs.
+      if (mv === 'amount' && !map.joints[joint]?.movements.amount) {
+        const j = map.joints[joint];
+        const parts = j?.movements;
+        const max = j?.amount_max_deg ?? (joint === 'breath' ? map.breath_max_deg ?? 3 : undefined);
+        if (!parts || !Object.keys(parts).length || max === undefined) { unmapped.push(`${joint}.amount`); continue; }
+        for (const r of Object.values(parts)) add(r.bone, 'amount', r.axis_three, v * (r.share ?? 1) * max);
         continue;
       }
       const m = map.joints[joint]?.movements[mv];

@@ -64,6 +64,21 @@ describe('toBonePoses', () => {
     expect(names).toHaveLength(20);
     expect(names.every((n) => /^Rib\d+-Start\.[lr]$/.test(n))).toBe(true);
   });
+  it('grip turns every finger and thumb bone by amount · share · amount_max_deg (as check.mjs does)', () => {
+    for (const side of ['l', 'r']) {
+      const g = real.joints[`grip.${side}`]!;
+      expect(g.amount_max_deg).toBeGreaterThan(0);
+      const { bones, unmapped } = toBonePoses({ [`grip.${side}`]: { amount: 0.5 } }, real);
+      expect(unmapped).toEqual([]);
+      const entries = Object.values(g.movements);
+      expect(Object.keys(bones)).toHaveLength(new Set(entries.map((e) => e.bone)).size);
+      for (const e of entries) expect(angleOf(bones[e.bone]!.quaternion)).toBeCloseTo(0.5 * e.share! * g.amount_max_deg!, 6);
+    }
+  });
+  it('a shared movement without a max is reported, not guessed', () => {
+    const m = parseJointMap({ bones: { F: { parent: null } }, joints: { 'grip.r': { movements: { a: { bone: 'F', axis_three: [0, 0, 1], share: 1 } } } } });
+    expect(toBonePoses({ 'grip.r': { amount: 1 } }, m).unmapped).toEqual(['grip.r.amount']);
+  });
   it('reports what the map lacks instead of failing', () => {
     expect(toBonePoses({ 'wrist.r': { flexion: 10 } }, tiny).unmapped).toEqual(['wrist.r.flexion']);
   });
@@ -84,7 +99,7 @@ describe('toBonePoses', () => {
 
 describe('helperPose (bands)', () => {
   it('matches Blender STRETCH_TO for every helper in the test pose', () => {
-    expect(fixture.helpers.length).toBe(12);
+    expect(fixture.helpers.length).toBe(real.helpers!.length);
     let worst = 0;
     for (const h of fixture.helpers) {
       const r = helperPose(
@@ -146,6 +161,8 @@ describe('parseJointMap', () => {
     const b = mappedBones(real);
     expect(b).toContain('Scapula.r');
     expect(b).toContain('MH_RhomboidMajor_r_0');
-    expect(real.helpers).toHaveLength(12);
+    // 12 on the right; the left twins arrive with the left arm. Every helper names real bones (parseJointMap).
+    expect(real.helpers!.length).toBeGreaterThanOrEqual(12);
+    expect(real.helpers!.length % 12).toBe(0);
   });
 });

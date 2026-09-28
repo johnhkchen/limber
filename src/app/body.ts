@@ -3,15 +3,32 @@
  * View code (imports three). The math it calls lives in src/core/.
  */
 import * as THREE from 'three';
-import { helperPose, type BonePoses, type Helper } from '../core/jointmap';
+import { helperPose, type BonePoses, type Helper, type JointMap } from '../core/jointmap';
+import { LANDMARKS } from '../core/landmarks';
+import type { Placement } from './placement';
 
 export const COLORS = {
   bone: new THREE.Color('#e9dfcf'),
   muscles: new THREE.Color('#b9634f'),
   skin: new THREE.Color('#dcc0a8'),
   connective: new THREE.Color('#d8cab0'),
-  highlight: new THREE.Color('#44679b'),
 } as const;
+
+/**
+ * One hue per highlighted structure, so neighbours (rhomboids, middle trapezius) don't merge into one
+ * blob. Picked to read on see-through red-brown muscle and cream bone, and to stay apart for the
+ * common kinds of colour blindness (blue / amber / bluish green / sky differ in hue *and* lightness).
+ * The chips under the body use the same list, in the same order.
+ */
+export const HIGHLIGHT_HEX = ['#44679b', '#e0a31c', '#1f9e89', '#7cc4f0'] as const;
+const HIGHLIGHT = HIGHLIGHT_HEX.map((h) => new THREE.Color(h));
+
+/** za_name → palette index, in the order the exercise lists them. Repeats wrap around. */
+export function highlightColors(names: readonly string[]): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const n of names) if (!m.has(n)) m.set(n, m.size % HIGHLIGHT_HEX.length);
+  return m;
+}
 
 export interface Structure {
   zaName: string;
@@ -47,23 +64,28 @@ export function collectStructures(root: THREE.Object3D, fallbackLayer: string): 
   return out;
 }
 
+const BLACK = new THREE.Color(0x000000);
+
 export interface Look {
   /** Layer → 0..1. */
   opacity: Record<string, number>;
-  highlight: ReadonlySet<string>;
+  /** za_name → index into HIGHLIGHT_HEX (see highlightColors). */
+  highlight: ReadonlyMap<string, number>;
   /** Highlights stay visible through faded layers. */
   showHighlight: boolean;
 }
 
 export function styleStructures(list: Structure[], look: Look): void {
   for (const s of list) {
-    const lit = look.showHighlight && look.highlight.has(s.zaName);
+    const hue = look.showHighlight ? look.highlight.get(s.zaName) : undefined;
+    const lit = hue !== undefined;
+    const color = lit ? HIGHLIGHT[hue]! : null;
     const layerOpacity = look.opacity[s.layer] ?? 1;
     const opacity = lit ? Math.max(layerOpacity, 0.9) : layerOpacity;
     const m = s.material;
-    m.color.copy(lit ? COLORS.highlight : (m.userData.base as THREE.Color));
-    m.emissive.copy(lit ? COLORS.highlight : new THREE.Color(0x000000));
-    m.emissiveIntensity = lit ? 0.45 : 0;
+    m.color.copy(color ?? (m.userData.base as THREE.Color));
+    m.emissive.copy(color ?? BLACK);
+    m.emissiveIntensity = lit ? 0.4 : 0;
     m.opacity = opacity;
     m.transparent = opacity < 0.999;
     m.depthWrite = opacity >= 0.999;
@@ -165,4 +187,118 @@ export function applyPose(rig: Rig, poses: BonePoses): void {
     h.bone.quaternion.set(out.quaternion[0], out.quaternion[1], out.quaternion[2], out.quaternion[3]);
     h.bone.scale.set(out.scale[0], out.scale[1], out.scale[2]);
   }
+}
+
+// ---------------------------------------------------------------- one rig per loaded file
+
+/** REST world matrices of every named node in the skeleton file, for landmarks. */
+interface RestFrames {
+  byName: Map<string, THREE.Object3D>;
+  restWorldInv: Map<THREE.Object3D, THREE.Matrix4>;
+}
+const rigs = new WeakMap<THREE.Object3D, Rig>();
+const rests = new WeakMap<Rig, RestFrames>();
+
+/**
+ * `bindRig` records REST from the objects as they are, and the loader caches scenes across remounts
+ * (going back to the shelf and into another move). Bind once per loaded scene so REST stays REST.
+ * Call while the files are at REST and their holder is untransformed.
+ */
+export function bindRigOnce(roots: THREE.Object3D[], boneNames: Iterable<string>, helpers: Helper[] = []): Rig {
+  const hit = rigs.get(roots[0]!);
+  if (hit && hit.roots.length === roots.length && hit.roots.every((r, i) => r === roots[i])) return hit;
+  const rig = bindRig(roots, boneNames, helpers);
+  rigs.set(roots[0]!, rig);
+  const rf: RestFrames = { byName: new Map(), restWorldInv: new Map() };
+  roots[0]!.updateMatrixWorld(true);
+  roots[0]!.traverse((o) => {
+    const n = o.userData.name as string | undefined;
+    if (!n || rf.byName.has(n)) return;
+    rf.byName.set(n, o);
+    rf.restWorldInv.set(o, o.matrixWorld.clone().invert());
+  });
+  rests.set(rig, rf);
+  return rig;
+}
+
+const b2t = (v: readonly number[]) => new THREE.Vector3(v[0], v[2], -v[1]!);
+
+/**
+ * World position of a landmark (core/landmarks.ts) on the posed body: its REST spot, carried by its
+ * bone. Null when the bone isn't in the loaded files yet (legs, left arm are still coming).
+ * TODO(core): if fk.ts grows a landmark function, cross-check against it in body.test.ts.
+ */
+export function landmarkWorld(rig: Rig, jm: JointMap, name: string): THREE.Vector3 | null {
+  const def = LANDMARKS[name];
+  const rf = rests.get(rig);
+  if (!def || !rf) return null;
+  const bone = rf.byName.get(def.bone);
+  const inv = bone && rf.restWorldInv.get(bone);
+  if (!bone || !inv) return null;
+  const br = jm.bones[def.bone];
+  const head = br?.head ? b2t(br.head) : new THREE.Vector3().setFromMatrixPosition(inv.clone().invert());
+  const tail = br?.tail ? b2t(br.tail) : head.clone();
+  const rest = head.lerp(tail, def.at).add(new THREE.Vector3(...def.offset));
+  return rest.applyMatrix4(inv).applyMatrix4(bone.matrixWorld);
+}
+
+// ---------------------------------------------------------------- framing
+
+export function place(holder: THREE.Object3D, p: Placement | null): void {
+  if (p) {
+    holder.position.set(...p.position);
+    holder.quaternion.set(...p.quaternion);
+  } else {
+    holder.position.set(0, 0, 0);
+    holder.quaternion.identity();
+  }
+}
+
+export interface MeasureSample {
+  bones: BonePoses;
+  place: Placement | null;
+  /** Landmarks to read at this moment: key → landmark name. */
+  anchors?: { key: string; landmark: string }[];
+  /** false: only read anchors, don't grow the box. */
+  box?: boolean;
+}
+
+const meshBox = new THREE.Box3();
+
+/**
+ * World box around the body over a few poses (the move's key moments), so the camera can frame the
+ * whole move once instead of chasing it, plus the landmark points the props need.
+ * `only` limits the box to some structures (e.g. the highlights).
+ * Leaves the rig in the last pose; the caller re-applies the current one.
+ */
+export function measurePoses(
+  rig: Rig,
+  jm: JointMap,
+  holder: THREE.Object3D,
+  structures: readonly Structure[],
+  samples: readonly MeasureSample[],
+  only?: ReadonlySet<string>,
+): { box: THREE.Box3; points: Record<string, [number, number, number]> } {
+  const box = new THREE.Box3();
+  const points: Record<string, [number, number, number]> = {};
+  const list = only?.size ? structures.filter((s) => only.has(s.zaName)) : structures;
+  for (const s of samples) {
+    place(holder, s.place);
+    applyPose(rig, s.bones);
+    holder.updateMatrixWorld(true);
+    for (const a of s.anchors ?? []) {
+      const w = landmarkWorld(rig, jm, a.landmark);
+      if (w) points[a.key] = [w.x, w.y, w.z];
+    }
+    if (s.box === false) continue;
+    for (const st of list) {
+      const m = st.mesh as THREE.SkinnedMesh;
+      if (m.isSkinnedMesh) m.computeBoundingBox();
+      else if (!m.geometry.boundingBox) m.geometry.computeBoundingBox();
+      const b = m.isSkinnedMesh ? m.boundingBox : m.geometry.boundingBox;
+      if (!b || b.isEmpty()) continue;
+      box.union(meshBox.copy(b).applyMatrix4(m.matrixWorld));
+    }
+  }
+  return { box, points };
 }

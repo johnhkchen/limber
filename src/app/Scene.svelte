@@ -1,30 +1,90 @@
 <script lang="ts">
-  import { T } from '@threlte/core';
+  import { T, useThrelte } from '@threlte/core';
   import { OrbitControls } from '@threlte/extras';
+  import { Box3, Vector3, type PerspectiveCamera } from 'three';
+  import type { OrbitControls as OrbitControlsImpl } from 'three/examples/jsm/controls/OrbitControls.js';
   import Body from './Body.svelte';
-  import type { Pose } from '../core/exercise';
+  import PropsView from './Props.svelte';
+  import type { Pose, Prop } from '../core/exercise';
   import type { JointMap } from '../core/jointmap';
+  import { ballOnWall, resolveProps, type Placement, type ResolvedProp } from './placement';
+  import { viewDirection, type CameraHint } from './setlist';
 
   interface Props {
     pose: Pose;
+    place?: Placement | null;
     jointMap: JointMap | null;
     muscleOpacity: number;
     boneOpacity: number;
-    highlight: string[];
+    highlight: ReadonlyMap<string, number>;
     showHighlight: boolean;
-    /** Camera start position, e.g. from `?cam=x,y,z`. */
+    /** What's in the room, as the exercise lists it. Placed here once the body is measured. */
+    room?: Prop[];
+    /** Key moments of the move (the camera frames all of them) and landmark reads for the props. */
+    samples?: { pose: Pose; place: Placement | null; anchors?: { key: string; landmark: string }[]; box?: boolean }[];
+    hint: CameraHint;
+    /** Exact camera start, e.g. from `?cam=x,y,z`. Skips the auto-fit. */
     camera?: [number, number, number];
     onready?: (info: { structures: number; bones: number; helpers: number; unmapped: string[] }) => void;
   }
-  let { camera = [-1.05, 1.5, -1.1], ...props }: Props = $props();
+  let { room = [], samples, hint, camera: fixedCam, ...body }: Props = $props();
 
-  // The body faces +Z; the golden case lives on the upper back, so start behind the right shoulder.
-  const target: [number, number, number] = [-0.03, 1.3, 0];
+  const { size, invalidate } = useThrelte();
+  const FOV = 35;
+
+  let cam: PerspectiveCamera | undefined = $state.raw();
+  let controls: OrbitControlsImpl | undefined = $state.raw();
+  let bounds = $state.raw<Box3 | null>(null);
+  let points: Record<string, [number, number, number]> = $state.raw({});
+  const placed: ResolvedProp[] = $derived(
+    ballOnWall(resolveProps(room, points, bounds ? { min: bounds.min.toArray(), max: bounds.max.toArray() } : null)),
+  );
+
+  const fitOnly = $derived(hint.fit === 'highlight' ? new Set(body.highlight.keys()) : undefined);
+
+  // Before anything is measured, and for `?cam=`: the old view from behind the right shoulder.
+  const fallbackTarget = new Vector3(-0.03, 1.3, 0);
+
+  /** Back the camera off along the hint's direction until the box fits the view, both ways. */
+  function frame(box: Box3, aspect: number) {
+    if (!cam || !controls) return;
+    const center = box.getCenter(new Vector3());
+    const radius = Math.max(0.15, box.getSize(new Vector3()).length() / 2);
+    const v = (FOV * Math.PI) / 180 / 2;
+    const h = Math.atan(Math.tan(v) * aspect);
+    const dist = (radius / Math.sin(Math.min(v, h))) * 0.92 / hint.zoom;
+    const d = viewDirection(hint);
+    cam.position.set(center.x + d[0] * dist, center.y + d[1] * dist, center.z + d[2] * dist);
+    controls.target.copy(center);
+    controls.minDistance = Math.min(0.5, dist * 0.4);
+    controls.maxDistance = Math.max(4, dist * 2);
+    controls.update();
+    invalidate();
+  }
+
+  $effect(() => {
+    if (fixedCam) {
+      if (cam && controls) {
+        cam.position.set(...fixedCam);
+        controls.target.copy(fallbackTarget);
+        controls.update();
+        invalidate();
+      }
+      return;
+    }
+    if (bounds) frame(bounds, $size.width / Math.max(1, $size.height));
+    else if (cam && controls) {
+      // Nothing measured yet: the old view from behind the right shoulder.
+      controls.target.copy(fallbackTarget);
+      controls.update();
+    }
+  });
 </script>
 
-<T.PerspectiveCamera makeDefault position={camera} fov={35} near={0.05} far={20}>
+<T.PerspectiveCamera makeDefault bind:ref={cam} position={[-1.05, 1.5, -1.1]} fov={FOV} near={0.05} far={30}>
   <OrbitControls
-    {target}
+    bind:ref={controls}
+    target={[fallbackTarget.x, fallbackTarget.y, fallbackTarget.z]}
     enableDamping
     dampingFactor={0.12}
     enablePan={false}
@@ -39,4 +99,13 @@
 <T.DirectionalLight position={[-2, 4, 2]} intensity={1.6} color="#fff4e6" />
 <T.DirectionalLight position={[2, 2, -3]} intensity={0.7} color="#e9eef7" />
 
-<Body {...props} />
+<PropsView items={placed} />
+<Body
+  {...body}
+  {samples}
+  {fitOnly}
+  onmeasure={(m) => {
+    points = m.points;
+    bounds = m.box.clone();
+  }}
+/>

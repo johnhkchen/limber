@@ -18,15 +18,15 @@ and the sources in `pipeline/source/` (never edited). Node tools are pinned in
 
 | Script | Runs on | Does |
 |---|---|---|
-| `scripts/rig.py` | rig file | REST pose; deletes the T-pose helper armatures, all drivers and constraints (keeping their rotation limits); flattens the rig: `Hips → L5 … T1 → C7 … C1 → Head`, radius and ulna under `RightForeArm`, carpals under `RightHand`, tibia under `RightLeg`; deletes the control bones; turns full inheritance on for every bone (the source switches it off on T12, T3–T1, C6, C2, C1, which three.js can't do). Fails if any REST head or tail moves. 237 → 189 bones. |
+| `scripts/rig.py` | rig file | REST pose; deletes the T-pose helper armatures, all drivers and constraints (keeping their rotation limits); flattens the rig: `Hips → L5 … T1 → C7 … C1 → Head`, radius and ulna under `RightForeArm`, carpals under `RightHand`, tibia and patella under `RightLeg`; moves each knee hinge (`RightLeg`/`LeftLeg` head) to the measured point that keeps the tibial plateau on the femur over 0–150° (the source's sliding-knee drivers don't survive flattening; the old hinge opened a 78 mm gap at 90°); deletes the control bones; turns full inheritance on for every bone (the source switches it off on T12, T3–T1, C6, C2, C1, which three.js can't do). Fails if any REST head or tail moves (except the two knee hinges, whose tails must stay). 237 → 189 bones. Knee numbers in `out/rig-report.json` `knee`. |
 | `scripts/select.py` | full file | Bakes the structures in `data/structures.json` to world space, plus every rig bone's full-file mesh as a weighting target. Enforces `data/deny.json`. |
 | `scripts/assemble.py` | `out/rig.blend` | Pairs full-file bones with rig bones (`data/bone_mesh_match.json` + `data/bone-fixups.json`, checked by centroid), decimates, skins bones rigidly (1 influence) and muscles with c2 weights, except the muscles in `scripts/bands.py` `SPEC` (rhomboid major and minor, levator scapulae), which get "bands": 4 stretch helper bones per muscle (`MH_<muscle>_<k>`, STRETCH_TO a target `MT_<muscle>_<k>` on the scapula). 189 + 24 = 213 bones. |
-| `scripts/joints.py` | `out/assembled.blend` | Measures each movement's bone axis by posing it (breath: each rib's lift axis), lists the bands helpers, poses a probe pose, then writes `out/joint-map.json`. |
+| `scripts/joints.py` | `out/assembled.blend` | Measures each movement's bone axis by posing it (breath: each rib's lift axis; grip: each finger bone's curl axis), lists the bands helpers, poses a probe pose (trunk, right arm, both legs, left arm, both hands), then writes `out/joint-map.json`. |
 | `scripts/export.py` | `out/assembled.blend` | Writes `skeleton.raw.glb` and `muscles.raw.glb`, sharing the same skin. Each has one node per structure, with `extras.za_name`, `ta_name`, `za_layer`, `za_side` and (skeleton) `za_bone`. |
 | gltfpack | | `-cc -kn -ke -vpf` (see `justfile`) → `skeleton.glb`, `muscles.glb` |
-| `scripts/check.mjs` | packed GLBs | three.js GLTFLoader + MeshoptDecoder in Node. Checks the contract, and repeats joints.py's probe pose in three.js (bone tails must agree with Blender within 0.5 mm). Writes `out/check.json`. |
+| `scripts/check.mjs` | packed GLBs | three.js GLTFLoader + MeshoptDecoder in Node. Checks the contract, repeats joints.py's probe pose in three.js (bone tails must agree with Blender within 0.5 mm), checks each hip/knee/ankle/shoulder/elbow/girdle/scapula movement and grip moves the way its name says on both sides, checks sided bones are wound outward (the full file's `.l` bones are mirror copies), and fails over 2 MB brotli. Writes `out/check.json`. |
 | `scripts/publish.mjs` | packed GLBs | Puts `asset.copyright` back (gltfpack drops it) and copies `skeleton.glb`, `muscles.glb`, `joint-map.json` into `public/anatomy/`. Fails over 5 MB. |
-| `scripts/render.py` | `out/assembled.blend` | Renders REST and a test pose from behind (`out/render_*.png`), posed through `joint-map.json`. Also checks the bands runtime math against Blender and writes `out/helpers-fixture.json` (copy it to `src/core/fixtures/helpers-blender.json` when the helpers change). |
+| `scripts/render.py` | `out/assembled.blend` | Renders REST and a test pose from behind (`out/render_*.png`), plus the whole body at REST and in a kneeling-ish pose (hips and knees 90°, hands at grip 1) from back, front and side (`render_{rest,kneel}_full_*.png`), posed through `joint-map.json`. Also checks the bands runtime math against Blender and writes `out/helpers-fixture.json` (copy it to `src/core/fixtures/helpers-blender.json` when the helpers change). |
 
 ## Contract for the app
 
@@ -45,6 +45,10 @@ and the sources in `pipeline/source/` (never edited). Node tools are pinned in
   materials (bone + cartilage, or muscle + tendon) loads as a `Group` holding two
   `SkinnedMesh` children, with the extras on the `Group`. Otherwise the extras
   sit on the `SkinnedMesh` itself.
+- **Shared movements:** `grip.r` / `grip.l` carry `amount_max_deg`; like `breath`, each entry is one finger bone
+  with its own axis and `share`. A pose `{"grip.r": {"amount": a}}` turns each bone by
+  `a * share * amount_max_deg` (0 = open at REST, 1 = closed around a post or doorframe; thumb opposition is
+  capped at the rig's 15°).
 - **Names that are wrong in the source:** see `data/name-fixups.json` (the
   trapezius "descending" and "ascending" labels are swapped); `ta_name` carries
   the corrected name.

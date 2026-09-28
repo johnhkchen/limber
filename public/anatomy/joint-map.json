@@ -51,6 +51,7 @@
  },
  "breath_note": "Breath = rotation of each RibN-Start.{l,r} about its bone-local X scaled by the share (from the rig). Sign/magnitude not yet measured -> open.",
  "breath_max_deg": 2.0,
+ "shared_movements_note": "A joint with amount_max_deg (grip.r, grip.l) is a shared movement, like breath: its movements are one entry per bone, and a pose {\"grip.r\": {\"amount\": a}} turns every entry's bone by a * share * amount_max_deg about its axis_three (compose name \"amount\"). check.mjs and render.py do this.",
  "pose_probe": {
   "pose": {
    "vertebra.T1": {
@@ -113,6 +114,48 @@
    },
    "elbow.r": {
     "flexion": 10
+   },
+   "hip.r": {
+    "flexion": 90,
+    "rotation": 10
+   },
+   "knee.r": {
+    "flexion": 90
+   },
+   "ankle.r": {
+    "dorsiflexion": 10
+   },
+   "hip.l": {
+    "flexion": 45,
+    "abduction": 10
+   },
+   "knee.l": {
+    "flexion": 30
+   },
+   "shoulderGirdle.l": {
+    "elevation": 10
+   },
+   "scapula.l": {
+    "upwardRotation": 15
+   },
+   "shoulder.l": {
+    "flexion": 60,
+    "abduction": 30,
+    "rotation": 20
+   },
+   "elbow.l": {
+    "flexion": 45,
+    "pronation": 30
+   },
+   "wrist.l": {
+    "flexion": 20,
+    "ulnarDeviation": 10
+   },
+   "grip.l": {
+    "amount": 1.0
+   },
+   "grip.r": {
+    "amount": 0.5
    }
   },
   "order": [
@@ -126,7 +169,12 @@
    "upwardRotation",
    "posteriorTilt",
    "internalRotation",
-   "pronation"
+   "pronation",
+   "ulnarDeviation",
+   "dorsiflexion",
+   "tilt",
+   "turn",
+   "amount"
   ],
   "tails_blender": {
    "T1": [
@@ -153,6 +201,116 @@
     0.383158,
     -0.255999,
     1.269005
+   ],
+   "RightUpLeg": [
+    -0.081051,
+    -0.33937,
+    0.842668
+   ],
+   "RightLeg": [
+    -0.014849,
+    -0.454675,
+    0.46029
+   ],
+   "Tibia.r": [
+    -0.00831,
+    -0.391308,
+    0.457143
+   ],
+   "RightFoot": [
+    -0.013954,
+    -0.405305,
+    0.458661
+   ],
+   "Distal phalanx of foot-1st finger.r": [
+    -0.014177,
+    -0.571381,
+    0.42767
+   ],
+   "Patella.l.001": [
+    -0.080304,
+    -0.444984,
+    0.832619
+   ],
+   "LeftUpLeg": [
+    0.14077,
+    -0.222023,
+    0.608537
+   ],
+   "LeftLeg": [
+    0.213239,
+    -0.405912,
+    0.211213
+   ],
+   "LeftFoot": [
+    0.209483,
+    -0.35977,
+    0.19415
+   ],
+   "Patella.l": [
+    0.155539,
+    -0.302209,
+    0.570273
+   ],
+   "Clavicle-X.l": [
+    0.105956,
+    -0.014951,
+    1.402151
+   ],
+   "Scapula.l": [
+    0.068682,
+    0.091811,
+    1.384997
+   ],
+   "LeftArm": [
+    0.455141,
+    -0.01719,
+    1.33647
+   ],
+   "LeftForeArm": [
+    0.59614,
+    -0.173535,
+    1.456189
+   ],
+   "Radius.l": [
+    0.594979,
+    -0.176458,
+    1.454463
+   ],
+   "LeftHand": [
+    0.609623,
+    -0.204076,
+    1.485625
+   ],
+   "Distal phalanx of hand-1st finger.l": [
+    0.579126,
+    -0.260569,
+    1.528645
+   ],
+   "Distal phalanx of hand-2nd finger.l": [
+    0.585535,
+    -0.223562,
+    1.522199
+   ],
+   "Distal phalanx of hand-3rd finger.l": [
+    0.571923,
+    -0.222233,
+    1.511506
+   ],
+   "Distal phalanx of hand-5th finger.l": [
+    0.57378,
+    -0.228068,
+    1.487947
+   ],
+   "Distal phalanx of hand-1st finger.r": [
+    0.478948,
+    -0.337256,
+    1.306025
+   ],
+   "Distal phalanx of hand-3rd finger.r": [
+    0.471268,
+    -0.324292,
+    1.349667
    ]
   },
   "note": "Posed in Blender by joints.py; check.mjs repeats it in three.js and compares tails."
@@ -2693,10 +2851,10 @@
       "deg": 10.0,
       "probe_moved_mm": [
        -0.0,
-       77.06,
-       9.72
+       66.59,
+       7.41
       ],
-      "along_expected_mm": 77.06,
+      "along_expected_mm": 66.59,
       "ok": true
      }
     }
@@ -3186,10 +3344,10 @@
       "deg": 10.0,
       "probe_moved_mm": [
        0.0,
-       77.06,
-       9.72
+       66.59,
+       7.41
       ],
-      "along_expected_mm": 77.06,
+      "along_expected_mm": 66.59,
       "ok": true
      }
     }
@@ -3224,6 +3382,862 @@
      }
     }
    }
+  },
+  "grip.r": {
+   "bone": "RightHand",
+   "movements": {
+    "index.mcp": {
+     "bone": "Proximal phalanx of hand-2nd finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.26,
+       -6.44,
+       3.58
+      ],
+      "along_expected_mm": 7.2,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 90.0,
+     "share": 0.66667
+    },
+    "index.pip": {
+     "bone": "Middle phalanx of hand-2nd finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.6,
+       -2.87,
+       3.17
+      ],
+      "along_expected_mm": 3.66,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 90.0,
+     "share": 0.88889
+    },
+    "index.dip": {
+     "bone": "Distal phalanx of hand-2nd finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.67,
+       -1.76,
+       3.07
+      ],
+      "along_expected_mm": 2.57,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 77.0,
+     "limit_note": "rig limit looks reversed (flexion room 10, extension room 77); used 77",
+     "share": 0.44444
+    },
+    "middle.mcp": {
+     "bone": "RightFingerBase",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.17,
+       -6.78,
+       4.53
+      ],
+      "along_expected_mm": 7.8,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 93.0,
+     "share": 0.66667
+    },
+    "middle.pip": {
+     "bone": "Middle phalanx of hand-3rd finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.33,
+       -3.77,
+       3.7
+      ],
+      "along_expected_mm": 4.67,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 105.0,
+     "share": 0.88889
+    },
+    "middle.dip": {
+     "bone": "Distal phalanx of hand-3rd finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.05,
+       -1.51,
+       2.92
+      ],
+      "along_expected_mm": 2.29,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 77.0,
+     "share": 0.44444
+    },
+    "ring.mcp": {
+     "bone": "Proximal phalanx of hand-4th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -1.21,
+       -6.42,
+       4.27
+      ],
+      "along_expected_mm": 7.37,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 96.0,
+     "share": 0.66667
+    },
+    "ring.pip": {
+     "bone": "Middle phalanx of hand-4th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.1,
+       -3.48,
+       3.87
+      ],
+      "along_expected_mm": 4.45,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 120.0,
+     "share": 0.88889
+    },
+    "ring.dip": {
+     "bone": "Distal phalanx of hand-4th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.48,
+       -0.81,
+       2.85
+      ],
+      "along_expected_mm": 1.59,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 83.0,
+     "share": 0.44444
+    },
+    "little.mcp": {
+     "bone": "Proximal phalanx of hand-5th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -2.46,
+       -4.98,
+       2.91
+      ],
+      "along_expected_mm": 5.6,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 99.0,
+     "share": 0.66667
+    },
+    "little.pip": {
+     "bone": "Middle phalanx of hand-5th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -1.36,
+       -2.94,
+       2.26
+      ],
+      "along_expected_mm": 3.47,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 135.0,
+     "share": 0.88889
+    },
+    "little.dip": {
+     "bone": "Distal phalanx of hand-5th finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.79,
+       -1.89,
+       2.4
+      ],
+      "along_expected_mm": 2.5,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 90.0,
+     "share": 0.44444
+    },
+    "thumb.cmc": {
+     "bone": "RightThumb",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       14.44,
+       2.25,
+       -8.34
+      ],
+      "along_expected_mm": 15.03,
+      "ok": true
+     },
+     "deg_at_full": 15.0,
+     "limit_room_deg": 15.0,
+     "share": 0.16667
+    },
+    "thumb.mcp": {
+     "bone": "Proximal phalanx of hand-1st finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       8.47,
+       -5.05,
+       0.36
+      ],
+      "along_expected_mm": 6.9,
+      "ok": true
+     },
+     "deg_at_full": 25.0,
+     "limit_room_deg": 70.0,
+     "share": 0.27778
+    },
+    "thumb.ip": {
+     "bone": "Distal phalanx of hand-1st finger.r",
+     "axis_local": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "axis_three": [
+      0.0,
+      0.0,
+      1.0
+     ],
+     "nearest_local_axis": "+Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       4.09,
+       -1.86,
+       -0.47
+      ],
+      "along_expected_mm": 3.15,
+      "ok": true
+     },
+     "deg_at_full": 30.0,
+     "limit_room_deg": 90.0,
+     "share": 0.33333
+    }
+   },
+   "amount_max_deg": 90.0,
+   "note": "Shared movement like breath: pose {\"grip.r\": {\"amount\": a}} turns each entry's bone by a * share * amount_max_deg (= a * deg_at_full) about its axis. a = 0 open (REST), 1 = closed around a post or doorframe. Entry keys: <finger>.<mcp|pip|dip>, thumb.<cmc|mcp|ip>; thumb.cmc is opposition (tip swings across the palm toward the little finger)."
+  },
+  "grip.l": {
+   "bone": "LeftHand",
+   "movements": {
+    "index.mcp": {
+     "bone": "Proximal phalanx of hand-2nd finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.26,
+       -6.44,
+       3.58
+      ],
+      "along_expected_mm": 7.2,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 90.0,
+     "share": 0.66667
+    },
+    "index.pip": {
+     "bone": "Middle phalanx of hand-2nd finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.6,
+       -2.87,
+       3.17
+      ],
+      "along_expected_mm": 3.66,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 90.0,
+     "share": 0.88889
+    },
+    "index.dip": {
+     "bone": "Distal phalanx of hand-2nd finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.67,
+       -1.76,
+       3.07
+      ],
+      "along_expected_mm": 2.57,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 77.0,
+     "limit_note": "rig limit looks reversed (flexion room 10, extension room 77); used 77",
+     "share": 0.44444
+    },
+    "middle.mcp": {
+     "bone": "LeftFingerBase",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.17,
+       -6.78,
+       4.53
+      ],
+      "along_expected_mm": 7.8,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 93.0,
+     "share": 0.66667
+    },
+    "middle.pip": {
+     "bone": "Middle phalanx of hand-3rd finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.33,
+       -3.77,
+       3.7
+      ],
+      "along_expected_mm": 4.67,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 105.0,
+     "share": 0.88889
+    },
+    "middle.dip": {
+     "bone": "Distal phalanx of hand-3rd finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -0.05,
+       -1.51,
+       2.92
+      ],
+      "along_expected_mm": 2.29,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 77.0,
+     "share": 0.44444
+    },
+    "ring.mcp": {
+     "bone": "Proximal phalanx of hand-4th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       1.21,
+       -6.42,
+       4.27
+      ],
+      "along_expected_mm": 7.37,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 96.0,
+     "share": 0.66667
+    },
+    "ring.pip": {
+     "bone": "Middle phalanx of hand-4th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.1,
+       -3.48,
+       3.87
+      ],
+      "along_expected_mm": 4.45,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 120.0,
+     "share": 0.88889
+    },
+    "ring.dip": {
+     "bone": "Distal phalanx of hand-4th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.48,
+       -0.81,
+       2.85
+      ],
+      "along_expected_mm": 1.59,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 83.0,
+     "share": 0.44444
+    },
+    "little.mcp": {
+     "bone": "Proximal phalanx of hand-5th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       2.46,
+       -4.98,
+       2.91
+      ],
+      "along_expected_mm": 5.6,
+      "ok": true
+     },
+     "deg_at_full": 60.0,
+     "limit_room_deg": 99.0,
+     "share": 0.66667
+    },
+    "little.pip": {
+     "bone": "Middle phalanx of hand-5th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       1.36,
+       -2.94,
+       2.26
+      ],
+      "along_expected_mm": 3.47,
+      "ok": true
+     },
+     "deg_at_full": 80.0,
+     "limit_room_deg": 135.0,
+     "share": 0.88889
+    },
+    "little.dip": {
+     "bone": "Distal phalanx of hand-5th finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       0.79,
+       -1.89,
+       2.4
+      ],
+      "along_expected_mm": 2.5,
+      "ok": true
+     },
+     "deg_at_full": 40.0,
+     "limit_room_deg": 90.0,
+     "share": 0.44444
+    },
+    "thumb.cmc": {
+     "bone": "LeftThumb",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -14.44,
+       2.25,
+       -8.34
+      ],
+      "along_expected_mm": 15.03,
+      "ok": true
+     },
+     "deg_at_full": 15.0,
+     "limit_room_deg": 15.0,
+     "share": 0.16667
+    },
+    "thumb.mcp": {
+     "bone": "Proximal phalanx of hand-1st finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -8.47,
+       -5.05,
+       0.36
+      ],
+      "along_expected_mm": 6.9,
+      "ok": true
+     },
+     "deg_at_full": 25.0,
+     "limit_room_deg": 70.0,
+     "share": 0.27778
+    },
+    "thumb.ip": {
+     "bone": "Distal phalanx of hand-1st finger.l",
+     "axis_local": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "axis_three": [
+      -0.0,
+      -0.0,
+      -1.0
+     ],
+     "nearest_local_axis": "-Z",
+     "off_axis_deg": 0.0,
+     "check": {
+      "deg": 10.0,
+      "probe_moved_mm": [
+       -4.09,
+       -1.86,
+       -0.47
+      ],
+      "along_expected_mm": 3.15,
+      "ok": true
+     },
+     "deg_at_full": 30.0,
+     "limit_room_deg": 90.0,
+     "share": 0.33333
+    }
+   },
+   "amount_max_deg": 90.0,
+   "note": "Shared movement like breath: pose {\"grip.l\": {\"amount\": a}} turns each entry's bone by a * share * amount_max_deg (= a * deg_at_full) about its axis. a = 0 open (REST), 1 = closed around a post or doorframe. Entry keys: <finger>.<mcp|pip|dip>, thumb.<cmc|mcp|ip>; thumb.cmc is opposition (tip swings across the palm toward the little finger)."
   },
   "breath": {
    "bone": "Rib1-Start.r",
@@ -3773,6 +4787,25 @@
    ]
   },
   {
+   "bone": "MH_LevatorScapulae_l_3",
+   "parent": "C1",
+   "target": "MT_LevatorScapulae_l_3",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.148672,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_LevatorScapulae_r_2",
    "parent": "C2",
    "target": "MT_LevatorScapulae_r_2",
@@ -3792,10 +4825,48 @@
    ]
   },
   {
+   "bone": "MH_LevatorScapulae_l_2",
+   "parent": "C2",
+   "target": "MT_LevatorScapulae_l_2",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.142033,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_LevatorScapulae_r_1",
    "parent": "C3",
    "target": "MT_LevatorScapulae_r_1",
    "target_parent": "Scapula.r",
+   "rest_length": 0.13822,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_LevatorScapulae_l_1",
+   "parent": "C3",
+   "target": "MT_LevatorScapulae_l_1",
+   "target_parent": "Scapula.l",
    "rest_length": 0.13822,
    "volume": "VOLUME_Z",
    "keep_axis": "SWING_Y",
@@ -3830,10 +4901,48 @@
    ]
   },
   {
+   "bone": "MH_LevatorScapulae_l_0",
+   "parent": "C4",
+   "target": "MT_LevatorScapulae_l_0",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.137044,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_RhomboidMinor_r_3",
    "parent": "C6",
    "target": "MT_RhomboidMinor_r_3",
    "target_parent": "Scapula.r",
+   "rest_length": 0.102365,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_RhomboidMinor_l_3",
+   "parent": "C6",
+   "target": "MT_RhomboidMinor_l_3",
+   "target_parent": "Scapula.l",
    "rest_length": 0.102365,
    "volume": "VOLUME_Z",
    "keep_axis": "SWING_Y",
@@ -3906,10 +5015,86 @@
    ]
   },
   {
+   "bone": "MH_RhomboidMinor_l_0",
+   "parent": "C7",
+   "target": "MT_RhomboidMinor_l_0",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.106142,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_RhomboidMinor_l_1",
+   "parent": "C7",
+   "target": "MT_RhomboidMinor_l_1",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.101195,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_RhomboidMinor_l_2",
+   "parent": "C7",
+   "target": "MT_RhomboidMinor_l_2",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.102486,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_RhomboidMajor_r_3",
    "parent": "T1",
    "target": "MT_RhomboidMajor_r_3",
    "target_parent": "Scapula.r",
+   "rest_length": 0.096623,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_RhomboidMajor_l_3",
+   "parent": "T1",
+   "target": "MT_RhomboidMajor_l_3",
+   "target_parent": "Scapula.l",
    "rest_length": 0.096623,
    "volume": "VOLUME_Z",
    "keep_axis": "SWING_Y",
@@ -3944,6 +5129,25 @@
    ]
   },
   {
+   "bone": "MH_RhomboidMajor_l_2",
+   "parent": "T2",
+   "target": "MT_RhomboidMajor_l_2",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.109488,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_RhomboidMajor_r_1",
    "parent": "T3",
    "target": "MT_RhomboidMajor_r_1",
@@ -3963,10 +5167,48 @@
    ]
   },
   {
+   "bone": "MH_RhomboidMajor_l_1",
+   "parent": "T3",
+   "target": "MT_RhomboidMajor_l_1",
+   "target_parent": "Scapula.l",
+   "rest_length": 0.111771,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
    "bone": "MH_RhomboidMajor_r_0",
    "parent": "T4",
    "target": "MT_RhomboidMajor_r_0",
    "target_parent": "Scapula.r",
+   "rest_length": 0.119643,
+   "volume": "VOLUME_Z",
+   "keep_axis": "SWING_Y",
+   "stretch_axis_three": [
+    0,
+    1,
+    0
+   ],
+   "volume_axis_three": [
+    0,
+    0,
+    1
+   ]
+  },
+  {
+   "bone": "MH_RhomboidMajor_l_0",
+   "parent": "T4",
+   "target": "MT_RhomboidMajor_l_0",
+   "target_parent": "Scapula.l",
    "rest_length": 0.119643,
    "volume": "VOLUME_Z",
    "keep_axis": "SWING_Y",
@@ -8280,7 +9522,9 @@
     ]
    },
    "three_name": "Clavicle-Xl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Clavicle.l"
+   ]
   },
   "Scapula.l": {
    "parent": "Clavicle-X.l",
@@ -8314,7 +9558,9 @@
    },
    "limits_local_deg": null,
    "three_name": "Scapulal",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Scapula.l"
+   ]
   },
   "LeftArm": {
    "parent": "Scapula.l",
@@ -8361,7 +9607,9 @@
     ]
    },
    "three_name": "LeftArm",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Humerus.l"
+   ]
   },
   "LeftForeArm": {
    "parent": "LeftArm",
@@ -8455,7 +9703,9 @@
     ]
    },
    "three_name": "Radiusl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Radius.l"
+   ]
   },
   "LeftHand": {
    "parent": "Radius.l",
@@ -8583,7 +9833,12 @@
     ]
    },
    "three_name": "Proximal_carpal_bones-abductionl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Lunate bone.l",
+    "Pisiform bone.l",
+    "Scaphoid bone.l",
+    "Triquetrum bone.l"
+   ]
   },
   "Distal carpal bones.l": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -8617,7 +9872,12 @@
    },
    "limits_local_deg": null,
    "three_name": "Distal_carpal_bonesl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Capitate bone.l",
+    "Hamate bone.l",
+    "Trapezium bone.l",
+    "Trapezoid bone.l"
+   ]
   },
   "Metacarpal bone-4th finger.l": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -8664,7 +9924,9 @@
     ]
    },
    "three_name": "Metacarpal_bone-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fourth metacarpal bone.l"
+   ]
   },
   "Proximal phalanx of hand-4th finger.l": {
    "parent": "Metacarpal bone-4th finger.l",
@@ -8711,7 +9973,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_hand-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fourth finger of hand.l"
+   ]
   },
   "Middle phalanx of hand-4th finger.l": {
    "parent": "Proximal phalanx of hand-4th finger.l",
@@ -8758,7 +10022,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_hand-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fourth finger of hand.l"
+   ]
   },
   "Distal phalanx of hand-4th finger.l": {
    "parent": "Middle phalanx of hand-4th finger.l",
@@ -8805,7 +10071,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_hand-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fourth finger of hand.l"
+   ]
   },
   "Metacarpal bone-5th finger.l": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -8852,7 +10120,9 @@
     ]
    },
    "three_name": "Metacarpal_bone-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fifth metacarpal bone.l"
+   ]
   },
   "Proximal phalanx of hand-5th finger.l": {
    "parent": "Metacarpal bone-5th finger.l",
@@ -8899,7 +10169,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_hand-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fifth finger of hand.l"
+   ]
   },
   "Middle phalanx of hand-5th finger.l": {
    "parent": "Proximal phalanx of hand-5th finger.l",
@@ -8946,7 +10218,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_hand-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fifth finger of hand.l"
+   ]
   },
   "Distal phalanx of hand-5th finger.l": {
    "parent": "Middle phalanx of hand-5th finger.l",
@@ -8993,7 +10267,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_hand-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fifth finger of hand.l"
+   ]
   },
   "Metacarpal bone-2nd finger.l": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -9040,7 +10316,9 @@
     ]
    },
    "three_name": "Metacarpal_bone-2nd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Second metacarpal bone.l"
+   ]
   },
   "Proximal phalanx of hand-2nd finger.l": {
    "parent": "Metacarpal bone-2nd finger.l",
@@ -9087,7 +10365,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_hand-2nd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of second finger of hand.l"
+   ]
   },
   "Middle phalanx of hand-2nd finger.l": {
    "parent": "Proximal phalanx of hand-2nd finger.l",
@@ -9134,7 +10414,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_hand-2nd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of second finger of hand.l"
+   ]
   },
   "Distal phalanx of hand-2nd finger.l": {
    "parent": "Middle phalanx of hand-2nd finger.l",
@@ -9181,7 +10463,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_hand-2nd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of second finger of hand.l"
+   ]
   },
   "Metacarpal bone-3rd finger.l": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -9228,7 +10512,9 @@
     ]
    },
    "three_name": "Metacarpal_bone-3rd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Third metacarpal bone.l"
+   ]
   },
   "LeftFingerBase": {
    "parent": "Metacarpal bone-3rd finger.l",
@@ -9275,7 +10561,9 @@
     ]
    },
    "three_name": "LeftFingerBase",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of third finger of hand.l"
+   ]
   },
   "Middle phalanx of hand-3rd finger.l": {
    "parent": "LeftFingerBase",
@@ -9322,7 +10610,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_hand-3rd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of third finger of hand.l"
+   ]
   },
   "Distal phalanx of hand-3rd finger.l": {
    "parent": "Middle phalanx of hand-3rd finger.l",
@@ -9369,7 +10659,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_hand-3rd_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of third finger of hand.l"
+   ]
   },
   "LeftThumb": {
    "parent": "Proximal carpal bones-abduction.l",
@@ -9416,7 +10708,9 @@
     ]
    },
    "three_name": "LeftThumb",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "First metacarpal bone.l"
+   ]
   },
   "Proximal phalanx of hand-1st finger.l": {
    "parent": "LeftThumb",
@@ -9463,7 +10757,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_hand-1st_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of first finger of hand.l"
+   ]
   },
   "Distal phalanx of hand-1st finger.l": {
    "parent": "Proximal phalanx of hand-1st finger.l",
@@ -9510,7 +10806,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_hand-1st_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of first finger of hand.l"
+   ]
   },
   "Ulna.l": {
    "parent": "LeftForeArm",
@@ -9557,6 +10855,416 @@
     ]
    },
    "three_name": "Ulnal",
+   "skeleton_meshes": [
+    "Ulna.l"
+   ]
+  },
+  "MT_RhomboidMajor_l_0": {
+   "parent": "Scapula.l",
+   "head": [
+    0.081395,
+    0.108826,
+    1.270394
+   ],
+   "tail": [
+    0.081395,
+    0.108826,
+    1.280394
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMajor_l_0",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMajor_l_1": {
+   "parent": "Scapula.l",
+   "head": [
+    0.07109,
+    0.111182,
+    1.296594
+   ],
+   "tail": [
+    0.07109,
+    0.111182,
+    1.306594
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMajor_l_1",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMajor_l_2": {
+   "parent": "Scapula.l",
+   "head": [
+    0.064654,
+    0.1079,
+    1.320404
+   ],
+   "tail": [
+    0.064654,
+    0.1079,
+    1.330404
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     0.0,
+     -0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMajor_l_2",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMajor_l_3": {
+   "parent": "Scapula.l",
+   "head": [
+    0.061346,
+    0.1023,
+    1.347202
+   ],
+   "tail": [
+    0.061346,
+    0.1023,
+    1.357202
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMajor_l_3",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMinor_l_0": {
+   "parent": "Scapula.l",
+   "head": [
+    0.061082,
+    0.100907,
+    1.363152
+   ],
+   "tail": [
+    0.061082,
+    0.100907,
+    1.373152
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMinor_l_0",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMinor_l_1": {
+   "parent": "Scapula.l",
+   "head": [
+    0.060934,
+    0.099164,
+    1.369838
+   ],
+   "tail": [
+    0.060934,
+    0.099164,
+    1.379838
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMinor_l_1",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMinor_l_2": {
+   "parent": "Scapula.l",
+   "head": [
+    0.061197,
+    0.097387,
+    1.376378
+   ],
+   "tail": [
+    0.061197,
+    0.097387,
+    1.386378
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     -0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMinor_l_2",
+   "skeleton_meshes": []
+  },
+  "MT_RhomboidMinor_l_3": {
+   "parent": "Scapula.l",
+   "head": [
+    0.06302,
+    0.095424,
+    1.383658
+   ],
+   "tail": [
+    0.06302,
+    0.095424,
+    1.393658
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_RhomboidMinor_l_3",
+   "skeleton_meshes": []
+  },
+  "MT_LevatorScapulae_l_0": {
+   "parent": "Scapula.l",
+   "head": [
+    0.065575,
+    0.09267,
+    1.389034
+   ],
+   "tail": [
+    0.065575,
+    0.09267,
+    1.399034
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_LevatorScapulae_l_0",
+   "skeleton_meshes": []
+  },
+  "MT_LevatorScapulae_l_1": {
+   "parent": "Scapula.l",
+   "head": [
+    0.070258,
+    0.086288,
+    1.397256
+   ],
+   "tail": [
+    0.070258,
+    0.086288,
+    1.407256
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     0.0,
+     -0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_LevatorScapulae_l_1",
+   "skeleton_meshes": []
+  },
+  "MT_LevatorScapulae_l_2": {
+   "parent": "Scapula.l",
+   "head": [
+    0.074882,
+    0.082365,
+    1.404208
+   ],
+   "tail": [
+    0.074882,
+    0.082365,
+    1.414208
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_LevatorScapulae_l_2",
+   "skeleton_meshes": []
+  },
+  "MT_LevatorScapulae_l_3": {
+   "parent": "Scapula.l",
+   "head": [
+    0.08254,
+    0.076584,
+    1.409187
+   ],
+   "tail": [
+    0.08254,
+    0.076584,
+    1.419187
+   ],
+   "length": 0.01,
+   "rest_axes": {
+    "x": [
+     1.0,
+     -0.0,
+     -0.0
+    ],
+    "y": [
+     -0.0,
+     0.0,
+     1.0
+    ],
+    "z": [
+     -0.0,
+     -1.0,
+     0.0
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MT_LevatorScapulae_l_3",
    "skeleton_meshes": []
   },
   "Rib1-Start.r": {
@@ -10186,6 +11894,40 @@
    "three_name": "MH_LevatorScapulae_r_3",
    "skeleton_meshes": []
   },
+  "MH_LevatorScapulae_l_3": {
+   "parent": "C1",
+   "head": [
+    0.039664,
+    0.013915,
+    1.537006
+   ],
+   "tail": [
+    0.08254,
+    0.076584,
+    1.409187
+   ],
+   "length": 0.148672,
+   "rest_axes": {
+    "x": [
+     -0.77796,
+     -0.42031,
+     -0.46704
+    ],
+    "y": [
+     0.28839,
+     0.42152,
+     -0.85974
+    ],
+    "z": [
+     0.55822,
+     -0.80353,
+     -0.20671
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_LevatorScapulae_l_3",
+   "skeleton_meshes": []
+  },
   "MH_LevatorScapulae_r_2": {
    "parent": "C2",
    "head": [
@@ -10218,6 +11960,40 @@
    },
    "limits_local_deg": null,
    "three_name": "MH_LevatorScapulae_r_2",
+   "skeleton_meshes": []
+  },
+  "MH_LevatorScapulae_l_2": {
+   "parent": "C2",
+   "head": [
+    0.027271,
+    0.014075,
+    1.519287
+   ],
+   "tail": [
+    0.074882,
+    0.082365,
+    1.404208
+   ],
+   "length": 0.142033,
+   "rest_axes": {
+    "x": [
+     -0.75497,
+     -0.37738,
+     -0.53629
+    ],
+    "y": [
+     0.33521,
+     0.4808,
+     -0.81022
+    ],
+    "z": [
+     0.56361,
+     -0.79146,
+     -0.23649
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_LevatorScapulae_l_2",
    "skeleton_meshes": []
   },
   "MH_LevatorScapulae_r_1": {
@@ -10254,6 +12030,40 @@
    "three_name": "MH_LevatorScapulae_r_1",
    "skeleton_meshes": []
   },
+  "MH_LevatorScapulae_l_1": {
+   "parent": "C3",
+   "head": [
+    0.027815,
+    0.011515,
+    1.50548
+   ],
+   "tail": [
+    0.070258,
+    0.086288,
+    1.397256
+   ],
+   "length": 0.13822,
+   "rest_axes": {
+    "x": [
+     -0.74999,
+     -0.36892,
+     -0.54902
+    ],
+    "y": [
+     0.30707,
+     0.54097,
+     -0.78298
+    ],
+    "z": [
+     0.58586,
+     -0.75581,
+     -0.29244
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_LevatorScapulae_l_1",
+   "skeleton_meshes": []
+  },
   "MH_LevatorScapulae_r_0": {
    "parent": "C4",
    "head": [
@@ -10288,6 +12098,40 @@
    "three_name": "MH_LevatorScapulae_r_0",
    "skeleton_meshes": []
   },
+  "MH_LevatorScapulae_l_0": {
+   "parent": "C4",
+   "head": [
+    0.027492,
+    0.010883,
+    1.492192
+   ],
+   "tail": [
+    0.065575,
+    0.09267,
+    1.389034
+   ],
+   "length": 0.137044,
+   "rest_axes": {
+    "x": [
+     -0.74504,
+     -0.36074,
+     -0.56105
+    ],
+    "y": [
+     0.27789,
+     0.5968,
+     -0.75274
+    ],
+    "z": [
+     0.60637,
+     -0.71673,
+     -0.34439
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_LevatorScapulae_l_0",
+   "skeleton_meshes": []
+  },
   "MH_RhomboidMinor_r_3": {
    "parent": "C6",
    "head": [
@@ -10320,6 +12164,40 @@
    },
    "limits_local_deg": null,
    "three_name": "MH_RhomboidMinor_r_3",
+   "skeleton_meshes": []
+  },
+  "MH_RhomboidMinor_l_3": {
+   "parent": "C6",
+   "head": [
+    -0.000645,
+    0.068897,
+    1.459299
+   ],
+   "tail": [
+    0.06302,
+    0.095424,
+    1.383658
+   ],
+   "length": 0.102365,
+   "rest_axes": {
+    "x": [
+     -0.7802,
+     0.28566,
+     -0.55649
+    ],
+    "y": [
+     0.62194,
+     0.25914,
+     -0.73894
+    ],
+    "z": [
+     -0.06687,
+     -0.92263,
+     -0.37985
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMinor_l_3",
    "skeleton_meshes": []
   },
   "MH_RhomboidMinor_r_0": {
@@ -10424,6 +12302,108 @@
    "three_name": "MH_RhomboidMinor_r_2",
    "skeleton_meshes": []
   },
+  "MH_RhomboidMinor_l_0": {
+   "parent": "C7",
+   "head": [
+    0.000486,
+    0.079966,
+    1.447743
+   ],
+   "tail": [
+    0.061082,
+    0.100907,
+    1.363152
+   ],
+   "length": 0.106142,
+   "rest_axes": {
+    "x": [
+     -0.81246,
+     0.27559,
+     -0.51378
+    ],
+    "y": [
+     0.5709,
+     0.19729,
+     -0.79696
+    ],
+    "z": [
+     -0.11827,
+     -0.94081,
+     -0.31762
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMinor_l_0",
+   "skeleton_meshes": []
+  },
+  "MH_RhomboidMinor_l_1": {
+   "parent": "C7",
+   "head": [
+    0.002745,
+    0.079258,
+    1.450201
+   ],
+   "tail": [
+    0.060934,
+    0.099164,
+    1.369838
+   ],
+   "length": 0.101195,
+   "rest_axes": {
+    "x": [
+     -0.80962,
+     0.27654,
+     -0.51773
+    ],
+    "y": [
+     0.57502,
+     0.1967,
+     -0.79414
+    ],
+    "z": [
+     -0.11777,
+     -0.94066,
+     -0.31827
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMinor_l_1",
+   "skeleton_meshes": []
+  },
+  "MH_RhomboidMinor_l_2": {
+   "parent": "C7",
+   "head": [
+    0.000748,
+    0.074009,
+    1.455768
+   ],
+   "tail": [
+    0.061197,
+    0.097387,
+    1.376378
+   ],
+   "length": 0.102486,
+   "rest_axes": {
+    "x": [
+     -0.80185,
+     0.27908,
+     -0.52836
+    ],
+    "y": [
+     0.58982,
+     0.22811,
+     -0.77465
+    ],
+    "z": [
+     -0.09566,
+     -0.93278,
+     -0.34751
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMinor_l_2",
+   "skeleton_meshes": []
+  },
   "MH_RhomboidMajor_r_3": {
    "parent": "T1",
    "head": [
@@ -10456,6 +12436,40 @@
    },
    "limits_local_deg": null,
    "three_name": "MH_RhomboidMajor_r_3",
+   "skeleton_meshes": []
+  },
+  "MH_RhomboidMajor_l_3": {
+   "parent": "T1",
+   "head": [
+    0.000863,
+    0.085647,
+    1.420691
+   ],
+   "tail": [
+    0.061346,
+    0.1023,
+    1.347202
+   ],
+   "length": 0.096623,
+   "rest_axes": {
+    "x": [
+     0.77913,
+     -0.18002,
+     0.60046
+    ],
+    "y": [
+     0.62597,
+     0.17234,
+     -0.76056
+    ],
+    "z": [
+     0.03343,
+     0.96845,
+     0.24696
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMajor_l_3",
    "skeleton_meshes": []
   },
   "MH_RhomboidMajor_r_2": {
@@ -10492,6 +12506,40 @@
    "three_name": "MH_RhomboidMajor_r_2",
    "skeleton_meshes": []
   },
+  "MH_RhomboidMajor_l_2": {
+   "parent": "T2",
+   "head": [
+    0.001775,
+    0.089189,
+    1.408061
+   ],
+   "tail": [
+    0.064654,
+    0.1079,
+    1.320404
+   ],
+   "length": 0.109488,
+   "rest_axes": {
+    "x": [
+     0.81737,
+     -0.17418,
+     0.54915
+    ],
+    "y": [
+     0.5743,
+     0.17089,
+     -0.80061
+    ],
+    "z": [
+     0.04561,
+     0.96977,
+     0.23971
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMajor_l_2",
+   "skeleton_meshes": []
+  },
   "MH_RhomboidMajor_r_1": {
    "parent": "T3",
    "head": [
@@ -10526,6 +12574,40 @@
    "three_name": "MH_RhomboidMajor_r_1",
    "skeleton_meshes": []
   },
+  "MH_RhomboidMajor_l_1": {
+   "parent": "T3",
+   "head": [
+    0.000999,
+    0.099741,
+    1.382903
+   ],
+   "tail": [
+    0.07109,
+    0.111182,
+    1.296594
+   ],
+   "length": 0.111771,
+   "rest_axes": {
+    "x": [
+     0.77509,
+     -0.18057,
+     0.60551
+    ],
+    "y": [
+     0.62709,
+     0.10236,
+     -0.77219
+    ],
+    "z": [
+     0.07745,
+     0.97822,
+     0.19257
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMajor_l_1",
+   "skeleton_meshes": []
+  },
   "MH_RhomboidMajor_r_0": {
    "parent": "T4",
    "head": [
@@ -10558,6 +12640,40 @@
    },
    "limits_local_deg": null,
    "three_name": "MH_RhomboidMajor_r_0",
+   "skeleton_meshes": []
+  },
+  "MH_RhomboidMajor_l_0": {
+   "parent": "T4",
+   "head": [
+    0.000676,
+    0.101284,
+    1.358382
+   ],
+   "tail": [
+    0.081395,
+    0.108826,
+    1.270394
+   ],
+   "length": 0.119643,
+   "rest_axes": {
+    "x": [
+     0.73194,
+     -0.18573,
+     0.65556
+    ],
+    "y": [
+     0.67467,
+     0.06303,
+     -0.73542
+    ],
+    "z": [
+     0.09527,
+     0.98058,
+     0.17144
+    ]
+   },
+   "limits_local_deg": null,
+   "three_name": "MH_RhomboidMajor_l_0",
    "skeleton_meshes": []
   },
   "RHipJoint": {
@@ -10641,68 +12757,23 @@
     ]
    },
    "three_name": "RightUpLeg",
-   "skeleton_meshes": []
-  },
-  "Patella.l.001": {
-   "parent": "RightUpLeg",
-   "head": [
-    -0.08105,
-    0.016437,
-    0.45463
-   ],
-   "tail": [
-    -0.08105,
-    -0.013563,
-    0.45463
-   ],
-   "length": 0.03,
-   "rest_axes": {
-    "x": [
-     -1.0,
-     0.0,
-     -0.0
-    ],
-    "y": [
-     -0.0,
-     -1.0,
-     -0.0
-    ],
-    "z": [
-     -0.0,
-     -0.0,
-     1.0
-    ]
-   },
-   "limits_local_deg": {
-    "x": [
-     -70.0,
-     0.0
-    ],
-    "y": [
-     0.0,
-     0.0
-    ],
-    "z": [
-     0.0,
-     0.0
-    ]
-   },
-   "three_name": "Patellal001",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Femur.r"
+   ]
   },
   "RightLeg": {
    "parent": "RightUpLeg",
    "head": [
     -0.08105,
-    0.023064,
-    0.517637
+    0.03106,
+    0.45664
    ],
    "tail": [
     -0.08105,
     -0.023325,
     0.076593
    ],
-   "length": 0.443477,
+   "length": 0.383919,
    "rest_axes": {
     "x": [
      -1.0,
@@ -10711,13 +12782,13 @@
     ],
     "y": [
      -0.0,
-     -0.1046,
-     -0.99451
+     -0.14166,
+     -0.98992
     ],
     "z": [
      -1e-05,
-     -0.99451,
-     0.1046
+     -0.98992,
+     0.14166
     ]
    },
    "limits_local_deg": {
@@ -10736,6 +12807,55 @@
    },
    "three_name": "RightLeg",
    "skeleton_meshes": []
+  },
+  "Patella.l.001": {
+   "parent": "RightLeg",
+   "head": [
+    -0.08105,
+    0.016437,
+    0.45463
+   ],
+   "tail": [
+    -0.08105,
+    -0.013563,
+    0.45463
+   ],
+   "length": 0.03,
+   "rest_axes": {
+    "x": [
+     -1.0,
+     0.0,
+     -0.0
+    ],
+    "y": [
+     0.0,
+     -1.0,
+     0.0
+    ],
+    "z": [
+     -0.0,
+     0.0,
+     1.0
+    ]
+   },
+   "limits_local_deg": {
+    "x": [
+     -70.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     0.0
+    ],
+    "z": [
+     0.0,
+     0.0
+    ]
+   },
+   "three_name": "Patellal001",
+   "skeleton_meshes": [
+    "Patella.r"
+   ]
   },
   "Tibia.r": {
    "parent": "RightLeg",
@@ -10782,7 +12902,10 @@
     ]
    },
    "three_name": "Tibiar",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fibula.r",
+    "Tibia.r"
+   ]
   },
   "RightFoot": {
    "parent": "Tibia.r",
@@ -10829,7 +12952,9 @@
     ]
    },
    "three_name": "RightFoot",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Talus.r"
+   ]
   },
   "Navicular bone.r": {
    "parent": "RightFoot",
@@ -10846,7 +12971,7 @@
    "length": 0.04165,
    "rest_axes": {
     "x": [
-     0.80916,
+     0.80917,
      0.04559,
      -0.58581
     ],
@@ -10857,7 +12982,7 @@
     ],
     "z": [
      -0.58581,
-     0.13995,
+     0.13994,
      -0.79827
     ]
    },
@@ -10876,7 +13001,9 @@
     ]
    },
    "three_name": "Navicular_boner",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Navicular bone.r"
+   ]
   },
   "Metatarsal bone-1st finger.r": {
    "parent": "Navicular bone.r",
@@ -10893,7 +13020,7 @@
    "length": 0.056318,
    "rest_axes": {
     "x": [
-     0.98297,
+     0.98298,
      0.11737,
      -0.14137
     ],
@@ -10923,7 +13050,10 @@
     ]
    },
    "three_name": "Metatarsal_bone-1st_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "First metatarsal bone.r",
+    "Sesamoid bones of foot.r"
+   ]
   },
   "Proximal phalanx of foot-1st finger.r": {
    "parent": "Metatarsal bone-1st finger.r",
@@ -10970,7 +13100,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-1st_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of first finger of foot.r"
+   ]
   },
   "Distal phalanx of foot-1st finger.r": {
    "parent": "Proximal phalanx of foot-1st finger.r",
@@ -11017,7 +13149,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-1st_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of first finger of foot.r"
+   ]
   },
   "Metatarsal bone-2d finger.r": {
    "parent": "Navicular bone.r",
@@ -11064,7 +13198,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-2d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Second metatarsal bone.r"
+   ]
   },
   "RightToeBase": {
    "parent": "Metatarsal bone-2d finger.r",
@@ -11111,7 +13247,9 @@
     ]
    },
    "three_name": "RightToeBase",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of second finger of foot.r"
+   ]
   },
   "Middle phalanx of foot-2d finger.r": {
    "parent": "RightToeBase",
@@ -11135,7 +13273,7 @@
     "y": [
      -0.14144,
      -0.95741,
-     -0.25172
+     -0.25173
     ],
     "z": [
      0.13832,
@@ -11158,7 +13296,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-2d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of second finger of foot.r"
+   ]
   },
   "Distal phalanx of foot-2d finger.r": {
    "parent": "Middle phalanx of foot-2d finger.r",
@@ -11205,7 +13345,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-2d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of second finger of foot.r"
+   ]
   },
   "Metatarsal bone-3d finger.r": {
    "parent": "Navicular bone.r",
@@ -11252,7 +13394,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-3d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Third metatarsal bone.r"
+   ]
   },
   "Proximal phalanx of foot-3d finger.r": {
    "parent": "Metatarsal bone-3d finger.r",
@@ -11299,7 +13443,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-3d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of third finger of foot.r"
+   ]
   },
   "Middle phalanx of foot-3d finger.r": {
    "parent": "Proximal phalanx of foot-3d finger.r",
@@ -11346,7 +13492,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-3d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of third finger of foot.r"
+   ]
   },
   "Distal phalanx of foot-3d finger.r": {
    "parent": "Middle phalanx of foot-3d finger.r",
@@ -11393,7 +13541,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-3d_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of third finger of foot.r"
+   ]
   },
   "Cuneiform bones.r": {
    "parent": "Navicular bone.r",
@@ -11427,7 +13577,11 @@
    },
    "limits_local_deg": null,
    "three_name": "Cuneiform_bonesr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Intermediate cuneiform bone.r",
+    "Lateral cuneiform bone.r",
+    "Medial cuneiform bone.r"
+   ]
   },
   "Calcaneus.r": {
    "parent": "RightFoot",
@@ -11474,7 +13628,9 @@
     ]
    },
    "three_name": "Calcaneusr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Calcaneus.r"
+   ]
   },
   "Cuboid bone.r": {
    "parent": "RightFoot",
@@ -11521,7 +13677,9 @@
     ]
    },
    "three_name": "Cuboid_boner",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Cuboid bone.r"
+   ]
   },
   "Metatarsal bone-5th finger.r": {
    "parent": "Cuboid bone.r",
@@ -11568,7 +13726,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-5th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fifth metatarsal bone.r"
+   ]
   },
   "Proximal phalanx of foot-5th finger.r": {
    "parent": "Metatarsal bone-5th finger.r",
@@ -11585,7 +13745,7 @@
    "length": 0.029728,
    "rest_axes": {
     "x": [
-     0.92844,
+     0.92845,
      -0.33294,
      0.16475
     ],
@@ -11615,7 +13775,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-5th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fifth finger of foot.r"
+   ]
   },
   "Middle phalanx of foot-5th finger.r": {
    "parent": "Proximal phalanx of foot-5th finger.r",
@@ -11662,7 +13824,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-5th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fifth finger of foot.r"
+   ]
   },
   "Distal phalanx of foot-5th finger.r": {
    "parent": "Middle phalanx of foot-5th finger.r",
@@ -11709,7 +13873,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-5th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fifth finger of foot.r"
+   ]
   },
   "Metatarsal bone-4th finger.r": {
    "parent": "Cuboid bone.r",
@@ -11726,7 +13892,7 @@
    "length": 0.066656,
    "rest_axes": {
     "x": [
-     0.87629,
+     0.8763,
      -0.34261,
      0.33872
     ],
@@ -11756,7 +13922,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-4th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fourth metatarsal bone.r"
+   ]
   },
   "Proximal phalanx of foot-4t finger.r": {
    "parent": "Metatarsal bone-4th finger.r",
@@ -11803,7 +13971,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-4t_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fourth finger of foot.r"
+   ]
   },
   "Middle phalanx of foot-4th finger.r": {
    "parent": "Proximal phalanx of foot-4t finger.r",
@@ -11850,7 +14020,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-4th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fourth finger of foot.r"
+   ]
   },
   "Distal phalanx of foot-4th finger.r": {
    "parent": "Middle phalanx of foot-4th finger.r",
@@ -11897,7 +14069,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-4th_fingerr",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fourth finger of foot.r"
+   ]
   },
   "LHipJoint": {
    "parent": "Hips",
@@ -11980,68 +14154,23 @@
     ]
    },
    "three_name": "LeftUpLeg",
-   "skeleton_meshes": []
-  },
-  "Patella.l": {
-   "parent": "LeftUpLeg",
-   "head": [
-    0.08105,
-    0.016437,
-    0.45463
-   ],
-   "tail": [
-    0.08105,
-    -0.013563,
-    0.45463
-   ],
-   "length": 0.03,
-   "rest_axes": {
-    "x": [
-     -1.0,
-     -0.0,
-     0.0
-    ],
-    "y": [
-     -0.0,
-     -1.0,
-     -0.0
-    ],
-    "z": [
-     -0.0,
-     -0.0,
-     1.0
-    ]
-   },
-   "limits_local_deg": {
-    "x": [
-     -70.0,
-     0.0
-    ],
-    "y": [
-     0.0,
-     0.0
-    ],
-    "z": [
-     0.0,
-     0.0
-    ]
-   },
-   "three_name": "Patellal",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Femur.l"
+   ]
   },
   "LeftLeg": {
    "parent": "LeftUpLeg",
    "head": [
     0.08105,
-    0.023064,
-    0.517637
+    0.03106,
+    0.45664
    ],
    "tail": [
     0.08105,
     -0.023325,
     0.076593
    ],
-   "length": 0.443477,
+   "length": 0.383919,
    "rest_axes": {
     "x": [
      -1.0,
@@ -12050,13 +14179,13 @@
     ],
     "y": [
      0.0,
-     -0.1046,
-     -0.99451
+     -0.14166,
+     -0.98992
     ],
     "z": [
      1e-05,
-     -0.99451,
-     0.1046
+     -0.98992,
+     0.14166
     ]
    },
    "limits_local_deg": {
@@ -12075,6 +14204,55 @@
    },
    "three_name": "LeftLeg",
    "skeleton_meshes": []
+  },
+  "Patella.l": {
+   "parent": "LeftLeg",
+   "head": [
+    0.08105,
+    0.016437,
+    0.45463
+   ],
+   "tail": [
+    0.08105,
+    -0.013563,
+    0.45463
+   ],
+   "length": 0.03,
+   "rest_axes": {
+    "x": [
+     -1.0,
+     -0.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     -1.0,
+     0.0
+    ],
+    "z": [
+     -0.0,
+     0.0,
+     1.0
+    ]
+   },
+   "limits_local_deg": {
+    "x": [
+     -70.0,
+     0.0
+    ],
+    "y": [
+     0.0,
+     0.0
+    ],
+    "z": [
+     0.0,
+     0.0
+    ]
+   },
+   "three_name": "Patellal",
+   "skeleton_meshes": [
+    "Patella.l"
+   ]
   },
   "Tibia.l": {
    "parent": "LeftLeg",
@@ -12121,7 +14299,10 @@
     ]
    },
    "three_name": "Tibial",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fibula.l",
+    "Tibia.l"
+   ]
   },
   "LeftFoot": {
    "parent": "Tibia.l",
@@ -12168,7 +14349,9 @@
     ]
    },
    "three_name": "LeftFoot",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Talus.l"
+   ]
   },
   "Navicular bone.l": {
    "parent": "LeftFoot",
@@ -12215,7 +14398,9 @@
     ]
    },
    "three_name": "Navicular_bonel",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Navicular bone.l"
+   ]
   },
   "Metatarsal bone-1st finger.l": {
    "parent": "Navicular bone.l",
@@ -12244,7 +14429,7 @@
     "z": [
      0.18048,
      0.47262,
-     -0.86258
+     -0.86259
     ]
    },
    "limits_local_deg": {
@@ -12262,7 +14447,10 @@
     ]
    },
    "three_name": "Metatarsal_bone-1st_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "First metatarsal bone.l",
+    "Sesamoid bones of foot.l"
+   ]
   },
   "Proximal phalanx of foot-1st finger.l": {
    "parent": "Metatarsal bone-1st finger.l",
@@ -12309,7 +14497,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-1st_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of first finger of foot.l"
+   ]
   },
   "Distal phalanx of foot-1st finger.l": {
    "parent": "Proximal phalanx of foot-1st finger.l",
@@ -12356,7 +14546,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-1st_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of first finger of foot.l"
+   ]
   },
   "Metatarsal bone-2d finger.l": {
    "parent": "Navicular bone.l",
@@ -12375,7 +14567,7 @@
     "x": [
      0.99595,
      0.08647,
-     0.02443
+     0.02444
     ],
     "y": [
      0.08727,
@@ -12403,7 +14595,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-2d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Second metatarsal bone.l"
+   ]
   },
   "LeftToeBase": {
    "parent": "Metatarsal bone-2d finger.l",
@@ -12450,7 +14644,9 @@
     ]
    },
    "three_name": "LeftToeBase",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of second finger of foot.l"
+   ]
   },
   "Middle phalanx of foot-2d finger.l": {
    "parent": "LeftToeBase",
@@ -12497,7 +14693,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-2d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of second finger of foot.l"
+   ]
   },
   "Distal phalanx of foot-2d finger.l": {
    "parent": "Middle phalanx of foot-2d finger.l",
@@ -12544,7 +14742,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-2d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of second finger of foot.l"
+   ]
   },
   "Metatarsal bone-3d finger.l": {
    "parent": "Navicular bone.l",
@@ -12591,7 +14791,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-3d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Third metatarsal bone.l"
+   ]
   },
   "Proximal phalanx of foot-3d finger.l": {
    "parent": "Metatarsal bone-3d finger.l",
@@ -12638,7 +14840,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-3d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of third finger of foot.l"
+   ]
   },
   "Middle phalanx of foot-3d finger.l": {
    "parent": "Proximal phalanx of foot-3d finger.l",
@@ -12685,7 +14889,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-3d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of third finger of foot.l"
+   ]
   },
   "Distal phalanx of foot-3d finger.l": {
    "parent": "Middle phalanx of foot-3d finger.l",
@@ -12732,7 +14938,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-3d_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of third finger of foot.l"
+   ]
   },
   "Cuneiform bones.l": {
    "parent": "Navicular bone.l",
@@ -12766,7 +14974,11 @@
    },
    "limits_local_deg": null,
    "three_name": "Cuneiform_bonesl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Intermediate cuneiform bone.l",
+    "Lateral cuneiform bone.l",
+    "Medial cuneiform bone.l"
+   ]
   },
   "Calcaneus.l": {
    "parent": "LeftFoot",
@@ -12813,7 +15025,9 @@
     ]
    },
    "three_name": "Calcaneusl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Calcaneus.l"
+   ]
   },
   "Cuboid bone.l": {
    "parent": "LeftFoot",
@@ -12860,7 +15074,9 @@
     ]
    },
    "three_name": "Cuboid_bonel",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Cuboid bone.l"
+   ]
   },
   "Metatarsal bone-5th finger.l": {
    "parent": "Cuboid bone.l",
@@ -12907,7 +15123,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fifth metatarsal bone.l"
+   ]
   },
   "Proximal phalanx of foot-5th finger.l": {
    "parent": "Metatarsal bone-5th finger.l",
@@ -12954,7 +15172,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fifth finger of foot.l"
+   ]
   },
   "Middle phalanx of foot-5th finger.l": {
    "parent": "Proximal phalanx of foot-5th finger.l",
@@ -13001,7 +15221,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fifth finger of foot.l"
+   ]
   },
   "Distal phalanx of foot-5th finger.l": {
    "parent": "Middle phalanx of foot-5th finger.l",
@@ -13048,7 +15270,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-5th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fifth finger of foot.l"
+   ]
   },
   "Metatarsal bone-4th finger.l": {
    "parent": "Cuboid bone.l",
@@ -13095,7 +15319,9 @@
     ]
    },
    "three_name": "Metatarsal_bone-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Fourth metatarsal bone.l"
+   ]
   },
   "Proximal phalanx of foot-4t finger.l": {
    "parent": "Metatarsal bone-4th finger.l",
@@ -13142,7 +15368,9 @@
     ]
    },
    "three_name": "Proximal_phalanx_of_foot-4t_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Proximal phalanx of fourth finger of foot.l"
+   ]
   },
   "Middle phalanx of foot-4th finger.l": {
    "parent": "Proximal phalanx of foot-4t finger.l",
@@ -13189,7 +15417,9 @@
     ]
    },
    "three_name": "Middle_phalanx_of_foot-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Middle phalanx of fourth finger of foot.l"
+   ]
   },
   "Distal phalanx of foot-4th finger.l": {
    "parent": "Middle phalanx of foot-4th finger.l",
@@ -13236,7 +15466,9 @@
     ]
    },
    "three_name": "Distal_phalanx_of_foot-4th_fingerl",
-   "skeleton_meshes": []
+   "skeleton_meshes": [
+    "Distal phalanx of fourth finger of foot.l"
+   ]
   }
  },
  "three_name_collisions": []

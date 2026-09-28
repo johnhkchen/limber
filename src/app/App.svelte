@@ -1,181 +1,186 @@
 <script lang="ts">
-  import { Canvas } from '@threlte/core';
-  import { NeutralToneMapping } from 'three';
-  import Scene from './Scene.svelte';
-  import { duration, parseExercise, sample, type Exercise } from '../core/exercise';
+  import { tick } from 'svelte';
   import { parseJointMap, type JointMap } from '../core/jointmap';
-  import { plainName } from '../core/names';
+  import BreathCheck from './BreathCheck.svelte';
+  import Player from './Player.svelte';
+  import Setlist from './Setlist.svelte';
+  import { current, startRound, step, type Round, type RoundAction } from './round';
+  import {
+    isSkipped,
+    loadExercises,
+    readNotes,
+    setFeel,
+    setlist,
+    shelf,
+    writeNotes,
+    type BreathResult,
+    type Feel,
+    type Notes,
+  } from './setlist';
 
   const base = import.meta.env.BASE_URL;
 
-  // Exercises are data: every file in content/exercises/ is checked against the contract at build time.
+  // Exercises are data: every file in content/exercises/ shows up here by itself.
   const files = import.meta.glob('/content/exercises/*.json', { eager: true, import: 'default' });
-  const exercises: Exercise[] = Object.values(files).map((j) => parseExercise(j));
+  const { exercises } = loadExercises(files);
+  const items = shelf(setlist.exercises, exercises);
+  const allIds = items.map((i) => i.entry.id);
 
-  const params = new URLSearchParams(location.search);
-  let exerciseId = $state(params.get('ex') ?? exercises[0]?.id ?? '');
-  const exercise = $derived(exercises.find((e) => e.id === exerciseId) ?? exercises[0]!);
-  const total = $derived(duration(exercise));
+  // ---------------------------------------------------------------- where we are (kept in the URL)
+  //
+  // ?ex=<id>                 one move
+  // ?round=<n>               move n (1-based) of the round
+  // ?round=check             the deep-breath check
+  // ?t=…  (no ex)            the first move at that moment (older links and scripts/shots.mjs)
+  type Where = { view: 'shelf' } | { view: 'move'; id: string } | { view: 'round' };
 
-  let t = $state(Number(params.get('t') ?? 0));
-  let playing = $state(false);
-  const frame = $derived(sample(exercise, t));
+  let params = $state(new URLSearchParams(location.search));
+  let notes: Notes = $state(readNotes());
+  let round: Round | null = $state(null);
+  let checkResult: BreathResult | null = $state(null);
 
-  const camParam = params.get('cam')?.split(',').map(Number);
-  const camera = camParam?.length === 3 && camParam.every(Number.isFinite) ? (camParam as [number, number, number]) : undefined;
+  function whereFrom(p: URLSearchParams): Where {
+    const r = p.get('round');
+    if (r) {
+      const skip = (id: string) => isSkipped(notes, id);
+      let next = round ?? startRound(allIds, skip);
+      next = r === 'check' ? { ...next, stage: 'check' } : step(next, { type: 'goto', at: Number(r) - 1 });
+      round = next;
+      return { view: 'round' };
+    }
+    const id = p.get('ex') ?? (p.has('t') ? exercises[0]?.id : undefined);
+    if (id && items.some((i) => i.entry.id === id)) return { view: 'move', id };
+    return { view: 'shelf' };
+  }
+  let where: Where = $state(whereFrom(new URLSearchParams(location.search)));
 
-  let muscleOpacity = $state(Number(params.get('muscles') ?? 85) / 100);
-  let boneOpacity = $state(Number(params.get('bones') ?? 100) / 100);
-  let showHighlight = $state(true);
+  function go(q: Record<string, string>, push = true) {
+    const keep = new URLSearchParams();
+    for (const k of ['muscles', 'bones', 'cam', 'props']) {
+      const v = params.get(k);
+      if (v !== null) keep.set(k, v);
+    }
+    for (const [k, v] of Object.entries(q)) keep.set(k, v);
+    const url = `${location.pathname}${keep.size ? `?${keep}` : ''}`;
+    if (push) history.pushState(null, '', url);
+    else history.replaceState(null, '', url);
+    params = keep;
+    where = whereFrom(keep);
+    scrollTo({ top: 0 });
+  }
+
+  $effect(() => {
+    const onpop = () => {
+      params = new URLSearchParams(location.search);
+      where = whereFrom(params);
+    };
+    addEventListener('popstate', onpop);
+    return () => removeEventListener('popstate', onpop);
+  });
+
+  const toShelf = () => go({});
+  async function toWatchFor() {
+    go({});
+    await tick();
+    const d = document.getElementById('watch-for') as HTMLDetailsElement | null;
+    if (d) {
+      d.open = true;
+      d.scrollIntoView({ block: 'start' });
+    }
+  }
+  const openMove = (id: string) => go({ ex: id });
+  function beginRound() {
+    round = startRound(allIds, (id) => isSkipped(notes, id));
+    checkResult = null;
+    go({ round: round.stage === 'check' ? 'check' : '1' });
+  }
+  function roundStep(a: RoundAction) {
+    if (!round) return;
+    const r = step(round, a);
+    round = r;
+    go({ round: r.stage === 'check' ? 'check' : String(r.at + 1) }, false);
+  }
+
+  // ---------------------------------------------------------------- what you said
+
+  function feelFor(id: string, f: Feel | null) {
+    notes = setFeel(notes, id, f);
+    writeNotes(notes);
+  }
+  function check(r: BreathResult) {
+    checkResult = r;
+    notes = { ...notes, checks: [...notes.checks, { result: r, at: Date.now() }] };
+    writeNotes(notes);
+  }
+
+  // ---------------------------------------------------------------- the body files
 
   let jointMap: JointMap | null = $state.raw(null);
   let loadNote = $state('Setting out the body…');
-  let ready = $state(false);
-
   $effect(() => {
     fetch(`${base}anatomy/joint-map.json`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`joint-map ${r.status}`))))
       .then((j) => (jointMap = parseJointMap(j)))
       .catch((e) => (loadNote = `Couldn't read how the joints move (${(e as Error).message}).`));
   });
-
   function onready(info: { structures: number; bones: number; helpers: number; unmapped: string[] }) {
-    ready = true;
     (window as unknown as { __limber: unknown }).__limber = info;
   }
 
-  // Playback: a plain rAF clock. The sampler is pure, so scrubbing and playing share one path.
-  $effect(() => {
-    if (!playing) return;
-    let last = performance.now();
-    let raf = requestAnimationFrame(function tick(now) {
-      const next = t + (now - last) / 1000;
-      last = now;
-      if (next >= total) {
-        t = total;
-        playing = false;
-        return;
-      }
-      t = next;
-      raf = requestAnimationFrame(tick);
-    });
-    return () => cancelAnimationFrame(raf);
-  });
-
-  function toggle() {
-    if (!playing && t >= total - 0.01) t = 0;
-    playing = !playing;
-  }
-
-  const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-  const pct = (v: number) => `${Math.round(v * 100)}%`;
-
-  const breathText = $derived(
-    frame.breath.direction
-      ? `Breathe ${frame.breath.direction} · ${frame.breath.index} of ${frame.breath.count}`
-      : frame.phase === 'move'
-        ? 'Move slowly'
-        : ''
-  );
-  const lit = $derived(exercise.highlight.map((z) => ({ za: z, ...plainName(z) })));
+  const roundId = $derived(round && where.view === 'round' ? current(round) : null);
+  const moveId = $derived(where.view === 'move' ? where.id : roundId);
+  const moveItem = $derived(moveId ? items.find((i) => i.entry.id === moveId) : undefined);
+  const byId = (id: string) => items.find((i) => i.entry.id === id)!.entry;
 </script>
 
-<div class="b28-clay page">
+<div class="b28-clay page" class:page-player={!!moveItem}>
   <header class="top">
-    <h1 class="brand">Limber</h1>
+    <button class="brand-link" onclick={toShelf} aria-label="Limber, back to the start"><h1 class="brand">Limber</h1></button>
     <p class="tag">Shows you how to move so it stops hurting.</p>
   </header>
 
-  <section class="stage clay-well" aria-label="The body, doing the move. Drag to turn it.">
-    <Canvas dpr={Math.min(devicePixelRatio, 2)} toneMapping={NeutralToneMapping}>
-      <Scene
-        pose={frame.pose}
-        {jointMap}
-        {muscleOpacity}
-        {boneOpacity}
-        highlight={exercise.highlight}
-        {showHighlight}
-        {camera}
-        {onready}
-      />
-    </Canvas>
-    {#if !ready}
-      <p class="loading">{loadNote}</p>
-    {/if}
-    <p class="hint">Drag to turn · pinch to zoom</p>
-  </section>
-
-  <aside class="panel">
-    <article class="move clay-surface">
-      <div class="move-head">
-        {#if exercises.length > 1}
-          <select class="pick" bind:value={exerciseId} aria-label="Pick a move">
-            {#each exercises as e (e.id)}<option value={e.id}>{e.title ?? e.id}</option>{/each}
-          </select>
-        {:else}
-          <h2 class="title">{exercise.title ?? exercise.id}</h2>
-        {/if}
-        {#if exercise.side && exercise.side !== 'both'}<span class="clay-chip">{exercise.side} side</span>{/if}
-      </div>
-
-      <p class="cue" aria-live="polite">{frame.cue ?? ' '}</p>
-      <p class="breath" class:in={frame.breath.direction === 'in'}>
-        <span class="dot" style:transform={`scale(${0.6 + frame.breath.amount * 0.6})`}></span>
-        {breathText}
-      </p>
-
-      <div class="transport">
-        <button class="clay-button play" onclick={toggle} aria-label={playing ? 'Pause' : 'Play'}>
-          {#if playing}
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" /><rect x="14" y="5" width="4" height="14" rx="1.5" /></svg>
-          {:else}
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
-          {/if}
-        </button>
-        <input
-          class="scrub"
-          type="range"
-          min="0"
-          max={total}
-          step="0.05"
-          bind:value={t}
-          oninput={() => (playing = false)}
-          aria-label="Where in the move"
+  <main class="main">
+    {#if moveItem}
+      {#key moveItem.entry.id}
+        <Player
+          entry={moveItem.entry}
+          exercise={moveItem.exercise}
+          {jointMap}
+          {loadNote}
+          feel={notes.feel[moveItem.entry.id]?.feel}
+          onfeel={(f) => feelFor(moveItem.entry.id, f)}
+          onclose={toShelf}
+          round={round && where.view === 'round'
+            ? { at: round.at, count: round.ids.length, onnext: () => roundStep({ type: 'next' }), onback: () => roundStep({ type: 'back' }) }
+            : null}
+          {params}
+          {onready}
         />
-        <span class="time">{clock(t)} / {clock(total)}</span>
-      </div>
-    </article>
+      {/key}
+    {:else if where.view === 'round' && round}
+      <BreathCheck
+        done={round.ids.map(byId)}
+        skipped={round.skipped.map(byId)}
+        {notes}
+        result={checkResult}
+        oncheck={check}
+        onfeel={feelFor}
+        onagain={beginRound}
+        onclose={toShelf}
+        onwatch={toWatchFor}
+        onback={() => roundStep({ type: 'back' })}
+      />
+    {:else}
+      <Setlist {items} {notes} onopen={openMove} onround={beginRound} onundo={(id) => feelFor(id, null)} />
+    {/if}
+  </main>
 
-    <article class="layers clay-surface">
-      <h3>See inside</h3>
-      <label class="slider">
-        <span>Muscles</span>
-        <input type="range" min="0" max="1" step="0.01" bind:value={muscleOpacity} />
-        <output>{pct(muscleOpacity)}</output>
-      </label>
-      <label class="slider">
-        <span>Bones</span>
-        <input type="range" min="0" max="1" step="0.01" bind:value={boneOpacity} />
-        <output>{pct(boneOpacity)}</output>
-      </label>
-      <label class="toggle">
-        <input type="checkbox" bind:checked={showHighlight} />
-        <span>Light up what this stretches</span>
-      </label>
-      {#if showHighlight}
-        <ul class="lit">
-          {#each lit as l (l.za)}<li class="clay-chip" title={l.za}>{l.name}{l.side ? `, ${l.side}` : ''}</li>{/each}
-        </ul>
-      {/if}
-    </article>
-
-    <footer class="foot">
-      <p>Limber is not a doctor. A stretch or mild tenderness is fine; if the sharp catch comes back, stop.</p>
-      <p class="credit">
-        So far the body has the head, spine, ribs and right arm down to the fingers, with the right side's back muscles.
-        Body from BodyParts3D © DBCLS (CC BY-SA 2.1 JP), mixed and modified by
-        <a href="https://www.z-anatomy.com" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), shaped for Limber (CC BY-SA 4.0).
-      </p>
-    </footer>
-  </aside>
+  <footer class="foot">
+    <p>Limber is not a doctor. {setlist.guideline}</p>
+    <p class="credit">
+      So far the body has the head, spine, ribs and right arm down to the fingers, with the right side's back muscles.
+      Body from BodyParts3D © DBCLS (CC BY-SA 2.1 JP), mixed and modified by
+      <a href="https://www.z-anatomy.com" rel="noopener">Z-Anatomy</a> (CC BY-SA 4.0), shaped for Limber (CC BY-SA 4.0).
+    </p>
+  </footer>
 </div>

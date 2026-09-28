@@ -39,6 +39,11 @@ const load = (file) => new Promise((res, rej) => {
 });
 
 const C = (v) => new THREE.Vector3(v[0], v[2], -v[1]); // Blender (Z-up) -> glTF/three (Y-up)
+const structuresOf = (gltf) => { // za_name -> meshes (bind-pose geometry; skeleton meshes are bound at REST with identity bind)
+  const out = {};
+  gltf.scene.traverse((o) => { if (!o.isMesh) return; const s = o.userData.za_name ? o : o.parent?.userData.za_name ? o.parent : null; if (s) (out[s.userData.za_name] ??= []).push(o); });
+  return out;
+};
 const report = { files: {}, facing: {}, axes: {}, pose_test: {} };
 const loaded = {};
 
@@ -223,7 +228,12 @@ ok(maxHeadMm < 0.05, `bone heads differ from joint-map by ${maxHeadMm} mm`);
   const rest = new Map(Object.values(bonesByName).map((b) => [b, b.quaternion.clone()]));
   const per = {};
   for (const [jn, mvs] of Object.entries(pp.pose)) for (const [mv, deg] of Object.entries(mvs)) {
-    const m = jm.joints[jn].movements[mv];
+    const j = jm.joints[jn];
+    if (j.amount_max_deg && mv === 'amount') { // shared movement (grip): every entry turns by amount * share * max
+      for (const m of Object.values(j.movements)) (per[m.bone] ??= []).push([pp.order.indexOf('amount'), m.axis_three, deg * m.share * j.amount_max_deg]);
+      continue;
+    }
+    const m = j.movements[mv];
     (per[m.bone] ??= []).push([pp.order.indexOf(mv), m.axis_three, deg]);
   }
   for (const [b, lst] of Object.entries(per)) {
@@ -239,7 +249,103 @@ ok(maxHeadMm < 0.05, `bone heads differ from joint-map by ${maxHeadMm} mm`);
   for (const [b, q] of rest) b.quaternion.copy(q);
   loaded.muscles.scene.updateMatrixWorld(true);
   report.pose_test.probe_max_tail_gap_mm = +worst.toFixed(4);
+  report.pose_test.probe_bones = Object.keys(pp.tails_blender).length;
   ok(worst < 0.5, `three.js and Blender disagree on the probe pose by ${worst.toFixed(2)} mm`);
+}
+
+// ---- single movements do what their names say, in three.js world space (+Y up, +Z front, +X subject left)
+{
+  const tailW = (b) => new THREE.Vector3(0, jm.bones[b].length, 0).applyMatrix4(bonesByName[b].matrixWorld);
+  const moveTest = (joint, mv, deg, probeBone, expect, label) => {
+    const m = jm.joints[joint].movements[mv];
+    const bone = bonesByName[m.bone];
+    loaded.muscles.scene.updateMatrixWorld(true);
+    const a = tailW(probeBone);
+    const rest = bone.quaternion.clone();
+    bone.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...m.axis_three).normalize(), THREE.MathUtils.degToRad(deg)));
+    loaded.muscles.scene.updateMatrixWorld(true);
+    const d = tailW(probeBone).sub(a);
+    bone.quaternion.copy(rest); loaded.muscles.scene.updateMatrixWorld(true);
+    report.pose_test[label] = r3(d);
+    ok(expect(d), `${joint}.${mv} ${deg} should ${label}, got ${r3(d)}`);
+  };
+  for (const s of ['r', 'l']) {
+    const S = s === 'r' ? 'Right' : 'Left', lat = s === 'r' ? -1 : 1;
+    moveTest(`hip.${s}`, 'flexion', 90, `${S}UpLeg`, (d) => d.z > 0.25 && d.y > 0.2, `hip.${s} flexion: knee forward+up`);
+    moveTest(`knee.${s}`, 'flexion', 90, `${S}Leg`, (d) => d.z < -0.25 && d.y > 0.2, `knee.${s} flexion: ankle back+up`);
+    moveTest(`hip.${s}`, 'abduction', 30, `${S}UpLeg`, (d) => d.x * lat > 0.1, `hip.${s} abduction: knee out`);
+    moveTest(`ankle.${s}`, 'dorsiflexion', 20, 'Distal phalanx of foot-1st finger.' + s, (d) => d.y > 0.02, `ankle.${s} dorsiflexion: toes up`);
+    moveTest(`shoulder.${s}`, 'flexion', 90, `${S}Arm`, (d) => d.z > 0.15 && d.y > 0.1, `shoulder.${s} flexion: elbow forward+up`);
+    moveTest(`shoulder.${s}`, 'abduction', 90, `${S}Arm`, (d) => d.x * lat > 0.15 && d.y > 0.1, `shoulder.${s} abduction: elbow out+up`);
+    moveTest(`elbow.${s}`, 'flexion', 90, 'Radius.' + s, (d) => d.z > 0.15, `elbow.${s} flexion: wrist forward`);
+    moveTest(`shoulderGirdle.${s}`, 'elevation', 20, 'Clavicle-X.' + s, (d) => d.y > 0.01, `shoulderGirdle.${s} elevation: clavicle end up`);
+    moveTest(`scapula.${s}`, 'upwardRotation', 20, `${S}Arm`, (d) => d.x * lat > 0 || d.y > 0, `scapula.${s} upwardRotation: shoulder joint out/up`);
+  }
+  // grip closes the hand: fingertips come toward the palm (forward, +Z, and up) and the thumb tip swings medially
+  for (const s of ['r', 'l']) {
+    const g = jm.joints[`grip.${s}`];
+    ok(g && g.amount_max_deg > 0 && Object.keys(g.movements).length === 15, `grip.${s} should have 15 entries (4 fingers x 3 + thumb x 3)`);
+    const rest = new Map(Object.values(bonesByName).map((b) => [b, b.quaternion.clone()]));
+    loaded.muscles.scene.updateMatrixWorld(true);
+    const tips = ['1st', '2nd', '3rd', '4th', '5th'].map((n) => `Distal phalanx of hand-${n} finger.${s}`);
+    const before = tips.map(tailW);
+    for (const m of Object.values(g.movements))
+      bonesByName[m.bone].quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...m.axis_three).normalize(), THREE.MathUtils.degToRad(m.share * g.amount_max_deg)));
+    loaded.muscles.scene.updateMatrixWorld(true);
+    const d = tips.map((t, i) => tailW(t).sub(before[i]));
+    for (const [b, q] of rest) b.quaternion.copy(q);
+    loaded.muscles.scene.updateMatrixWorld(true);
+    // palm centre: 60% down the third metacarpal, 2 cm in front of it (palms face forward, +Z, at REST)
+    const mc = `Metacarpal bone-3rd finger.${s}`;
+    const palm = bonesByName[mc].getWorldPosition(new THREE.Vector3()).lerp(tailW(mc), 0.6).add(new THREE.Vector3(0, 0, 0.02));
+    const after = before.map((v, i) => v.clone().add(d[i]));
+    const ratio = after.map((v, i) => v.distanceTo(palm) / before[i].distanceTo(palm));
+    report.pose_test[`grip.${s} tip deltas (thumb..little)`] = d.map(r3);
+    report.pose_test[`grip.${s} tip-to-palm distance ratio (thumb..little)`] = ratio.map((x) => +x.toFixed(2));
+    ok(d.slice(1).every((v) => v.y > 0.03) && ratio.slice(1).every((x) => x < 0.6), `grip.${s}: finger tips should rise and close on the palm, got ${d.slice(1).map(r3)} ratios ${ratio.slice(1).map((x) => x.toFixed(2))}`);
+    const lat = s === 'r' ? -1 : 1;
+    ok(d[0].x * lat < 0, `grip.${s}: thumb tip should swing medially, got ${r3(d[0])}`);
+  }
+}
+
+// ---- mirrored (.l) bones kept outward winding. The full file's .l bones are negative-scale mirror copies; a wrong
+// fix shows up as a negative enclosed volume (triangles wound inward) or normals that disagree with the winding.
+{
+  const rows = [];
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), cc = new THREE.Vector3(), fn = new THREE.Vector3(), vn = new THREE.Vector3(), t = new THREE.Vector3();
+  for (const [name, entry] of Object.entries(structuresOf(loaded.skeleton))) {
+    if (!/\.(l|r)$/.test(name)) continue;
+    let vol = 0, agree = 0, tris = 0;
+    for (const m of entry) {
+      const g = m.geometry, p = g.attributes.position, no = g.attributes.normal, idx = g.index;
+      const nt = idx ? idx.count / 3 : p.count / 3;
+      for (let k = 0; k < nt; k++) {
+        const i = idx ? [idx.getX(3 * k), idx.getX(3 * k + 1), idx.getX(3 * k + 2)] : [3 * k, 3 * k + 1, 3 * k + 2];
+        a.fromBufferAttribute(p, i[0]); b.fromBufferAttribute(p, i[1]); cc.fromBufferAttribute(p, i[2]);
+        vol += a.dot(t.copy(b).cross(cc)) / 6;
+        fn.copy(b).sub(a).cross(t.copy(cc).sub(a));
+        vn.fromBufferAttribute(no, i[0]).add(t.fromBufferAttribute(no, i[1])).add(t.fromBufferAttribute(no, i[2]));
+        if (fn.lengthSq() > 0) { agree += fn.dot(vn) > 0 ? 1 : 0; tris++; }
+      }
+    }
+    rows.push({ name, signed_volume_cm3: +(vol * 1e6).toFixed(2), normals_agree_frac: +(agree / Math.max(tris, 1)).toFixed(3) });
+  }
+  const bad = rows.filter((r) => r.signed_volume_cm3 <= 0 || r.normals_agree_frac < 0.9);
+  const pairs = rows.filter((r) => r.name.endsWith('.l')).map((r) => {
+    const R = rows.find((x) => x.name === r.name.slice(0, -2) + '.r');
+    return R ? Math.abs(r.signed_volume_cm3 - R.signed_volume_cm3) / Math.max(R.signed_volume_cm3, 1e-9) : 0;
+  });
+  report.winding = { checked: rows.length, bad, worst_normals: [...rows].sort((x, y) => x.normals_agree_frac - y.normals_agree_frac).slice(0, 3),
+    max_left_right_volume_diff_frac: +Math.max(0, ...pairs).toFixed(3) };
+  ok(!bad.length, `inward-wound or flipped-normal sided bones: ${bad.map((r) => `${r.name} (${r.signed_volume_cm3} cm3, ${r.normals_agree_frac})`).slice(0, 8)}`);
+}
+
+// ---- budget: packed + brotli of everything the app downloads
+{
+  const jmBr = br(fs.readFileSync(path.join(OUT, 'joint-map.json')));
+  const total = report.files.skeleton.packed_brotli + report.files.muscles.packed_brotli + jmBr;
+  report.budget = { joint_map_brotli: jmBr, total_brotli: total, cap_brotli: 2 * 1024 * 1024 };
+  ok(total < 2 * 1024 * 1024, `download is ${total} bytes brotli, over the 2 MB budget`);
 }
 
 // ---- joint-map joints point at real bones
@@ -253,5 +359,7 @@ for (const l of Object.keys(f)) console.log(`CHK ${l}: ${f[l].structures} struct
 console.log('CHK facing', JSON.stringify(report.facing));
 console.log('CHK axes', JSON.stringify(report.axes));
 console.log('CHK pose', JSON.stringify(report.pose_test));
+console.log('CHK winding', JSON.stringify({ checked: report.winding?.checked, bad: report.winding?.bad?.length, worst: report.winding?.worst_normals, lr_vol_diff: report.winding?.max_left_right_volume_diff_frac }));
+console.log('CHK budget', JSON.stringify(report.budget));
 if (fails.length) { console.error('CHK FAIL\n  ' + fails.join('\n  ')); process.exit(1); }
 console.log('CHK OK');

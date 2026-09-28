@@ -1,0 +1,109 @@
+{
+  "$comment": "Hardcoded from docs/knowledge/cases/right-shoulder-blade.md for now. Later the generative UI (Jev picks, code builds) chooses which of these show. Exercise ids must match content/exercises/<id>.json.",
+  "id": "right-shoulder-blade",
+  "title": "The sharp spot behind your right shoulder blade",
+  "intro": "Five moves that open the space between your spine and shoulder blade, then breathe into it. Breathing into that space often lets a cranky rib joint or muscle settle.",
+  "howToUse": "Do one round of all five, then take a deep breath to test. If one clearly helps, do that one a few more times through the day.",
+  "guideline": "A stretch, or tenderness you can live with, is fine. If a move brings back the sharp catch, skip it.",
+  "exercises": [
+    {
+      "id": "across-body-reach",
+      "name": "Across-body reach",
+      "forWhat": "Slides the shoulder blade away from your spine. Often the quickest to help.",
+      "dose": "5 slow breaths",
+      "needs": "A doorframe",
+      "thumb": "reach",
+      "camera": { "view": "back-right", "elevation": 18, "fit": "highlight", "zoom": 0.4 },
+      "steps": [
+        "Sit or stand. Reach your right hand across and hold a doorframe on your left, at chest height.",
+        "Let your body weight pull back so the right shoulder blade slides away from your spine.",
+        "Round your upper back a little.",
+        "Take 5 slow, deep breaths into the sore spot."
+      ]
+    },
+    {
+      "id": "childs-pose-side-reach",
+      "name": "Child's pose, side reach",
+      "forWhat": "Stretches down the right side of your back while you breathe.",
+      "dose": "5–8 breaths",
+      "needs": "A bit of floor",
+      "thumb": "child",
+      "camera": { "view": "back-right", "elevation": 35 },
+      "steps": [
+        "Kneel and sit back onto your heels, folding forward.",
+        "Walk both hands over to the left until you feel a stretch down the right side of your back.",
+        "Breathe deep into your right back ribs, 5 to 8 times."
+      ]
+    },
+    {
+      "id": "thread-the-needle",
+      "name": "Thread the needle",
+      "forWhat": "Twists the upper back and opens the shoulder blade.",
+      "dose": "5 breaths, 5–6 times",
+      "needs": "A bit of floor",
+      "thumb": "thread",
+      "camera": { "view": "right", "elevation": 25 },
+      "steps": [
+        "Start on your hands and knees.",
+        "Slide your right arm under your body toward the left, lowering your right shoulder and the side of your head toward the floor.",
+        "Stay for 5 breaths, then come back.",
+        "Do it 5 or 6 times."
+      ]
+    },
+    {
+      "id": "open-book",
+      "name": "Open book",
+      "forWhat": "Gently turns the upper back while you lie on your side.",
+      "dose": "8–10 slow reps",
+      "needs": "A bit of floor",
+      "thumb": "book",
+      "camera": { "view": "top-front", "elevation": 55 },
+      "steps": [
+        "Lie on your left side, knees bent and stacked, both arms straight out in front.",
+        "Open your right arm up and over toward the floor behind you. Follow it with your eyes.",
+        "Go only as far as feels okay, then come back.",
+        "Do 8 to 10 slow ones."
+      ]
+    },
+    {
+      "id": "ball-release",
+      "name": "Ball release",
+      "forWhat": "Presses gently on the sore spot while you breathe.",
+      "dose": "3–4 deep breaths",
+      "needs": "A tennis ball and a wall",
+      "thumb": "ball",
+      "camera": { "view": "back-right", "elevation": 15, "fit": "highlight", "zoom": 0.4 },
+      "steps": [
+        "Put a tennis ball between a wall and the sore spot.",
+        "Hug your arms across your chest. That slides the shoulder blade out of the way so the ball can reach the spot.",
+        "Lean in with steady pressure and take 3 or 4 deep breaths. Small movements are fine; don't grind on it."
+      ]
+    }
+  ],
+  "avoid": {
+    "title": "Avoid for now",
+    "items": [
+      "Crunches, sit-ups and heavy ab work. A plank may be fine because it keeps your back straight, but stop if it brings the pain on.",
+      "Sitting straight up out of bed. Roll onto your side, let your legs drop off the edge, and push up with your arms.",
+      "Sleeping in a way that presses on or pulls the right shoulder blade. Try your back, or your left side hugging a pillow. Fixing or padding the bed that started it helps too."
+    ]
+  },
+  "watchFor": {
+    "title": "Watch for",
+    "lead": "Get seen soon if any of these show up:",
+    "items": [
+      "You're short of breath, your heart is racing, or you feel lightheaded",
+      "You cough up blood",
+      "A calf is swollen and sore",
+      "You have a fever",
+      "The pain spreads, stays the same however you sit or lie, or comes with feeling sick or a sore belly"
+    ],
+    "later": "Most of the time this eases in a few days and is gone in a week or two. If breathing in is still sharp after about a week, a physiotherapist can check it and often sorts a stuck rib joint in one or two visits."
+  },
+  "check": {
+    "prompt": "Take a deep breath. Better, same, or worse?",
+    "better": "Good. Which one helped most? Do that one a few more times through the day.",
+    "same": "That's okay. It often takes a few days to ease. Try the round again later, and keep taking a few slow, deep breaths each hour, even if they catch a little.",
+    "worse": "Skip anything that brought back the sharp catch, and go easy for today. If breathing itself is getting harder, don't wait on it."
+  }
+}

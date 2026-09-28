@@ -76,8 +76,10 @@ for layer in ('skeleton', 'muscles'):
     assert not miss, 'missing %s structures: %s' % (layer, miss)
 # side check by geometry, not by label: subject's right is -X in both files
 for n, i in info.items():
-    if i['layer'] == 'muscles' and n.endswith('.r'):
+    if i['layer'] in ('muscles', 'skeleton') and n.endswith('.r'):
         assert i['centroid'][0] < 0, '%s labelled right but centroid x=%.3f' % (n, i['centroid'][0])
+    if i['layer'] in ('muscles', 'skeleton') and n.endswith('.l'):
+        assert i['centroid'][0] > 0, '%s labelled left but centroid x=%.3f' % (n, i['centroid'][0])
 
 log('baked', len(made), {l: sum(1 for i in info.values() if i['layer'] == l) for l in ('skeleton', 'muscles', 'ref')})
 log('missing', missing)
