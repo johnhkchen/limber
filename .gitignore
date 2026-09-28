@@ -4,3 +4,5 @@ dist/
 .env
 .dev.vars
 .DS_Store
+pipeline/source/
+pipeline/out/
